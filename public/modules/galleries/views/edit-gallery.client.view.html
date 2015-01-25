@@ -1,0 +1,60 @@
+<section class="container" data-ng-controller="GalleriesController" data-ng-init="findOne()">
+    <div class="page-header">
+        <h1>Edit Gallery</h1>
+    </div>
+    <div class="col-md-12">
+
+       <form name="galleryForm" class="form-horizontal" novalidate>
+
+            <fieldset>
+                <div class="form-group" show-errors>
+                    <label for="title" class="col-sm-3 control-label">Title</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="title" name="title" class="form-control"
+                               ng-model="gallery.title" ng-required="true" />
+                            <span class="help-block"
+                                  ng-if="galleryForm.title.$error.required">Gallery Title is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="picture"  class="col-sm-3 control-label">Image</label>
+
+                    <div class="col-sm-9">
+                        <div id="picture" name="picture"  ng-file-select ng-model="myFiles"  ng-file-change="fileSelected($files, $event)"
+                            ng-multiple="true|false" accept="image/*,*.pdf,*.xml" ng-required="true" resetOnClick="true|false">Upload
+                        </div>
+                        <span class="help-block"
+                              ng-if="galleryForm.picture.$error.required">Picture is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content" class="col-sm-3 control-label">Notes</label>
+                    <div class="col-sm-9">
+                <textarea name="content" id="content" class="form-control" rows="8" cols="40"
+                          ng-model="gallery.content"></textarea>
+                    </div>
+                </div>
+
+            </fieldset>
+            <br />
+
+            <div class="col-sm-offset-3 col-sm-9">
+                <input type="button" class="btn btn-default" value="Cancel"
+                       ng-click="cancelForm()" />
+                <input type="submit" class="btn btn-primary" value="Submit"
+                       ng-click="update(galleryForm.$valid)" />
+                <input type="button" class="btn btn-warning" value="Reset"
+                       ng-click="resetForm()" />
+                <div class="alert alert-danger" ng-if="hasFormError">{{formErrors}}</div>
+            </div>
+
+        </form>
+
+    </div>
+</section>
+
+
+
+

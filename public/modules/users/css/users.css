@@ -1,0 +1,35 @@
+@media (min-width: 992px) {
+	.nav-users {
+		position: fixed;
+	}
+}
+.remove-account-container {
+	display: inline-block;
+	position: relative;
+}
+.btn-remove-account {
+	top: 10px;
+	right: 10px;
+	position: absolute;
+}
+
+.sign-bar   {
+
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px;
+	background-color: lightgrey;
+}
+
+.sign-bar {
+	padding: 5px ;
+	background-color: lightgrey;
+	border-radius: 2px;
+}
+
+.sign-bar-error {
+	margin: 10px;
+	padding: 5px ;
+	background-color: lightgrey;
+	border-radius: 2px;
+}

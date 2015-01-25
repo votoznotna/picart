@@ -1,0 +1,77 @@
+<section class="container" data-ng-controller="GalleriesController">
+    <div class="page-header">
+        <h1>Create Gallery</h1>
+    </div>
+    <div class="col-md-12">
+
+        <form name="galleryForm" class="form-horizontal" novalidate>
+
+            <fieldset>
+                <div class="form-group" show-errors>
+                    <label for="title" class="col-sm-3 control-label">Title</label>
+                    <div class="col-sm-9">
+                        <input type="text" id="title" name="title" class="form-control"
+                               ng-model="gallery.title" ng-required="true" />
+                            <span class="help-block"
+                                  ng-if="galleryForm.title.$error.required">Gallery Title is required</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="picture"  class="col-sm-3 control-label">Image</label>
+
+                    <div class="col-sm-9">
+                        <div class="col-sm-12" style="padding-left: 0">
+                            <div class="col-xs-12 col-md-6" style="padding-left: 0; margin-bottom: 5px;" >
+                                <input id="picture"
+                                       name="picture"
+                                       type="file"
+                                       ng-model="gallery.picture"
+                                       accept="image/*"
+                                       image="gallery.picture"
+                                       resize-max-height="100"
+                                       resize-max-width="300"
+                                       resize-quality="0.7"
+                                       class="btn btn-default"
+                                       ng-required="true"
+                                       file-required />
+                            </div>
+                            <div class="col-xs-6 col-md-6" style="white-space: nowrap;  margin-bottom: 5px;">
+                                <!--<button type="submit" ng-click="uploadPicture(gallery.picture.resized)" class="btn btn-default" disabled >Add</button>-->
+                                <button type="button" ng-click="clearPicture()" class="btn btn-default" style="margin-left: 10px">Clear</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="padding-left: 0;">
+                            <img ng-show="gallery.picture" class="img-responsive" style="margin-top: 10px" ng-src="{{gallery.picture.resized.dataURL}}"/>
+                        </div>
+                        <span class="help-block"
+                          ng-if="galleryForm.picture.$error.required">Picture is required</span>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="content" class="col-sm-3 control-label">Notes</label>
+                    <div class="col-sm-9">
+                <textarea name="content" id="content" class="form-control" rows="8" cols="40"
+                          ng-model="gallery.content"></textarea>
+                    </div>
+                </div>
+
+            </fieldset>
+            <br />
+
+            <div class="col-sm-offset-3 col-sm-9">
+                <input type="button" class="btn btn-default" value="Cancel"
+                       ng-click="cancelForm()" />
+                <input type="submit" class="btn btn-primary" value="Submit"
+                       ng-click="create()" />
+                <input type="button" class="btn btn-warning" value="Reset"
+                       ng-click="resetForm()" />
+                <div class="alert alert-danger" ng-if="hasFormError">{{formErrors}}</div>
+            </div>
+
+        </form>
+
+    </div>
+</section>

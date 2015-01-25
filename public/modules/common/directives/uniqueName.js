@@ -1,7 +1,7 @@
 /**
  * Created by User on 1/24/2015.
  */
-ngular.module('common').directive('uniqueName', function(mongolab) {
+angular.module('common').directive('uniqueName', function(mongolab) {
     return {
         restrict: 'A',
         require: 'ngModel',

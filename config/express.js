@@ -34,7 +34,7 @@ module.exports = function(db) {
 
 	// Setting application local variables
 	app.locals.title = config.app.title;
-	app.locals.dbName = config.db.dbName;
+	app.locals.dbName = config.dbName;
 	app.locals.description = config.app.description;
 	app.locals.keywords = config.app.keywords;
 	app.locals.facebookAppId = config.facebook.clientID;

@@ -58,7 +58,7 @@
 	<!--Embedding The User Object-->
 	<script type="text/javascript">
 		var user = {{ user | json | safe }};
-		window.dbName = {{ dbName }};
+		window.dbName = "{{ dbName }}";
 	</script>
 
 	<!--Application JavaScript Files-->

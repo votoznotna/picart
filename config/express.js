@@ -15,7 +15,7 @@ var fs = require('fs'),
 	cookieParser = require('cookie-parser'),
 	helmet = require('helmet'),
 	passport = require('passport'),
-	mongoStore = require('connect-mongo')({
+		mongoStore = require('connect-mongo')({
 		session: session
 	}),
 	flash = require('connect-flash'),
@@ -77,10 +77,11 @@ module.exports = function(db) {
 	}
 
 	// Request body parsing middleware should be above methodOverride
-	app.use(bodyParser.urlencoded({
-		extended: true
-	}));
+	//app.use(bodyParser.urlencoded({
+	//	extended: true
+	//}));
 	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(methodOverride());
 
 	// CookieParser should be above session

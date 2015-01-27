@@ -22,7 +22,7 @@
 
                     <div class="col-sm-9">
                         <div class="col-sm-12" style="padding-left: 0">
-                            <div class="col-xs-12 col-md-6" style="padding-left: 0; margin-bottom: 5px;" >
+                            <div class="col-sm-6" style="padding-left: 0; margin-bottom: 5px;" >
                                 <input id="picture"
                                        name="picture"
                                        type="file"
@@ -33,15 +33,17 @@
                                        resize-max-width="300"
                                        resize-quality="0.7"
                                        class="btn btn-default"
+                                       style="width: 100%"
                                        ng-required="true"
                                        file-required />
                             </div>
-                            <div class="col-xs-6 col-md-6" style="white-space: nowrap;  margin-bottom: 5px;">
-                                <!--<button type="submit" ng-click="uploadPicture(gallery.picture.resized)" class="btn btn-default" disabled >Add</button>-->
+                            <div style="white-space: nowrap;  margin-bottom: 5px;">
+                                <!--<button type="submit" ng-click="uploadPicture(gallery.picture)" class="btn btn-default" disabled >Add</button>-->
                                 <button type="button" ng-click="clearPicture()" class="btn btn-default" style="margin-left: 10px">Clear</button>
                             </div>
                         </div>
                         <div class="col-sm-12" style="padding-left: 0;">
+                            <!--img-circle-->
                             <img ng-show="gallery.picture" class="img-responsive" style="margin-top: 10px" ng-src="{{gallery.picture.resized.dataURL}}"/>
                         </div>
                         <span class="help-block"
@@ -58,18 +60,26 @@
                     </div>
                 </div>
 
-            </fieldset>
-            <br />
+                <div class="form-group">
+                    <!--<label for="captcha"  class="col-sm-3 control-label"></label>-->
+                    <div class="col-sm-offset-3 col-sm-9">
+                        <div name="captcha" id="captcha" grecaptcha ng-model="gallery.captcha"></div>
+                    </div>
 
-            <div class="col-sm-offset-3 col-sm-9">
+                </div>
+
+            </fieldset>
+
+            <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; marting-top: 30px">
                 <input type="button" class="btn btn-default" value="Cancel"
                        ng-click="cancelForm()" />
                 <input type="submit" class="btn btn-primary" value="Submit"
                        ng-click="create()" />
                 <input type="button" class="btn btn-warning" value="Reset"
                        ng-click="resetForm()" />
-                <div class="alert alert-danger" ng-if="hasFormError">{{formErrors}}</div>
+                <div class="alert alert-danger" style="margin-top:15px" ng-if="hasFormError">{{formErrors}}</div>
             </div>
+
 
         </form>
 

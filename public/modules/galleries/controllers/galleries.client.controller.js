@@ -4,8 +4,8 @@
 
 'use strict';
 
-angular.module('galleries').controller('GalleriesController', ['$scope', '$stateParams', '$location',  '$window', 'Authentication', 'Galleries',
-    function($scope, $stateParams, $location, $window, Authentication, Galleries) {
+angular.module('galleries').controller('GalleriesController', ['$scope', '$stateParams', '$location', '$http', '$window', 'Authentication', 'Galleries',
+    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries) {
 
         $scope.master = {};
 
@@ -20,7 +20,26 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
             if ($scope.galleryForm.$invalid)
                 return;
 
-            var gallery = new Galleries({
+            var formData = new FormData();
+            formData.append('image', $scope.gallery.picture.file);
+            formData.append('title', $scope.gallery.title);
+            formData.append('content', $scope.gallery.content);
+
+
+            $http.post('upload', formData, {
+                headers: { 'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).success(function(result) {
+                $location.path('galleries');
+                $scope.uploadedImgSrc = result.src;
+                $scope.sizeInBytes = result.size;
+            }).error(function(data, status, headers, config) {
+                $scope.hasFormError = true;
+                $scope.formErrors = status;
+            });
+
+
+/*            var gallery = new Galleries({
                 title: $scope.gallery.title,
                 content: $scope.gallery.content
             });
@@ -32,7 +51,7 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
             }, function(errorResponse) {
                 $scope.hasFormError = true;
                 $scope.formErrors = errorResponse.statusText;
-            });
+            });*/
         };
 
 

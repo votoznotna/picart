@@ -7,6 +7,9 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
+    im = require('imagemagick'),
+    fs = require('fs'),
+    path = require('path'),
     errorHandler = require('./errors.server.controller'),
     Gallery = mongoose.model('Gallery'),
     _ = require('lodash');
@@ -15,19 +18,77 @@ var mongoose = require('mongoose'),
  * Create a galery
  */
 exports.create = function(req, res) {
-    var galery = new Gallery(req.body);
-    galery.user = req.user;
+    var gallery = new Gallery(req.body);
+    gallery.user = req.user;
 
-    galery.save(function(err) {
+    gallery.save(function(err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.json(galery);
+            res.json(gallery);
         }
     });
 };
+
+exports.createGallery = function(req, res) {
+
+    var image = req.files.image;
+    var imageName = image.name;
+    var imagePath = image.path;
+
+    if(imagePath) {
+
+        fs.readFile(imagePath, function (err, data) {
+
+            /// If there's an error
+            if (!imageName) {
+                res.redirect("/");
+                res.end();
+
+            } else {
+
+                var picFullSize = path.join(__dirname, '../pictures/fullsize', imageName);
+                var picThumbs = path.join(__dirname, '../pictures/thumbs', imageName);
+
+                /// write file to uploads/fullsize folder
+                fs.writeFile(picFullSize, data, function (err) {
+
+                    /// write file to uploads/thumbs folder
+                    im.resize({
+                        srcPath: picFullSize,
+                        dstPath: picThumbs,
+                        width: 300
+                    }, function (err, stdout, stderr) {
+                        if(err) {
+                            return res.status(400).send({
+                                message: errorHandler.getErrorMessage(err)
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    var gallery = new Gallery(req.body);
+    gallery.user = req.user;
+    gallery.picture = imageName ? imageName : null;
+/*        gallery.save(function(err) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            } else {
+                res.json(gallery);
+            }
+        });*/
+    res.json(gallery);
+
+};
+
+
 
 /**
  * Show the current gallery
@@ -35,6 +96,9 @@ exports.create = function(req, res) {
 exports.read = function(req, res) {
     res.json(req.gallery);
 };
+
+
+
 
 /**
  * Update a gallery

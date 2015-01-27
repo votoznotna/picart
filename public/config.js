@@ -4,15 +4,23 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'picart';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'grecaptcha'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
 		// Create angular module
-		angular.module(moduleName, dependencies || []);
+		angular.module(moduleName, dependencies || [])
+				.config(function(grecaptchaProvider) {
+					grecaptchaProvider.setParameters({
+						sitekey: '6LfiZ_4SAAAAAMHL8MQrCLHVC1TeWqU-Bv-iPWHr',
+						theme: 'light'
+					});
+				});
 
 		// Add the module to the AngularJS configuration file
 		angular.module(applicationModuleName).requires.push(moduleName);
+
+
 	};
 
 	return {

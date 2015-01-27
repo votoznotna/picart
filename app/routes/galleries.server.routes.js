@@ -7,13 +7,19 @@
  * Module dependencies.
  */
 var users = require('../../app/controllers/users.server.controller'),
+    multipart = require('connect-multiparty'),
     galleries = require('../../app/controllers/galleries.server.controller');
+
+var multipartMiddleware = multipart();
 
 module.exports = function(app) {
     // Article Routes
     app.route('/galleries')
         .get(galleries.list)
         .post(users.requiresLogin, galleries.create);
+
+    app.route('/upload')
+        .post(users.requiresLogin, multipartMiddleware, galleries.createGallery);
 
     app.route('/galleries/:galleryId')
         .get(galleries.read)

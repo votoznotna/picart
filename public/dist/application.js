@@ -4,15 +4,23 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'picart';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'grecaptcha'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
 		// Create angular module
-		angular.module(moduleName, dependencies || []);
+		angular.module(moduleName, dependencies || [])
+				.config(["grecaptchaProvider", function(grecaptchaProvider) {
+					grecaptchaProvider.setParameters({
+						sitekey: '6LfiZ_4SAAAAAMHL8MQrCLHVC1TeWqU-Bv-iPWHr',
+						theme: 'light'
+					});
+				}]);
 
 		// Add the module to the AngularJS configuration file
 		angular.module(applicationModuleName).requires.push(moduleName);
+
+
 	};
 
 	return {
@@ -21,6 +29,7 @@ var ApplicationConfiguration = (function() {
 		registerModule: registerModule
 	};
 })();
+
 'use strict';
 
 //Start by defining the main module and adding the module dependencies
@@ -45,10 +54,26 @@ angular.element(document).ready(function() {
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('articles');
+/**
+ * Created by User on 1/22/2015.
+ */
+'use strict';
+
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('common');
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');
+/**
+ * Created by User on 1/19/2015.
+ */
+'use strict';
+
+// Use Applicaion configuration module to register a new module
+ApplicationConfiguration.registerModule('galleries',['common', 'imageupload']);
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
@@ -59,11 +84,12 @@ ApplicationConfiguration.registerModule('users');
 angular.module('articles').run(['Menus',
 	function(Menus) {
 		// Set top bar menu items
-		Menus.addMenuItem('topbar', 'Articles', 'articles', 'dropdown', '/articles(/create)?');
-		Menus.addSubMenuItem('topbar', 'articles', 'List Articles', 'articles');
-		Menus.addSubMenuItem('topbar', 'articles', 'New Article', 'articles/create');
+		//Menus.addMenuItem('topbar', 'Articles', 'articles', 'dropdown', '/articles(/create)?', true);
+		//Menus.addSubMenuItem('topbar', 'articles', 'List Articles', 'articles', null, true);
+		//Menus.addSubMenuItem('topbar', 'articles', 'Post Article', 'articles/create', null, false);
 	}
 ]);
+
 'use strict';
 
 // Setting up route
@@ -161,6 +187,222 @@ angular.module('articles').factory('Articles', ['$resource',
 		});
 	}
 ]);
+/**
+ * Created by User on 1/24/2015.
+ */
+angular.module('common').directive('fileRequired',function(){
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link:function(scope, el, attrs, ngModel){
+            el.bind('change',function(){
+                scope.$apply(function(){
+                    ngModel.$setViewValue(el.val());
+                    ngModel.$render();
+                });
+            });
+        }
+    }
+});
+
+/**
+ * Created by User on 1/22/2015.
+ */
+
+angular.module('common').directive('showErrors', ["$timeout", function ($timeout) {
+
+    return {
+        restrict: 'A',
+        require: '^form',
+        link: function (scope, el, attrs, formCtrl) {
+
+            // find the text box element, which has the 'name' attribute
+            var inputEl = el[0].querySelector("[name]");
+
+            // convert the native text box element to an angular element
+            var inputNgEl = angular.element(inputEl);
+
+            // get the name on the text box so we know the property to check
+            // on the form controller
+            var inputName = inputNgEl.attr('name');
+
+            // only apply the has-error class after the user leaves the text box
+            inputNgEl.bind('blur', function () {
+                el.toggleClass('has-error', formCtrl[inputName].$invalid);
+            });
+
+            scope.$on('show-errors-event', function () {
+                el.toggleClass('has-error', formCtrl[inputName].$invalid);
+            });
+
+            scope.$on('hide-errors-event', function () {
+                $timeout(function () {
+                    el.removeClass('has-error');
+                }, 0, false);
+            });
+        }
+    }
+
+}]);
+
+/**
+ * Created by User on 1/24/2015.
+ */
+angular.module('common').directive('uniqueName', ["mongolab", function(mongolab) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attrs, ctrl) {
+
+            var mongoDbCollection = attrs["mongoCollection"];
+            var mongoDbName = window.dbName;
+
+            var getByNameSuccessHandler = function (response) {
+                if(response.data && response.data.length > 0) {
+                    ctrl.$setValidity('uniqueName', false);
+                }
+                else{
+                    ctrl.$setValidity('uniqueName', true);
+                }
+            };
+
+            var getByNameErrorHandler = function () {
+                ctrl.$setValidity('uniqueName', true);
+            };
+
+            ctrl.$parsers.unshift(function (viewValue) {
+                // do nothing unless we match a valid name
+                if ((viewValue !== null) && (viewValue !== undefined) && (viewValue !== '')) {
+                    mongolab.query(mongoDbName, mongoDbCollection, {q: {Name: viewValue}})
+                        .then(getByNameSuccessHandler, getByNameErrorHandler);
+                }
+
+                return viewValue;
+            });
+        }
+    };
+}]);
+
+/**
+ * Created by User on 1/24/2015.
+ */
+angular.module('common').factory('mongolab', ["$http", function ($http) {
+    var apiKey = '';
+    var baseUrl = 'https://api.mongolab.com/api/1/databases';
+
+    /**
+     * sets the mongolab.com api key to use for authenticaiton with service
+     * @param apikey - mongolab api key
+     */
+    var setApiKey = function (apikey) {
+        apiKey = apikey;
+    };
+
+    /**
+     * returns the current api key used for authentication with service
+     * @returns {string} - mongolab api key
+     */
+    var getApiKey = function () {
+        return apiKey;
+    };
+
+    /**
+     * sets the base url of the mongolab service
+     * @param uri - mongolab url
+     */
+    var setBaseUrl = function (uri) {
+        baseUrl = uri;
+    };
+
+    /**
+     * returns the current base url of the mongolab service
+     * @returns {string} - mongolab url
+     */
+    var getBaseUrl = function () {
+        return baseUrl;
+    };
+
+    /**
+     * performs a generic query against mongolab
+     * @param database - mongolab database
+     * @param collection - collection in database to query
+     * @param parameters - query parameters used for the query
+     * @returns {*} - a promise for the $http call
+     */
+    var query = function (database, collection, parameters) {
+        parameters = parameters || {};
+        parameters['apiKey'] = apiKey;
+        var uri = baseUrl + '/' + database + '/collections/' + collection;
+        return $http({method: "GET", url: uri, params: parameters, cache: false});
+    };
+
+    /**
+     * performs a query on a collection by object id
+     * @param database - mongolab database
+     * @param collection - collection in database to query
+     * @param id - id of the object to retrieve
+     * @param parameters - query parameters used for the query
+     * @returns {*} - a promise for the $http call
+     */
+    var queryById = function (database, collection, id, parameters) {
+        parameters = parameters || {};
+        parameters['apiKey'] = apiKey;
+        var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + id;
+        return $http({method: "GET", url: uri, params: parameters, cache: false});
+    };
+
+    /**
+     * create a new object in the given collection
+     * @param database - mongolab database
+     * @param collection - collection in database to create object in
+     * @param object - object to insert into collection
+     * @returns {*} - a promise for the $http call
+     */
+    var createObject = function (database, collection, object) {
+        var uri = baseUrl + '/' + database + '/collections/' + collection + '?apiKey=' + apiKey;
+        return $http({method: "POST", url: uri, data: angular.toJson(object), cache: false});
+    };
+
+    /**
+     * updates an object in the given collection
+     * @param database - mongolab database
+     * @param collection - collection in database to update object in
+     * @param object - object to update in collection
+     * @returns {*} - a promise for the $http call
+     */
+    var updateObject = function (database, collection, object) {
+        var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + object._id.$oid + '?apiKey=' + apiKey;
+        delete object._id;
+        return $http({method: "PUT", url: uri, data: angular.toJson(object), cache: false});
+    };
+
+    /**
+     * deletes an object in the given collection
+     * @param database - mongolab database
+     * @param collection - collection in database to delete object from
+     * @param object - object to delete in collection
+     * @returns {*} - a promise for the $http call
+     */
+    var deleteObject = function (database, collection, object) {
+        var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + object._id.$oid + '?apiKey=' + apiKey;
+        return $http({method: "DELETE", url: uri, cache: false});
+    };
+
+    var mongolab = {
+        setApiKey: setApiKey,
+        getApiKey: getApiKey,
+        setBaseUrl: setBaseUrl,
+        getBaseUrl: getBaseUrl,
+        query: query,
+        queryById: queryById,
+        create: createObject,
+        update: updateObject,
+        delete: deleteObject
+    };
+
+    return mongolab;
+}]);
+
 'use strict';
 
 // Setting up route
@@ -367,9 +609,208 @@ angular.module('core').service('Menus', [
 		};
 
 		//Adding the topbar menu
-		this.addMenu('topbar');
+		this.addMenu('topbar', true);
 	}
 ]);
+
+/**
+ * Created by User on 1/19/2015.
+ */
+'use strict';
+
+// Configuring the Articles module
+angular.module('galleries').run(['Menus',
+    function(Menus) {
+        // Set top bar menu items
+        Menus.addMenuItem('topbar', 'Galleries', 'galleries', null, null, true);
+        Menus.addMenuItem('topbar', 'New Gallery', 'galleries/create', null, null, false);
+        //Menus.addSubMenuItem('topbar', 'galleries', 'List of Galleries', 'galleries', null, true);
+        //Menus.addSubMenuItem('topbar', 'galleries', 'New Gallery', 'galleries/create', null, false);
+    }
+]);
+
+/**
+ * Created by User on 1/19/2015.
+ */
+'use strict';
+
+// Setting up route
+angular.module('galleries').config(['$stateProvider',
+    function($stateProvider) {
+        // Galleries state routing
+        $stateProvider.
+            state('listGalleries', {
+                url: '/galleries',
+                templateUrl: 'modules/galleries/views/list-galleries.client.view.html'
+            }).
+            state('createGallery', {
+                url: '/galleries/create',
+                templateUrl: 'modules/galleries/views/create-gallery.client.view.html'
+            }).
+            state('viewGallery', {
+                url: '/galleries/:galleryId',
+                templateUrl: 'modules/galleries/views/view-gallery.client.view.html'
+            }).
+            state('editGallery', {
+                url: '/galleries/:galleryId/edit',
+                templateUrl: 'modules/galleries/views/edit-gallery.client.view.html'
+            });
+    }
+]);
+
+/**
+ * Created by User on 1/19/2015.
+ */
+
+'use strict';
+
+angular.module('galleries').controller('GalleriesController', ['$scope', '$stateParams', '$location', '$http', '$window', 'Authentication', 'Galleries',
+    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries) {
+
+        $scope.master = {};
+
+        $scope.gallery = angular.copy($scope.master);
+
+        $scope.authentication = Authentication;
+
+        $scope.create = function() {
+
+            $scope.$broadcast('show-errors-event');
+
+            if ($scope.galleryForm.$invalid)
+                return;
+
+            var formData = new FormData();
+            formData.append('image', $scope.gallery.picture.file);
+            formData.append('title', $scope.gallery.title);
+            formData.append('content', $scope.gallery.content);
+
+
+            $http.post('upload', formData, {
+                headers: { 'Content-Type': undefined },
+                transformRequest: angular.identity
+            }).success(function(result) {
+                $location.path('galleries');
+                $scope.uploadedImgSrc = result.src;
+                $scope.sizeInBytes = result.size;
+            }).error(function(data, status, headers, config) {
+                $scope.hasFormError = true;
+                $scope.formErrors = status;
+            });
+
+
+/*            var gallery = new Galleries({
+                title: $scope.gallery.title,
+                content: $scope.gallery.content
+            });
+            gallery.$save(function(response) {
+                //$location.path('galleries/' + response._id);
+                $location.path('galleries');
+
+               // $window.history.back();
+            }, function(errorResponse) {
+                $scope.hasFormError = true;
+                $scope.formErrors = errorResponse.statusText;
+            });*/
+        };
+
+
+        $scope.remove = function(gallery) {
+            if (gallery) {
+                gallery.$remove();
+
+                for (var i in $scope.galleries) {
+                    if ($scope.galleries[i] === gallery) {
+                        $scope.galleries.splice(i, 1);
+                    }
+                }
+            } else {
+                $scope.gallery.$remove(function() {
+                    $location.path('galleries');
+                });
+            }
+        };
+
+        $scope.update = function() {
+
+            $scope.$broadcast('show-errors-event');
+
+            if ($scope.galleryForm.$invalid)
+                return;
+
+            var gallery = $scope.gallery;
+
+            gallery.$update(function() {
+                //$location.path('galleries/' + gallery._id);
+                $location.path('galleries');
+
+            }, function(errorResponse) {
+                $scope.hasFormError = true;
+                $scope.formErrors = errorResponse.statusText;
+               // $scope.error = errorResponse.data.message;
+            });
+        };
+
+        $scope.find = function() {
+            $scope.galleries = Galleries.query();
+        };
+
+        $scope.findOne = function() {
+            $scope.gallery = Galleries.get({
+                galleryId: $stateParams.galleryId
+            });
+        };
+
+        $scope.cancelForm = function () {
+           // $window.history.back();
+            $location.path('galleries');
+        };
+
+        $scope.resetForm = function () {
+            $scope.$broadcast('hide-errors-event');
+            $scope.galleryForm.$setPristine();
+            $scope.galleryForm.$setUntouched();
+            $scope.gallery = angular.copy($scope.master);
+        };
+
+        $scope.uploadPicture = function(image) {
+            var formData = new FormData();
+            formData.append('image', image, image.name);
+
+            $http.post('upload', formData, {
+                headers: { 'Content-Type': false },
+                transformRequest: angular.identity
+            }).success(function(result) {
+                $scope.uploadedImgSrc = result.src;
+                $scope.sizeInBytes = result.size;
+            });
+        };
+
+        $scope.clearPicture = function() {
+            $scope.gallery.picture  = null;
+            angular.element(document.querySelector('#picture')).val("");
+        };
+    }
+]);
+
+/**
+ * Created by User on 1/19/2015.
+ */
+'use strict';
+
+//Galleries service used for communicating with the galleries REST endpoints
+angular.module('galleries').factory('Galleries', ['$resource',
+    function($resource) {
+        return $resource('galleries/:galleryId', {
+            articleId: '@_id'
+        }, {
+            update: {
+                method: 'PUT'
+            }
+        });
+    }
+]);
+
 'use strict';
 
 // Config HTTP Error Handling
@@ -454,6 +895,10 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		// If user is signed in then redirect back home
 		if ($scope.authentication.user) $location.path('/');
 
+		$scope.href = function (href){
+			$location.path(href);
+		};
+
 		$scope.signup = function() {
 			$http.post('/auth/signup', $scope.credentials).success(function(response) {
 				// If successful we assign the response to the global user model
@@ -479,6 +924,7 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 		};
 	}
 ]);
+
 'use strict';
 
 angular.module('users').controller('PasswordController', ['$scope', '$stateParams', '$http', '$location', 'Authentication',

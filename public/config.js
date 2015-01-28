@@ -12,7 +12,7 @@ var ApplicationConfiguration = (function() {
 		angular.module(moduleName, dependencies || [])
 				.config(function(grecaptchaProvider) {
 					grecaptchaProvider.setParameters({
-						sitekey: '6LfiZ_4SAAAAAMHL8MQrCLHVC1TeWqU-Bv-iPWHr',
+						sitekey: window.recaptchaSiteKey,
 						theme: 'light'
 					});
 				});

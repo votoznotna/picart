@@ -19,12 +19,12 @@ module.exports = function(app) {
         .post(users.requiresLogin, galleries.create);
 
     app.route('/upload')
-        .post(users.requiresLogin, multipartMiddleware, galleries.createGallery);
+        .post(users.requiresLogin, galleries.hasValidCaptcha, multipartMiddleware, galleries.createGallery);
 
     app.route('/galleries/:galleryId')
         .get(galleries.read)
-        .put(users.requiresLogin, galleries.hasAuthorization, galleries.update)
-        .delete(users.requiresLogin, galleries.hasAuthorization, galleries.delete);
+        .put(users.requiresLogin, galleries.hasAuthorization, galleries.hasValidCaptcha, galleries.update)
+        .delete(users.requiresLogin, galleries.hasAuthorization,  galleries.hasValidCaptcha, galleries.delete);
 
     // Finish by binding the article middleware
     app.param('galleryId', galleries.galleryByID);

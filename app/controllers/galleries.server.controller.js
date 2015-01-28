@@ -11,8 +11,13 @@ var mongoose = require('mongoose'),
     fs = require('fs'),
     path = require('path'),
     errorHandler = require('./errors.server.controller'),
+    Recaptcha = require('recaptcha').Recaptcha,
+    config = require('../../config/config'),
     Gallery = mongoose.model('Gallery'),
     _ = require('lodash');
+
+var PUBLIC_KEY  = config.recaptcha.siteKey,
+    PRIVATE_KEY = config.recaptcha.secretKey;
 
 /**
  * Create a galery
@@ -31,6 +36,26 @@ exports.create = function(req, res) {
         }
     });
 };
+
+exports.hasValidCaptcha = function(req, res, next){
+
+    var data = {
+        remoteip:  req.connection.remoteAddress,
+        challenge: req.body.recaptcha_challenge_field,
+        response:  req.body.recaptcha_response_field
+    };
+    var recaptcha = new Recaptcha(PUBLIC_KEY, PRIVATE_KEY, data);
+
+    recaptcha.verify(function(success, error_code) {
+        if (!success) {
+            return res.status(403).send({
+                message: 'Invalid captcha: ' + recaptcha.toHTML()
+            });
+        }
+        next();
+    });
+
+}
 
 exports.createGallery = function(req, res) {
 

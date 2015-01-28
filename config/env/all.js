@@ -6,6 +6,11 @@ module.exports = {
 		description: 'Full-Stack JavaScript with MongoDB, Express, AngularJS, and Node.js',
 		keywords: 'MongoDB, Express, AngularJS, Node.js'
 	},
+	recaptcha: {
+		siteKey: "6LcoKAETAAAAAKwFYgZv-n6wF1ypYUwT2LTVo2QK",
+		secretKey: "6LcoKAETAAAAAF1dMHwGPQ5s9pmPeRdUQBfcPILn"
+	},
+
 	port: process.env.PORT || 3000,
 	templateEngine: 'swig',
 	sessionSecret: 'MEAN',

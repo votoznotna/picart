@@ -109,7 +109,7 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
         $scope.resetForm = function () {
             $scope.$broadcast('hide-errors-event');
             $scope.galleryForm.$setPristine();
-            //$scope.galleryForm.$setUntouched();
+            $scope.galleryForm.$setUntouched();
             $scope.gallery = angular.copy($scope.master);
         };
 

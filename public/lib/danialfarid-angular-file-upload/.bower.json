@@ -1,0 +1,14 @@
+{
+  "name": "danialfarid-angular-file-upload",
+  "homepage": "https://github.com/danialfarid/angular-file-upload",
+  "version": "2.1.2",
+  "_release": "2.1.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.1.2",
+    "commit": "5236cdc28fcd483a2664ba9d19521670130c5850"
+  },
+  "_source": "git://github.com/danialfarid/angular-file-upload.git",
+  "_target": "~2.1.1",
+  "_originalSource": "danialfarid-angular-file-upload"
+}

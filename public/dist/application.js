@@ -695,7 +695,8 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
                 $scope.sizeInBytes = result.size;
             }).error(function(data, status, headers, config) {
                 $scope.hasFormError = true;
-                $scope.formErrors = status;
+                $scope.formErrors = status || data ? data.message : "Unknown error";
+                //$scope.error = data.message;
             });
 
 
@@ -747,7 +748,7 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
             }, function(errorResponse) {
                 $scope.hasFormError = true;
                 $scope.formErrors = errorResponse.statusText;
-               // $scope.error = errorResponse.data.message;
+                //$scope.error = errorResponse.data.message;
             });
         };
 

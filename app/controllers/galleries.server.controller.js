@@ -49,7 +49,7 @@ exports.hasValidCaptcha = function(req, res, next){
     recaptcha.verify(function(success, error_code) {
         if (!success) {
             return res.status(403).send({
-                message: 'Invalid captcha: ' + recaptcha.toHTML()
+                message: 'Invalid CAPTCHA'
             });
         }
         next();

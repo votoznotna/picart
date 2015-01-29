@@ -4,23 +4,15 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'picart';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'grecaptcha'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'ngBlockui', 'grecaptcha'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
 		// Create angular module
-		angular.module(moduleName, dependencies || [])
-				.config(["grecaptchaProvider", function(grecaptchaProvider) {
-					grecaptchaProvider.setParameters({
-						sitekey: window.recaptchaSiteKey,
-						theme: 'light'
-					});
-				}]);
+		angular.module(moduleName, dependencies || []);
 
 		// Add the module to the AngularJS configuration file
 		angular.module(applicationModuleName).requires.push(moduleName);
-
-
 	};
 
 	return {
@@ -36,11 +28,29 @@ var ApplicationConfiguration = (function() {
 angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfiguration.applicationModuleVendorDependencies);
 
 // Setting HTML5 Location Mode
-angular.module(ApplicationConfiguration.applicationModuleName).config(['$locationProvider',
-	function($locationProvider) {
-		$locationProvider.hashPrefix('!');
-	}
-]);
+angular.module(ApplicationConfiguration.applicationModuleName)
+	.config(['$locationProvider',
+		function($locationProvider) {
+			$locationProvider.hashPrefix('!');
+		}
+	])
+	.config(["blockUIConfig", function(blockUIConfig) {
+		//blockUIConfig.templateUrl = 'block-ui-overlay.html';
+		//blockUIConfig.template = '<div class="progress"></div>';
+		// Change the default overlay message
+		//blockUIConfig.message = '';
+
+	}])
+	.config(["grecaptchaProvider", function(grecaptchaProvider) {
+		grecaptchaProvider.setParameters({
+			sitekey : window.recaptchaSiteKey,
+			theme: 'light'
+		})
+	}])
+	.run(["$templateCache", function($templateCache) {
+		$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
+	}]);
+
 
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
@@ -50,6 +60,7 @@ angular.element(document).ready(function() {
 	//Then init the app
 	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
 });
+
 'use strict';
 
 // Use Applicaion configuration module to register a new module
@@ -664,8 +675,9 @@ angular.module('galleries').config(['$stateProvider',
 
 'use strict';
 
-angular.module('galleries').controller('GalleriesController', ['$scope', '$stateParams', '$location', '$http', '$window', 'Authentication', 'Galleries',
-    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries) {
+angular.module('galleries').controller('GalleriesController',
+    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'blockUI',
+    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, blockUI) {
 
         $scope.master = {};
 
@@ -687,12 +699,13 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
             formData.append('title', $scope.gallery.title);
             formData.append('content', $scope.gallery.content);
             formData.append('recaptcha', $scope.recaptcha);
+            formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
 
             $http.post('upload', formData, {
                 headers: { 'Content-Type': undefined },
                 transformRequest: angular.identity
             }).success(function(result) {
-                $location.path('galleries');
+                 $location.path('galleries');
                 $scope.uploadedImgSrc = result.src;
                 $scope.sizeInBytes = result.size;
             }).error(function(data, status, headers, config) {

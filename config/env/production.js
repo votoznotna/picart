@@ -7,8 +7,8 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.min.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
-				'public/lib/angular-block-ui/dist/angular-block-ui.min.css'
+				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css'
+				//'public/lib/angular-block-ui/dist/angular-block-ui.min.css'
 			],
 			js: [
 				'public/lib/angular/angular.js',

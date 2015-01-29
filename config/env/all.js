@@ -19,7 +19,7 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+				'public/lib/bootstrap/dist/css/bootstrap-theme.css'
 				//'public/lib/angular-block-ui/dist/angular-block-ui.css'
 			],
 			js: [

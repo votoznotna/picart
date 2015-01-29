@@ -8,7 +8,8 @@
  */
 var users = require('../../app/controllers/users.server.controller'),
     multipart = require('connect-multiparty'),
-    galleries = require('../../app/controllers/galleries.server.controller');
+    galleries =  require('../../app/controllers/galleries.server.controller'),
+    core = require('../../app/controllers/core.server.controller');
 
 var multipartMiddleware = multipart();
 
@@ -19,12 +20,12 @@ module.exports = function(app) {
         .post(users.requiresLogin, galleries.create);
 
     app.route('/upload')
-        .post(users.requiresLogin, galleries.hasValidCaptcha, multipartMiddleware, galleries.createGallery);
+        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, galleries.createGallery);
 
     app.route('/galleries/:galleryId')
         .get(galleries.read)
-        .put(users.requiresLogin, galleries.hasAuthorization, galleries.hasValidCaptcha, galleries.update)
-        .delete(users.requiresLogin, galleries.hasAuthorization,  galleries.hasValidCaptcha, galleries.delete);
+        .put(users.requiresLogin, galleries.hasAuthorization, galleries.update)
+        .delete(users.requiresLogin, galleries.hasAuthorization, galleries.delete);
 
     // Finish by binding the article middleware
     app.param('galleryId', galleries.galleryByID);

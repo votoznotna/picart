@@ -669,6 +669,8 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
 
         $scope.master = {};
 
+        $scope.recaptcha = null;
+
         $scope.gallery = angular.copy($scope.master);
 
         $scope.authentication = Authentication;
@@ -684,7 +686,7 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
             formData.append('image', $scope.gallery.picture.file);
             formData.append('title', $scope.gallery.title);
             formData.append('content', $scope.gallery.content);
-
+            formData.append('recaptcha', $scope.recaptcha);
 
             $http.post('upload', formData, {
                 headers: { 'Content-Type': undefined },
@@ -769,9 +771,12 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
 
         $scope.resetForm = function () {
             $scope.$broadcast('hide-errors-event');
+            $scope.clearPicture();
+            $scope.gallery = angular.copy($scope.master);
+            $scope.hasFormError = false;
+            $scope.formErrors = null;
             $scope.galleryForm.$setPristine();
             $scope.galleryForm.$setUntouched();
-            $scope.gallery = angular.copy($scope.master);
         };
 
         $scope.clearPicture = function() {

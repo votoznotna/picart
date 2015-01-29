@@ -1,7 +1,22 @@
+.content {
+	margin-top: 50px;
+}
+.undecorated-link:hover {
+	text-decoration: none;
+}
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	display: none !important;
+}
+.ng-invalid.ng-dirty {
+	border-color: #FA787E;
+}
+.ng-valid.ng-dirty {
+	border-color: #78FA89;
+}
+
 body {
 	background-color: #c6d9f1;
 	background: url("/modules/core/img/brand/bridge.jpg") no-repeat center center fixed;
-
 	background-size: cover;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
@@ -26,23 +41,6 @@ footer .box p {
 	font-size: 0.8em;
 	padding: 5px 0;
 	border-top: 1px solid #d7e0e2;
-}
-
-
-.content {
-	margin-top: 50px;
-}
-.undecorated-link:hover {
-	text-decoration: none;
-}
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-	display: none !important;
-}
-.ng-invalid.ng-dirty {
-	border-color: #FA787E;
-}
-.ng-valid.ng-dirty {
-	border-color: #78FA89;
 }
 
 .welcome {
@@ -95,11 +93,8 @@ footer .box p {
 
 .progress {
 	background: url("/modules/core/img/loaders/loader.gif") no-repeat center center fixed;
-
 	width: 128px;
 	height: 128px;
-
-
 }
 
 

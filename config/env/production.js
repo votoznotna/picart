@@ -8,7 +8,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.min.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
-				'public/lib/angular-block-ui/dist/angular-block-ui.min.css'
+				'public/lib/ng-blockUI/css/blockui.css'
 			],
 			js: [
 				'public/lib/angular/angular.js',
@@ -22,7 +22,7 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
 				'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
 				'public/lib/angular-grecaptcha/grecaptcha-min.js',
-				'public/lib/angular-block-ui/dist/angular-block-ui.min.js'
+				'public/lib/ng-blockUI/js/ngBlockui.js'
 			]
 		},
 		css: 'public/dist/application.min.css',

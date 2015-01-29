@@ -29,17 +29,15 @@ exports.hasValidCaptcha = function(req, res, next){
 	data['secret'] = PRIVATE_KEY;
 	data['response'] = req.body.recaptcha;
 	data['remoteip'] = req.connection.remoteAddress;
+
+	console.log('RemoteIP: ' + data['remoteip']);
 	var data_str = querystring.stringify(data);
 
 	var req_options = {
 		host: API_HOST,
-		path: API_END_POINT,
+		path: API_END_POINT + "?" + data_str,
 		port: 443,
-		method: 'GET',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Content-Length': data_str.length
-		}
+		method: 'GET'
 	};
 
 
@@ -59,14 +57,14 @@ exports.hasValidCaptcha = function(req, res, next){
 		});
 
 		response.on('end', function() {
-			var success, error, parts;
+			var ret, success, error, parts;
+			ret = JSON.parse(body)
+			//parts = _.without(body.split('\n'), '');
+			//success = parts[0];
+			//error = parts[parts.length - 1].replace(/^\s+|\s+$/gm,'').replace(/<[^>]+>/ig,'');
 
-			parts = _.without(body.split('\n'), '');
-			success = parts[0];
-			error = parts[parts.length - 1].replace(/^\s+|\s+$/gm,'').replace(/<[^>]+>/ig,'');
-
-			if (success !== 'true') {
-				errorMsg = 'Invalid CAPTCHA: ' + error;
+			if (ret.success !== true) {
+				errorMsg = 'Invalid CAPTCHA';// + error;
 				console.log(errorMsg);
 				return res.status(403).send({
 					message: errorMsg
@@ -79,7 +77,6 @@ exports.hasValidCaptcha = function(req, res, next){
 		});
 	});
 
-	request.write(data_str, 'utf8');
 	request.end();
 
 }

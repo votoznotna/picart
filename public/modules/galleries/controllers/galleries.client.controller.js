@@ -4,8 +4,9 @@
 
 'use strict';
 
-angular.module('galleries').controller('GalleriesController', ['$scope', '$stateParams', '$location', '$http', '$window', 'Authentication', 'Galleries',
-    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries) {
+angular.module('galleries').controller('GalleriesController',
+    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'blockUI',
+    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, blockUI) {
 
         $scope.master = {};
 
@@ -27,12 +28,13 @@ angular.module('galleries').controller('GalleriesController', ['$scope', '$state
             formData.append('title', $scope.gallery.title);
             formData.append('content', $scope.gallery.content);
             formData.append('recaptcha', $scope.recaptcha);
+            formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
 
             $http.post('upload', formData, {
                 headers: { 'Content-Type': undefined },
                 transformRequest: angular.identity
             }).success(function(result) {
-                $location.path('galleries');
+                 $location.path('galleries');
                 $scope.uploadedImgSrc = result.src;
                 $scope.sizeInBytes = result.size;
             }).error(function(data, status, headers, config) {

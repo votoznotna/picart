@@ -46,20 +46,6 @@ angular.module('galleries').controller('GalleriesController',
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
 
-
-/*            var gallery = new Galleries({
-                title: $scope.gallery.title,
-                content: $scope.gallery.content
-            });
-            gallery.$save(function(response) {
-                //$location.path('galleries/' + response._id);
-                $location.path('galleries');
-
-               // $window.history.back();
-            }, function(errorResponse) {
-                $scope.hasFormError = true;
-                $scope.formErrors = errorResponse.statusText;
-            });*/
         };
 
 

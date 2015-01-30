@@ -12,6 +12,7 @@ var mongoose = require('mongoose'),
     path = require('path'),
     errorHandler = require('./errors.server.controller'),
     core = require('./core.server.controller'),
+    config = require('../../config/config'),
     Gallery = mongoose.model('Gallery'),
     _ = require('lodash');
 
@@ -57,8 +58,8 @@ exports.createGallery = function(req, res) {
 
             } else {
 
-                var picFullSize = path.join(__dirname, '../pictures/fullsize', imageName);
-                var picThumbs = path.join(__dirname, '../pictures/thumbs', imageName);
+                var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
+                var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
 
                 /// write file to uploads/fullsize folder
                 fs.writeFile(picFullSize, data, function (err) {

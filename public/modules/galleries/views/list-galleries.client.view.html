@@ -1,10 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<section class="container" data-ng-controller="ArticlesController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Galleries</h1>
+    </div>
+    <div class="row">
+        <ul class="thumbnails">
+            <li data-ng-repeat="gallery in galleries" class="span3">
+                <div class='gallery-title'>
+                    <a ng-show="authentication.user._id == gallery.user._id" href="{{gallery.path}}" data-ng-href="#!/galleries/{{gallery._id}}" >{{gallery.title}}</a>
+                    <span ng-show="authentication.user._id != gallery.user._id" data-ng-bind="gallery.title"></span>
+                </div>
+                <a class="thumbnail" href="{{gallery.picture}}" target="_blank"><img src="{{gallery.picture}}" class="img-circle"  /></a>
+            </li>
+        </ul>
+    </div>
 
-</body>
-</html>
+</section>
+

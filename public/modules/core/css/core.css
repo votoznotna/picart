@@ -14,6 +14,16 @@
 	border-color: #78FA89;
 }
 
+
+.bg-img{
+	opacity: 0;
+	transition(opacity 3s ease-in-out);
+}
+
+.bg-loaded {
+	 opacity: 1;
+ }
+
 body {
 	background-color: #c6d9f1;
 	background: url("/modules/core/img/brand/bridge.jpg") no-repeat center center fixed;

@@ -42,7 +42,7 @@
 	<![endif]-->
 </head>
 
-<body class="ng-cloak">
+<body class="ng-cloak bg-img">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
 	<section id="main" class="content" style="margin-bottom: 25px">
 		<wait-spinner></wait-spinner>
@@ -65,10 +65,22 @@
 	<!--Application JavaScript Files-->
 	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %} 
 
-	{% if process.env.NODE_ENV === 'development' %}
-	<!--Livereload script rendered -->
+<!--	{% if process.env.NODE_ENV === 'development' %}
+	&lt;!&ndash;Livereload script rendered &ndash;&gt;
 	<script type="text/javascript" src="http://{{request.hostname}}:35729/livereload.js"></script>
-	{% endif %}
+	{% endif %}-->
+
+	<script type="text/javascript">
+		$(function(){
+			$('.bg-img').bgLoaded({
+				afterLoaded: function () {
+					this.addClass('bg-loaded');
+				}
+			});
+		});
+
+	</script>
+
 </body>
 
 </html>

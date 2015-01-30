@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'picart';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'blockUI', 'grecaptcha'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'grecaptcha'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
@@ -34,22 +34,22 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			$locationProvider.hashPrefix('!');
 		}
 	])
-	.config(["blockUIConfig", function(blockUIConfig) {
+/*	.config(function(blockUIConfig) {
 		//blockUIConfig.templateUrl = 'block-ui-overlay.html';
 		//blockUIConfig.template = '<div class="progress"></div>';
-		// Change the default overlay message
+		//Change the default overlay message
 		//blockUIConfig.message = '';
 
-	}])
+	})*/
 	.config(["grecaptchaProvider", function(grecaptchaProvider) {
 		grecaptchaProvider.setParameters({
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
-	}])
-	.run(["$templateCache", function($templateCache) {
-		$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
 	}]);
+	//.run(function($templateCache) {
+	//	$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
+	//});
 
 
 //Then define the init function for starting up the application
@@ -293,6 +293,109 @@ angular.module('common').directive('uniqueName', ["mongolab", function(mongolab)
         }
     };
 }]);
+
+/**
+ * Created by User on 1/29/2015.
+ */
+angular.module('common').directive('waitSpinner', ["messaging", "events", function(messaging, events) {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: 'modules/common/directives/waitSpinner.html',
+        link: function(scope, element, attrs, fn) {
+            element.hide();
+
+            var startRequestHandler = function () {
+                // got the request start notification, show the element
+                element.show();
+                angular.element('#main').css('opacity', '0.5');
+            };
+
+            var endRequestHandler = function() {
+                // got the request start notification, show the element
+                element.hide();
+                angular.element('#main').css('opacity', '1.0');
+            };
+
+            scope.startHandle = messaging.subscribe(events.message._SERVER_REQUEST_STARTED_, startRequestHandler);
+            scope.endHandle = messaging.subscribe(events.message._SERVER_REQUEST_ENDED_, endRequestHandler);
+
+            scope.$on('$destroy', function() {
+                messaging.unsubscribe(scope.startHandle);
+                messaging.unsubscribe(scope.endHandle);
+            });
+        }
+    };
+}]);
+
+/**
+ * Created by User on 1/29/2015.
+ */
+angular.module('common').constant('events', {
+    message: {
+        _ADD_ERROR_MESSAGE_: '_ADD_ERROR_MESSAGE_',
+        _CLEAR_ERROR_MESSAGES_: '_CLEAR_ERROR_MESSAGES_',
+        _ERROR_MESSAGES_UPDATED_: '_ERROR_MESSAGES_UPDATED_',
+        _ADD_USER_MESSAGE_: '_ADD_USER_MESSAGE_',
+        _CLEAR_USER_MESSAGES_: '_CLEAR_USER_MESSAGES_',
+        _USER_MESSAGES_UPDATED_: '_USER_MESSAGES_UPDATED_',
+        _SERVER_REQUEST_STARTED_: '_SERVER_REQUEST_STARTED_',
+        _SERVER_REQUEST_ENDED_: '_SERVER_REQUEST_ENDED_',
+        _LOG_TRACE_: '_LOG_TRACE_',
+        _LOG_DEBUG_: '_LOG_DEBUG_',
+        _LOG_INFO_: '_LOG_INFO_',
+        _LOG_WARNING_: '_LOG_WARNING_',
+        _LOG_ERROR_: '_LOG_ERROR_',
+        _LOG_FATAL_: '_LOG_FATAL_'
+    }
+});
+
+/**
+ * Created by User on 1/29/2015.
+ */
+angular.module('common').factory('messaging', function () {
+    //#region Internal Methods
+    var cache = {};
+
+    var subscribe = function (topic, callback) {
+        if (!cache[topic]) {
+            cache[topic] = [];
+        }
+        cache[topic].push(callback);
+        return [topic, callback];
+    };
+
+    var publish = function (topic, args) {
+        if (cache[topic]) {
+            angular.forEach(cache[topic], function (callback) {
+                callback.apply(null, args || []);
+            });
+        }
+    };
+
+    var unsubscribe = function (handle) {
+        var t = handle[0];
+        if (cache[t]) {
+            for(var x = 0; x < cache[t].length; x++)
+            {
+                if (cache[t][x] === handle[1]) {
+                    cache[t].splice(x, 1);
+                }
+            }
+        }
+    };
+
+    //#endregion
+
+    // Define the functions and properties to reveal.
+    var service = {
+        publish: publish,
+        subscribe: subscribe,
+        unsubscribe: unsubscribe
+    };
+
+    return service;
+});
 
 /**
  * Created by User on 1/24/2015.
@@ -676,8 +779,8 @@ angular.module('galleries').config(['$stateProvider',
 'use strict';
 
 angular.module('galleries').controller('GalleriesController',
-    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'blockUI',
-    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, blockUI) {
+    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'messaging', 'events',
+    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, messaging, events) {
 
         $scope.master = {};
 
@@ -699,20 +802,23 @@ angular.module('galleries').controller('GalleriesController',
             formData.append('title', $scope.gallery.title);
             formData.append('content', $scope.gallery.content);
             formData.append('recaptcha', $scope.recaptcha);
-            formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
+            //formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
+
+            messaging.publish(events.message._SERVER_REQUEST_STARTED_);
 
             $http.post('upload', formData, {
                 headers: { 'Content-Type': undefined },
                 transformRequest: angular.identity
-            }).success(function(result) {
-                 $location.path('galleries');
-                $scope.uploadedImgSrc = result.src;
-                $scope.sizeInBytes = result.size;
-            }).error(function(data, status, headers, config) {
-                $scope.hasFormError = true;
-                $scope.formErrors = status || data ? data.message : "Unknown error";
-                //$scope.error = data.message;
-            });
+            }).then(
+                function(result) {
+                    $location.path('galleries');
+                },
+                function(result) {
+                    $scope.hasFormError = true;
+                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                }).finally(function(){
+                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                });
 
 
 /*            var gallery = new Galleries({
@@ -816,6 +922,32 @@ angular.module('galleries').factory('Galleries', ['$resource',
         });
     }
 ]);
+
+
+angular.module('galleries').factory('GalleryService', ['$http', '$q'],
+    function albumService($http, $q) {
+        // interface
+        var service = {
+            albums: [],
+            getAlbums: getAlbums
+        };
+        return service;
+
+        // implementation
+        function getAlbums() {
+            var def = $q.defer();
+
+            $http.get("./albums.ms")
+                .success(function(data) {
+                    service.albums = data;
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject("Failed to get albums");
+                });
+            return def.promise;
+        }
+    });
 
 'use strict';
 

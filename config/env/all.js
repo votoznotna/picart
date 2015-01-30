@@ -23,6 +23,7 @@ module.exports = {
 				//'public/lib/angular-block-ui/dist/angular-block-ui.css'
 			],
 			js: [
+				'public/lib/jquery/dist/jquery.js',
 				'public/lib/angular/angular.js',
 				'public/lib/angular-resource/angular-resource.js', 
 				'public/lib/angular-cookies/angular-cookies.js', 
@@ -33,8 +34,8 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
-				'public/lib/angular-grecaptcha/grecaptcha.js',
-				'public/lib/angular-block-ui/dist/angular-block-ui.js'
+				'public/lib/angular-grecaptcha/grecaptcha.js'
+				//'public/lib/angular-block-ui/dist/angular-block-ui.js'
 			]
 		},
 		css: [

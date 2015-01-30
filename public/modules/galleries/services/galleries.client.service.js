@@ -15,3 +15,29 @@ angular.module('galleries').factory('Galleries', ['$resource',
         });
     }
 ]);
+
+
+angular.module('galleries').factory('GalleryService', ['$http', '$q'],
+    function albumService($http, $q) {
+        // interface
+        var service = {
+            albums: [],
+            getAlbums: getAlbums
+        };
+        return service;
+
+        // implementation
+        function getAlbums() {
+            var def = $q.defer();
+
+            $http.get("./albums.ms")
+                .success(function(data) {
+                    service.albums = data;
+                    def.resolve(data);
+                })
+                .error(function() {
+                    def.reject("Failed to get albums");
+                });
+            return def.promise;
+        }
+    });

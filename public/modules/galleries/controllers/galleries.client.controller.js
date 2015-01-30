@@ -5,8 +5,8 @@
 'use strict';
 
 angular.module('galleries').controller('GalleriesController',
-    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'blockUI',
-    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, blockUI) {
+    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'messaging', 'events',
+    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, messaging, events) {
 
         $scope.master = {};
 
@@ -28,20 +28,23 @@ angular.module('galleries').controller('GalleriesController',
             formData.append('title', $scope.gallery.title);
             formData.append('content', $scope.gallery.content);
             formData.append('recaptcha', $scope.recaptcha);
-            formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
+            //formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
+
+            messaging.publish(events.message._SERVER_REQUEST_STARTED_);
 
             $http.post('upload', formData, {
                 headers: { 'Content-Type': undefined },
                 transformRequest: angular.identity
-            }).success(function(result) {
-                 $location.path('galleries');
-                $scope.uploadedImgSrc = result.src;
-                $scope.sizeInBytes = result.size;
-            }).error(function(data, status, headers, config) {
-                $scope.hasFormError = true;
-                $scope.formErrors = status || data ? data.message : "Unknown error";
-                //$scope.error = data.message;
-            });
+            }).then(
+                function(result) {
+                    $location.path('galleries');
+                },
+                function(result) {
+                    $scope.hasFormError = true;
+                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                }).finally(function(){
+                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                });
 
 
 /*            var gallery = new Galleries({

@@ -10,22 +10,22 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			$locationProvider.hashPrefix('!');
 		}
 	])
-	.config(function(blockUIConfig) {
+/*	.config(function(blockUIConfig) {
 		//blockUIConfig.templateUrl = 'block-ui-overlay.html';
 		//blockUIConfig.template = '<div class="progress"></div>';
-		// Change the default overlay message
+		//Change the default overlay message
 		//blockUIConfig.message = '';
 
-	})
+	})*/
 	.config(function(grecaptchaProvider) {
 		grecaptchaProvider.setParameters({
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
-	})
-	.run(function($templateCache) {
-		$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
 	});
+	//.run(function($templateCache) {
+	//	$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
+	//});
 
 
 //Then define the init function for starting up the application

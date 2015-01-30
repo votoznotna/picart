@@ -4,29 +4,52 @@
     </div>
     <div class="col-md-12">
 
-       <form name="galleryForm" class="form-horizontal" novalidate>
+        <form name="galleryForm" class="form-horizontal" novalidate>
 
             <fieldset>
                 <div class="form-group" show-errors>
                     <label for="title" class="col-sm-3 control-label">Title</label>
                     <div class="col-sm-9">
                         <input type="text" id="title" name="title" class="form-control"
-                               ng-model="gallery.title" ng-required="true" />
+                               ng-model="gallery.title" ng-required="true"/>
                             <span class="help-block"
                                   ng-if="galleryForm.title.$error.required">Gallery Title is required</span>
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" show-errors>
                     <label for="picture"  class="col-sm-3 control-label">Image</label>
 
                     <div class="col-sm-9">
-                        <div id="picture" name="picture"  ng-file-select ng-model="myFiles"  ng-file-change="fileSelected($files, $event)"
-                            ng-multiple="true|false" accept="image/*,*.pdf,*.xml" ng-required="true" resetOnClick="true|false">Upload
+                        <div class="col-sm-12" style="padding-left: 0">
+                            <div class="col-sm-6" style="padding-left: 0; margin-bottom: 5px;" >
+                                <input id="picture"
+                                       name="picture"
+                                       type="file"
+                                       ng-model="gallery.picture"
+                                       accept="image/*"
+                                       image="gallery.picture"
+                                       resize-max-height="100"
+                                       resize-max-width="300"
+                                       resize-quality="0.7"
+                                       class="btn btn-default"
+                                       style="width: 100%"
+                                       ng-required="true"
+                                       file-required />
+                            </div>
+                            <div style="white-space: nowrap;  margin-bottom: 5px;">
+                                <!--<button type="submit" ng-click="uploadPicture(gallery.picture)" class="btn btn-default" disabled >Add</button>-->
+                                <button type="button" ng-click="clearPicture()" class="btn btn-default" style="margin-left: 10px">Clear</button>
+                            </div>
+                        </div>
+                        <div class="col-sm-12" style="padding-left: 0;">
+                            <!--img-circle-->
+                            <img ng-show="gallery.picture" class="img-responsive" style="margin-top: 10px" ng-src="{{gallery.picture.resized.dataURL}}"/>
                         </div>
                         <span class="help-block"
                               ng-if="galleryForm.picture.$error.required">Picture is required</span>
                     </div>
+
                 </div>
 
                 <div class="form-group">
@@ -37,18 +60,23 @@
                     </div>
                 </div>
 
-            </fieldset>
-            <br />
+                <div class="form-group">
+                    <!--<label for="captcha"  class="col-sm-3 control-label"></label>-->
+                    <div class="col-sm-offset-3 col-sm-9" name="recaptcha" id="recaptcha" grecaptcha ng-model="recaptcha"></div>
+                </div>
 
-            <div class="col-sm-offset-3 col-sm-9">
+            </fieldset>
+
+            <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; marting-top: 30px">
                 <input type="button" class="btn btn-default" value="Cancel"
                        ng-click="cancelForm()" />
                 <input type="submit" class="btn btn-primary" value="Submit"
-                       ng-click="update(galleryForm.$valid)" />
+                       ng-click="create()" />
                 <input type="button" class="btn btn-warning" value="Reset"
                        ng-click="resetForm()" />
-                <div class="alert alert-danger" ng-if="hasFormError">{{formErrors}}</div>
+                <div class="alert alert-danger" style="margin-top:15px" ng-if="hasFormError">{{formErrors}}</div>
             </div>
+
 
         </form>
 

@@ -1,7 +1,9 @@
 <section class="welcome row" data-ng-controller="AuthenticationController">
 	<div class="outer">
 		<div class="middle">
-			<h3 class="col-md-12 text-center underline">Sign up using your email</h3>
+			<div class="page-header container">
+				<h1 class="text-center">Sign up using your email</h1>
+			</div>
 
 			<!--
                     <h3 class="col-md-12 text-center">Sign up using your social accounts</h3>
@@ -46,7 +48,7 @@
 							<label for="password">Password</label>
 							<input type="password" id="password" name="password" class="form-control" data-ng-model="credentials.password" placeholder="Password">
 						</div>
-						<div class="text-center form-group">
+						<div class="text-center form-group" style="white-space: nowrap">
 							<button type="submit" class="btn btn-lg btn-primary">Sign up</button>&nbsp; or&nbsp;
 							<button type="button" ng-click="href('/signin')"  class="btn btn-default">Sign in</button>
 							<!--<a href="/#!/signin" class="show-signup">Sign in</a>-->

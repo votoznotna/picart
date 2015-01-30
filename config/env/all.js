@@ -20,7 +20,6 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css'
-				//'public/lib/angular-block-ui/dist/angular-block-ui.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.js',
@@ -35,7 +34,6 @@ module.exports = {
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
 				'public/lib/angular-grecaptcha/grecaptcha.js'
-				//'public/lib/angular-block-ui/dist/angular-block-ui.js'
 			]
 		},
 		css: [

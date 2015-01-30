@@ -42,7 +42,7 @@
 	<![endif]-->
 </head>
 
-<body class="ng-cloak bg-img bg-body">
+<body class="ng-cloak" onload="bodyLoaded()">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" class="navbar navbar-fixed-top navbar-inverse"></header>
 	<section id="main" class="content" style="margin-bottom: 25px">
 		<wait-spinner></wait-spinner>
@@ -71,14 +71,27 @@
 	{% endif %}-->
 
 	<script type="text/javascript">
-		$(function(){
-			$('.bg-img').bgLoaded({
-				afterLoaded: function () {
-					this.addClass('bg-loaded');
-				}
-			});
-		});
+			var bodyBgImage = new Image();
 
+			function CheckImageStatus() {
+
+				if (bodyBgImage.complete == false || bodyBgImage.naturalHeight == 0 || bodyBgImage.naturalWidth == 0) {
+					setTimeout(CheckImageStatus, 500);
+				}
+				else{
+					document.getElementsByTagName("body")[0].className = "bg-body";
+					//$('body').addClass('bg-body');
+				}
+			}
+
+/*
+			$(function () {
+			});
+*/
+			function bodyLoaded(){
+				bodyBgImage.src = "/modules/core/img/brand/bridge.jpg";
+				CheckImageStatus();
+			}
 	</script>
 
 </body>

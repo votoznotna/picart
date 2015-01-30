@@ -16,6 +16,10 @@
 
 .bg-body {
 	background: url("/modules/core/img/brand/bridge.jpg") no-repeat center center fixed;
+	background-size: cover;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
 }
 
 .bg-img{
@@ -28,10 +32,7 @@
  }
 
 body {
-	background-size: cover;
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
+   background-color: #FAD2AF;
 }
 
 footer {

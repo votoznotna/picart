@@ -331,6 +331,54 @@ angular.module('common').directive('waitSpinner', ["messaging", "events", functi
 /**
  * Created by User on 1/29/2015.
  */
+/*
+ * BG Loaded
+ *
+ *
+ * Copyright (c) 2014 Jonathan Catmull
+ * Licensed under the MIT license.
+ */
+
+(function($){
+    $.fn.bgLoaded = function(custom) {
+
+        var self = this;
+
+        // Default plugin settings
+        var defaults = {
+            afterLoaded : function(){
+                this.addClass('bg-loaded');
+            }
+        };
+
+        // Merge default and user settings
+        var settings = $.extend({}, defaults, custom);
+
+        // Loop through element
+        self.each(function(){
+            var $this = $(this),
+                bgImgs = $this.css('background-image').split(', ');
+            $this.data('loaded-count',0);
+
+            $.each( bgImgs, function(key, value){
+                var img = value.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+                $('<img/>').attr('src', img).load(function() {
+                    $(this).remove(); // prevent memory leaks
+                    $this.data('loaded-count',$this.data('loaded-count')+1);
+                    if ($this.data('loaded-count') >= bgImgs.length) {
+                        settings.afterLoaded.call($this);
+                    }
+                });
+            });
+
+        });
+    };
+})(jQuery);
+
+
+/**
+ * Created by User on 1/29/2015.
+ */
 angular.module('common').constant('events', {
     message: {
         _ADD_ERROR_MESSAGE_: '_ADD_ERROR_MESSAGE_',
@@ -820,20 +868,6 @@ angular.module('galleries').controller('GalleriesController',
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
 
-
-/*            var gallery = new Galleries({
-                title: $scope.gallery.title,
-                content: $scope.gallery.content
-            });
-            gallery.$save(function(response) {
-                //$location.path('galleries/' + response._id);
-                $location.path('galleries');
-
-               // $window.history.back();
-            }, function(errorResponse) {
-                $scope.hasFormError = true;
-                $scope.formErrors = errorResponse.statusText;
-            });*/
         };
 
 

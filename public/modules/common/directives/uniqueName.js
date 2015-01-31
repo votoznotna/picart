@@ -26,7 +26,7 @@ angular.module('common').directive('uniqueName', function(mongolab) {
             ctrl.$parsers.unshift(function (viewValue) {
                 // do nothing unless we match a valid name
                 if ((viewValue !== null) && (viewValue !== undefined) && (viewValue !== '')) {
-                    mongolab.query(mongoDbName, mongoDbCollection, {q: {Name: viewValue}})
+                    mongolab.query(mongoDbName, mongoDbCollection, {q: {title_searchable: viewValue.toLowerCase()}})
                         .then(getByNameSuccessHandler, getByNameErrorHandler);
                 }
 

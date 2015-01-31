@@ -46,6 +46,9 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
+	}])
+	.run(["mongolab", function (mongolab) {
+		mongolab.setApiKey(window.mongolabApiKey);
 	}]);
 	//.run(function($templateCache) {
 	//	$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
@@ -284,7 +287,7 @@ angular.module('common').directive('uniqueName', ["mongolab", function(mongolab)
             ctrl.$parsers.unshift(function (viewValue) {
                 // do nothing unless we match a valid name
                 if ((viewValue !== null) && (viewValue !== undefined) && (viewValue !== '')) {
-                    mongolab.query(mongoDbName, mongoDbCollection, {q: {Name: viewValue}})
+                    mongolab.query(mongoDbName, mongoDbCollection, {q: {title_searchable: viewValue.toLowerCase()}})
                         .then(getByNameSuccessHandler, getByNameErrorHandler);
                 }
 

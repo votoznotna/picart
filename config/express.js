@@ -11,6 +11,7 @@ var fs = require('fs'),
 	bodyParser = require('body-parser'),
 	session = require('express-session'),
 	compress = require('compression'),
+	csrf = require('csurf'),
 	methodOverride = require('method-override'),
 	cookieParser = require('cookie-parser'),
 	helmet = require('helmet'),
@@ -36,6 +37,7 @@ module.exports = function(db) {
 	app.locals.title = config.app.title;
 	app.locals.dbName = config.dbName;
 	app.locals.recaptchaSiteKey = config.recaptcha.siteKey;
+	app.locals.mongolabApiKey = config.mongolabApiKey;
 	app.locals.description = config.app.description;
 	app.locals.keywords = config.app.keywords;
 	app.locals.facebookAppId = config.facebook.clientID;
@@ -102,6 +104,12 @@ module.exports = function(db) {
 	// use passport session
 	app.use(passport.initialize());
 	app.use(passport.session());
+
+	app.use(csrf());
+	app.use(function(req, res, next) {
+		res.cookie('XSRF-TOKEN', req.csrfToken());
+		next();
+	});
 
 	// connect flash for flash messages
 	app.use(flash());

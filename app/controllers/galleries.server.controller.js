@@ -10,6 +10,7 @@ var mongoose = require('mongoose'),
     im = require('imagemagick'),
     fs = require('fs'),
     path = require('path'),
+    mkdirp = require('mkdirp'),
     errorHandler = require('./errors.server.controller'),
     core = require('./core.server.controller'),
     config = require('../../config/config'),
@@ -47,54 +48,82 @@ exports.createGallery = function(req, res) {
    // code.hasValidCaptcha(req, res)
 
 
-    if(imagePath) {
+    var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
+    //var picView = path.join(__dirname, config.picturesRoot + '/view', imageName);
+    var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
 
-        fs.readFile(imagePath, function (err, data) {
+    if(imagePath && imageName) {
 
-            /// If there's an error
-            if (!imageName) {
-                res.redirect("/");
-                res.end();
-
-            } else {
-
-                var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
-                var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
-
-                /// write file to uploads/fullsize folder
-                fs.writeFile(picFullSize, data, function (err) {
-
-                    /// write file to uploads/thumbs folder
-                    im.resize({
-                        srcPath: picFullSize,
-                        dstPath: picThumbs,
-                        width: 300
-                    }, function (err, stdout, stderr) {
-                        if(err) {
-                            return res.status(400).send({
-                                message: errorHandler.getErrorMessage(err)
-                            });
-                        }
-                    });
-                });
-            }
-        });
-    }
-
-    var gallery = new Gallery(req.body);
-    gallery.user = req.user;
-    gallery.picture = imageName ? imageName : null;
-/*        gallery.save(function(err) {
+        var gallery = new Gallery(req.body);
+        gallery.title_searchable = req.body.title.toLowerCase();
+        gallery.user = req.user;
+        gallery.picture = imageName;
+        var galRet = gallery.save(function(err) {
             if (err) {
                 return res.status(400).send({
                     message: errorHandler.getErrorMessage(err)
                 });
             } else {
-                res.json(gallery);
-            }
-        });*/
-    res.json(gallery);
 
+                fs.readFile(imagePath, function (err, data) {
+
+                    /// write file to uploads/fullsize folder
+
+                    var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + gallery._id);
+                    var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + gallery._id);
+                    var picFullSize = path.join(picFullSizePath, imageName);
+                    var picThumbs = path.join(picThumbsPath, imageName);
+
+                    mkdirp(picFullSizePath, function (err) {
+
+                        if (err) {
+                            return res.status(400).send({
+                                message: errorHandler.getErrorMessage(err)
+                            })
+                        }
+                        else {
+
+                            mkdirp(picThumbsPath, function (err) {
+
+                                if (err) {
+                                    return res.status(400).send({
+                                        message: errorHandler.getErrorMessage(err)
+                                    })
+                                }
+                                else {
+
+                                    fs.writeFile(picFullSize, data, function (err) {
+
+                                        /// write file to uploads/thumbs folder
+                                        im.resize({
+                                            srcPath: picFullSize,
+                                            dstPath: picThumbs,
+                                            width: 1000
+                                        }, function (err, stdout, stderr) {
+                                            if (err) {
+                                                return res.status(400).send({
+                                                    message: errorHandler.getErrorMessage(err)
+                                                });
+                                            }
+                                        });
+                                    });
+                                }
+                                // path was created unless there was error
+
+                            });
+                        }
+                        // path was created unless there was error
+                    });
+                    res.json(gallery);
+                });
+            }
+        });
+    }
+    else{
+        return res.status(400).send({
+            message: errorHandler.getErrorMessage("Picture is missing")
+        })
+    }
 };
 
 

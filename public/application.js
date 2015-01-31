@@ -22,6 +22,9 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
+	})
+	.run(function (mongolab) {
+		mongolab.setApiKey(window.mongolabApiKey);
 	});
 	//.run(function($templateCache) {
 	//	$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');

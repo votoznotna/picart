@@ -23,6 +23,12 @@ var GallerySchema = new Schema({
         trim: true,
         required: 'Title cannot be blank'
     },
+    title_searchable: {
+        type: String,
+        default: '',
+        trim: true,
+        required: 'Title cannot be blank'
+    },
     picture: {
         type: String,
         default: '',

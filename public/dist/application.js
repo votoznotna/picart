@@ -827,7 +827,7 @@ angular.module('galleries').controller('GalleriesController',
 
 
         $scope.remove = function(gallery) {
-            if (gallery) {
+            if (gallery)    {
                 gallery.$remove();
 
                 for (var i in $scope.galleries) {

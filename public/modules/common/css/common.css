@@ -28,3 +28,11 @@ h1 {
 .help-block {
   text-shadow: 2px 2px #b5b5b5;
 }
+html {
+  background-repeat: no-repeat;
+  background: -webkit-linear-gradient(#fad2af, #e1a696);
+  background: -o-linear-gradient(#fad2af, #e1a696);
+  background: -moz-linear-gradient(#fad2af, #e1a696);
+  background: linear-gradient(#fad2af, #e1a696);
+  height: 100%;
+}

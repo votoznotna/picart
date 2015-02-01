@@ -57,7 +57,8 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo) //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, visibility:'visible', display:'block'})
-				.animate({opacity:1, left:imageinfo.newattrs.x, top:imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+				.animate({opacity:1, left:imageinfo.newattrs.x, top:imageinfo.newattrs.y + 20, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
 					//none added
 				}) //end animate

@@ -7,12 +7,12 @@
 
         <div class="row">
             <div data-ng-repeat="gallery in galleries"  style="font-weight:bold"  class="col-sm-6 col-md-3" on-finish-render-filters>
-                <div style="margin-bottom: 10px; text-align: center;" class="show-title text-shadow" >
-                    <h3><a ng-show="authentication.user._id == gallery.user._id"  ui-sref="editExhibit({exhibitId: gallery._id})" >{{gallery.title}}</a></h3>
-                    <h4 ng-show="authentication.user._id != gallery.user._id" ng-bind="gallery.title"></h4>
+                <div style="text-align: center;" class="show-title text-shadow" >
+                    <h3 style="margin-bottom: 5px;"><a ng-show="authentication.user._id == gallery.user._id"  ui-sref="editExhibit({exhibitId: gallery._id})" >{{gallery.title}}</a></h3>
+                    <h3 style="margin-bottom: 5px;" ng-show="authentication.user._id != gallery.user._id" ng-bind="gallery.title"></h3>
                 </div>
                 <img class="magnify show-img img-border img-responsive" ng-src="{{'/modules/galleries/pictures/thumbs/' + gallery._id + '/' + gallery.picture}}" >
-                <h4 style="margin-top: 10px; text-align: center" class="show-content" ng-bind="gallery.content"></h4>
+                <h4 style="margin-top: 7px; text-align: center" class="show-content" ng-bind="gallery.content"></h4>
             </div>
         </div>
     </div>

@@ -7,8 +7,8 @@
 angular.module('galleries').run(['Menus',
     function(Menus) {
         // Set top bar menu items
-        Menus.addMenuItem('topbar', 'Galleries', 'galleries', null, null, true);
-        Menus.addMenuItem('topbar', 'New Gallery', 'galleries/create', null, null, false);
+        Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', null, null, true);
+        Menus.addMenuItem('topbar', 'New Exhibit', 'exhibition/create', null, null, false);
         //Menus.addSubMenuItem('topbar', 'galleries', 'List of Galleries', 'galleries', null, true);
         //Menus.addSubMenuItem('topbar', 'galleries', 'New Gallery', 'galleries/create', null, false);
     }

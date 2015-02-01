@@ -1,18 +1,22 @@
-<section class="container" data-ng-controller="ArticlesController" data-ng-init="find()">
+<section class="container" data-ng-controller="GalleriesController" data-ng-init="find()">
     <div class="page-header">
-        <h1>Galleries</h1>
+        <h1>Exhibition</h1>
     </div>
-    <div class="row">
-        <ul class="thumbnails">
-            <li data-ng-repeat="gallery in galleries" class="span3">
-                <div class='gallery-title'>
-                    <a ng-show="authentication.user._id == gallery.user._id" href="{{gallery.path}}" data-ng-href="#!/galleries/{{gallery._id}}" >{{gallery.title}}</a>
-                    <span ng-show="authentication.user._id != gallery.user._id" data-ng-bind="gallery.title"></span>
+
+    <div class="container padded">
+
+        <div class="row">
+            <div data-ng-repeat="gallery in galleries"  style="font-weight:bold"  class="col-sm-6 col-md-3" on-finish-render-filters>
+                <div style="margin-bottom: 10px; text-align: center;" class="show-title text-shadow" >
+                    <h3><a ng-show="authentication.user._id == gallery.user._id"  ui-sref="editExhibit({exhibitId: gallery._id})" >{{gallery.title}}</a></h3>
+                    <h4 ng-show="authentication.user._id != gallery.user._id" ng-bind="gallery.title"></h4>
                 </div>
-                <a class="thumbnail" href="{{gallery.picture}}" target="_blank"><img src="{{gallery.picture}}" class="img-circle"  /></a>
-            </li>
-        </ul>
+                <img class="magnify show-img img-border img-responsive" ng-src="{{'/modules/galleries/pictures/thumbs/' + gallery._id + '/' + gallery.picture}}" >
+                <h4 style="margin-top: 10px; text-align: center" class="show-content" ng-bind="gallery.content"></h4>
+            </div>
+        </div>
     </div>
+
 
 </section>
 

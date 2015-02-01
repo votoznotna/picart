@@ -16,7 +16,6 @@
     "angular-ui-router": "~0.2.11",
     "angularjs-imageupload-directive": "*",
     "angular-grecaptcha": "~1.0.1",
-    "jquery": "~2.1.3",
-    "magnifier": "*"
+    "jquery": "~2.1.3"
   }
 }

@@ -1,11 +1,11 @@
 /* jQuery Image Magnify script v1.1
-* This notice must stay intact for usage 
-* Author: Dynamic Drive at http://www.dynamicdrive.com/
-* Visit http://www.dynamicdrive.com/ for full source code
+ * This notice must stay intact for usage
+ * Author: Dynamic Drive at http://www.dynamicdrive.com/
+ * Visit http://www.dynamicdrive.com/ for full source code
 
-* Nov 16th, 09 (v1.1): Adds ability to dynamically apply/reapply magnify effect to an image, plus magnify to a specific width in pixels.
-* Feb 8th, 11 (v1.11): Fixed bug that caused script to not work in newever versions of jQuery (ie: v1.4.4)
-*/
+ * Nov 16th, 09 (v1.1): Adds ability to dynamically apply/reapply magnify effect to an image, plus magnify to a specific width in pixels.
+ * Feb 8th, 11 (v1.11): Fixed bug that caused script to not work in newever versions of jQuery (ie: v1.4.4)
+ */
 
 jQuery.noConflict()
 
@@ -14,8 +14,8 @@ jQuery.imageMagnify={
 		magnifyby: 3, //default increase factor of enlarged image
 		duration: 500, //default duration of animation, in millisec
 		imgopacity: 0.2 //opacify of original image when enlarged image overlays it
- 	},
-	cursorcss: 'url(magnify.cur), -moz-zoom-in', //Value for CSS's 'cursor' attribute, added to original image
+	},
+	cursorcss: 'url(/modules/common/js/magnify/magnify.cur), -moz-zoom-in', //Value for CSS's 'cursor' attribute, added to original image
 	zIndexcounter: 100,
 
 	refreshoffsets:function($window, $target, warpshell){
@@ -26,7 +26,7 @@ jQuery.imageMagnify={
 		warpshell.newattrs.x=winattrs.x+winattrs.w/2-warpshell.newattrs.w/2
 		warpshell.newattrs.y=winattrs.y+winattrs.h/2-warpshell.newattrs.h/2
 		if (warpshell.newattrs.x<winattrs.x+5){ //no space to the left?
-			warpshell.newattrs.x=winattrs.x+5	
+			warpshell.newattrs.x=winattrs.x+5
 		}
 		else if (warpshell.newattrs.x+warpshell.newattrs.w > winattrs.x+winattrs.w){//no space to the right?
 			warpshell.newattrs.x=winattrs.x+5
@@ -47,7 +47,7 @@ jQuery.imageMagnify={
 		if ($target.data('imgshell')){
 			$target.data('imgshell').$clone.remove()
 			$target.css({opacity:1}).unbind('click.magnify')
-		}	
+		}
 		var $clone=$target.clone().css({position:'absolute', left:0, top:0, visibility:'hidden', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body)
 		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
 		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs})
@@ -57,20 +57,20 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo) //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, visibility:'visible', display:'block'})
-			.animate({opacity:1, left:imageinfo.newattrs.x, top:imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
-			function(){ //callback function after warping is complete
-				//none added		
-			}) //end animate
+				.animate({opacity:1, left:imageinfo.newattrs.x, top:imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+				function(){ //callback function after warping is complete
+					//none added
+				}) //end animate
 		}) //end click
 		$clone.click(function(e){ //action when magnified image is clicked on
 			var $this=$(this)
 			var imageinfo=$this.data('$relatedtarget').data('imgshell')
 			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo) //refresh offset positions of original and warped images
 			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
-			function(){
-				$this.hide()
-				$this.data('$relatedtarget').css({opacity:1}) //reveal original image
-			}) //end animate
+				function(){
+					$this.hide()
+					$this.data('$relatedtarget').css({opacity:1}) //reveal original image
+				}) //end animate
 		}) //end click
 	}
 };
@@ -101,8 +101,8 @@ jQuery.fn.applyMagnifier=function(options){ //dynamic version of imageMagnify() 
 		var $imgref=$(this)
 		if (this.tagName!="IMG")
 			return true //skip to next matched element
-		
-	})	
+
+	})
 
 };
 

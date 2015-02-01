@@ -8,20 +8,20 @@ angular.module('galleries').config(['$stateProvider',
     function($stateProvider) {
         // Galleries state routing
         $stateProvider.
-            state('listGalleries', {
-                url: '/galleries',
+            state('exhibition', {
+                url: '/exhibition',
                 templateUrl: 'modules/galleries/views/list-galleries.client.view.html'
             }).
-            state('createGallery', {
-                url: '/galleries/create',
+            state('createExhibit', {
+                url: '/exhibition/create',
                 templateUrl: 'modules/galleries/views/create-gallery.client.view.html'
             }).
-            state('viewGallery', {
-                url: '/galleries/:galleryId',
+            state('viewExhibit', {
+                url: '/exhibition/:exhibitId',
                 templateUrl: 'modules/galleries/views/view-gallery.client.view.html'
             }).
-            state('editGallery', {
-                url: '/galleries/:galleryId/edit',
+            state('editExhibit', {
+                url: '/exhibition/:exhibitId/edit',
                 templateUrl: 'modules/galleries/views/edit-gallery.client.view.html'
             });
     }

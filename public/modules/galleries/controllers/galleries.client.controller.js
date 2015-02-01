@@ -5,8 +5,8 @@
 'use strict';
 
 angular.module('galleries').controller('GalleriesController',
-    ['$scope', '$stateParams', '$location','$http', '$window', 'Authentication', 'Galleries', 'messaging', 'events',
-    function($scope, $stateParams, $location, $http,  $window, Authentication, Galleries, messaging, events) {
+    ['$scope', '$stateParams', '$state','$http', '$window', 'Authentication', 'Galleries', 'messaging', 'events',
+    function($scope, $stateParams, $state, $http,  $window, Authentication, Galleries, messaging, events) {
 
         $scope.master = {};
 
@@ -37,7 +37,7 @@ angular.module('galleries').controller('GalleriesController',
                 transformRequest: angular.identity
             }).then(
                 function(result) {
-                    $location.path('galleries');
+                    $state.go('exhibition');
                 },
                 function(result) {
                     $scope.hasFormError = true;
@@ -60,7 +60,7 @@ angular.module('galleries').controller('GalleriesController',
                 }
             } else {
                 $scope.gallery.$remove(function() {
-                    $location.path('galleries');
+                    $state.go('exhibition');
                 });
             }
         };
@@ -75,9 +75,7 @@ angular.module('galleries').controller('GalleriesController',
             var gallery = $scope.gallery;
 
             gallery.$update(function() {
-                //$location.path('galleries/' + gallery._id);
-                $location.path('galleries');
-
+                $state.go('exhibition');
             }, function(errorResponse) {
                 $scope.hasFormError = true;
                 $scope.formErrors = errorResponse.statusText;
@@ -97,7 +95,7 @@ angular.module('galleries').controller('GalleriesController',
 
         $scope.cancelForm = function () {
            // $window.history.back();
-            $location.path('galleries');
+            $state.go('exhibition');
         };
 
         $scope.resetForm = function () {
@@ -114,5 +112,16 @@ angular.module('galleries').controller('GalleriesController',
             $scope.gallery.picture  = null;
             angular.element(document.querySelector('#picture')).val("");
         };
+
+        $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+
+            jQuery('.magnify').imageMagnify(
+                {
+                    magnifyby: 3.5,
+                    thumbdimensions: [300, 200]
+                }
+            );
+        });
+
     }
 ]);

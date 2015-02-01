@@ -9,6 +9,7 @@
 var mongoose = require('mongoose'),
     im = require('imagemagick'),
     fs = require('fs'),
+    rimraf = require("rimraf"),
     path = require('path'),
     mkdirp = require('mkdirp'),
     errorHandler = require('./errors.server.controller'),
@@ -98,8 +99,15 @@ exports.createGallery = function(req, res) {
                                         im.resize({
                                             srcPath: picFullSize,
                                             dstPath: picThumbs,
-                                            width: 1000
+                                            quality: 1,
+                                            width: 1000,
+                                            height: 1000
                                         }, function (err, stdout, stderr) {
+                                            rimraf(picFullSizePath, function (er) {
+                                                if (er) {
+                                                    console.log(er)
+                                                }
+                                            })
                                             if (err) {
                                                 return res.status(400).send({
                                                     message: errorHandler.getErrorMessage(err)

@@ -1,14 +1,52 @@
+@import '../../common/css/mixins'
+
+font-color = #7a7a7a
+text-shadow-value =  0px 0px 0px #ababab, 0px 0px 0px #000
+
 .show-title
-  h3, a
+  margin 0
+  color font-color
+  font-weight normal
+  text-align center
+
+  div
+    display inline-block
+    text-shadow text-shadow-value
+    shadow(3px 3px 3px #000000)
+    margin 0
     font-weight normal
-    /*text-shadow: -1px -1px 2px #ababab, -1px -1px 2px #000;*/
-    color #14171f
+    font-size 1.2em
+    padding 0 5px
+    border-radius-top 5px
+    background-color white
+
+  a
+    color #5884ff
+    text-decoration underline
+    &hover
+      color #5884ff
 
 .show-content
-  color #14171f
+  color font-color
   font-weight normal
-/*text-shadow: -2px -2px 2px #ababab, -2px -2px 2px #000;*/
+  margin-bottom 10px
+  text-align center
+  div
+    display inline-block
+    text-shadow text-shadow-value
+    shadow(3px 3px 3px #000000)
+    margin 0
+    font-size 1.1em
+    padding 0 5px 1px
+    border-radius-bottom 5px
+    background-color white
 
 .show-img
   background-color #aaa
   cursor pointer
+  border-radius(10px)
+  border solid 3px white
+  shadow(3px 3px 3px #000000)
+
+
+

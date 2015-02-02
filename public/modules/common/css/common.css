@@ -43,12 +43,3 @@ html {
   background: linear-gradient(#fad2af, #e1a696);
   height: 100%;
 }
-.img-border {
-  -webkit-box-shadow: 4px 4px 4px rgba(136,136,136,0.533);
-  -moz-box-shadow: 4px 4px 4px rgba(136,136,136,0.533);
-  box-shadow: 4px 4px 4px rgba(136,136,136,0.533);
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  border: solid 3px #fff;
-}

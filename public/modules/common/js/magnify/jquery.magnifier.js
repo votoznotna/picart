@@ -11,6 +11,9 @@ jQuery.noConflict()
 
 jQuery.imageMagnify={
 	dsettings: {
+		windowFit: true,
+		vIndent: 0,
+		hIndent: 0,
 		magnifyby: 3, //default increase factor of enlarged image
 		duration: 500, //default duration of animation, in millisec
 		imgopacity: 0.2 //opacify of original image when enlarged image overlays it
@@ -36,28 +39,60 @@ jQuery.imageMagnify={
 		}
 	},
 
+	refreshSize: function($window, $target, imageinfo, setting){
+
+		var element = $target.get(0);
+		var natHeight = element.naturalHeight;
+		var natWidth = element.naturalWidth;
+
+		if(natHeight >= natWidth)
+		{
+			imageinfo.newattrs.h = (natHeight < $window.height() - setting.vIndent) ? natHeight : $window.height() - setting.vIndent;
+			imageinfo.newattrs.w =  imageinfo.newattrs.h * natWidth / natHeight;
+			if(imageinfo.newattrs.w >   $window.width()){
+				imageinfo.newattrs.w = (imageinfo.newattrs.w < $window.width() - setting.hIndent) ? imageinfo.newattrs.w :  $window.width() - setting.hIndent;
+				imageinfo.newattrs.h =  imageinfo.newattrs.w * natHeight / natWidth;
+			}
+		}
+		else{
+			imageinfo.newattrs.w =  (natWidth < $window.width() - setting.hIndent) ? natWidth :  $window.width() - setting.hIndent;
+			imageinfo.newattrs.h =  imageinfo.newattrs.w * natHeight / natWidth;
+
+			if(imageinfo.newattrs.h >   $window.height() - setting.vIndent){
+				imageinfo.newattrs.h = (imageinfo.newattrs.h < $window.height() - setting.vIndent) ? imageinfo.newattrs.h : $window.height() - setting.vIndent;
+				imageinfo.newattrs.w =  imageinfo.newattrs.h * natWidth / natHeight;
+			}
+		}
+
+	},
+
 	magnify:function($, $target, options){
 		var setting={} //create blank object to store combined settings
 		var setting=jQuery.extend(setting, this.dsettings, options)
 		var attrs=(options.thumbdimensions)? {w:options.thumbdimensions[0], h:options.thumbdimensions[1]} : {w:$target.outerWidth(), h:$target.outerHeight()}
 		var newattrs={}
-		newattrs.w=(setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
-		newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
-		$target.css('cursor', jQuery.imageMagnify.cursorcss)
+
+		//newattrs.w= (setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
+		//newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
+
+		//$target.css('cursor', jQuery.imageMagnify.cursorcss)
 		if ($target.data('imgshell')){
 			$target.data('imgshell').$clone.remove()
 			$target.css({opacity:1}).unbind('click.magnify')
 		}
-		var $clone=$target.clone().css({position:'absolute', left:0, top:0, visibility:'hidden', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body)
+		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body)
 		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
 		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs})
 		$target.bind('click.magnify', function(e){ //action when original image is clicked on
 			var $this=$(this).css({opacity:setting.imgopacity})
 			var imageinfo=$this.data('imgshell')
+			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo) //refresh offset positions of original and warped images
+
 			var $clone=imageinfo.$clone
-			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, visibility:'visible', display:'block'})
-				.animate({opacity:1, left:imageinfo.newattrs.x, top:imageinfo.newattrs.y + 20, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+
+			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block', display:'block'})
+				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
 					//none added
@@ -66,8 +101,10 @@ jQuery.imageMagnify={
 		$clone.click(function(e){ //action when magnified image is clicked on
 			var $this=$(this)
 			var imageinfo=$this.data('$relatedtarget').data('imgshell')
+			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo) //refresh offset positions of original and warped images
-			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
+
+			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
 				function(){
 					$this.hide()
 					$this.data('$relatedtarget').css({opacity:1}) //reveal original image
@@ -82,7 +119,7 @@ jQuery.fn.imageMagnify=function(options){
 		var $imgref=$(this)
 		if (this.tagName!="IMG")
 			return true //skip to next matched element
-		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.thumbdimensions){ //if image has explicit width/height attrs defined
+		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.windowFit || options.thumbdimensions ){ //if image has explicit width/height attrs defined
 			jQuery.imageMagnify.magnify($, $imgref, options)
 		}
 		else if (this.complete){ //account for IE not firing image.onload

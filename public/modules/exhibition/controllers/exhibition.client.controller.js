@@ -4,8 +4,8 @@
 'use strict';
 
 angular.module('exhibition').controller('ExhibitionController',
-    ['$scope', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'messaging', 'events',
-        function($scope, $stateParams, $state, $http,  $window, Authentication, Exhibition, messaging, events) {
+    ['$scope', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
+        function($scope, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
 
             $scope.master = {};
 
@@ -112,12 +112,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
 
-                jQuery('.magnify').imageMagnify(
-                    {
-                        magnifyby: 3.5,
-                        thumbdimensions: [300, 200]
-                    }
-                );
+                ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
             });
 
         }

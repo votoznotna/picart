@@ -1,4 +1,7 @@
 /**
+ * Created by User on 2/1/2015.
+ */
+/**
  * Created by User on 1/21/2015.
  */
 'use strict';
@@ -15,51 +18,29 @@ var mongoose = require('mongoose'),
     errorHandler = require('./errors.server.controller'),
     core = require('./core.server.controller'),
     config = require('../../config/config'),
-    Gallery = mongoose.model('Gallery'),
+    Exhibit = mongoose.model('Exhibit'),
     _ = require('lodash');
 
-
-
 /**
- * Create a galery
+ * Create an exhibit
  */
+
 exports.create = function(req, res) {
-    var gallery = new Gallery(req.body);
-    gallery.user = req.user;
-
-    gallery.save(function(err) {
-        if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        } else {
-            res.json(gallery);
-        }
-    });
-};
-
-
-
-exports.createGallery = function(req, res) {
 
     var image = req.files.image;
     var imageName = image.name;
     var imagePath = image.path;
 
-   // code.hasValidCaptcha(req, res)
-
-
     var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
-    //var picView = path.join(__dirname, config.picturesRoot + '/view', imageName);
     var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
 
     if(imagePath && imageName) {
 
-        var gallery = new Gallery(req.body);
-        gallery.title_searchable = req.body.title.toLowerCase();
-        gallery.user = req.user;
-        gallery.picture = imageName;
-        var galRet = gallery.save(function(err) {
+        var exhibit = new Exhibit(req.body);
+        exhibit.title_searchable = req.body.title.toLowerCase();
+        exhibit.user = req.user;
+        exhibit.picture = imageName;
+        var galRet = exhibit.save(function(err) {
             if (err) {
                 return res.status(400).send({
                     message: errorHandler.getErrorMessage(err)
@@ -70,8 +51,8 @@ exports.createGallery = function(req, res) {
 
                     /// write file to uploads/fullsize folder
 
-                    var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + gallery._id);
-                    var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + gallery._id);
+                    var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + exhibit._id);
+                    var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
                     var picFullSize = path.join(picFullSizePath, imageName);
                     var picThumbs = path.join(picThumbsPath, imageName);
 
@@ -100,8 +81,7 @@ exports.createGallery = function(req, res) {
                                             srcPath: picFullSize,
                                             dstPath: picThumbs,
                                             quality: 1,
-                                            width: 1000,
-                                            height: 1000
+                                            width: 1000
                                         }, function (err, stdout, stderr) {
                                             rimraf(picFullSizePath, function (er) {
                                                 if (er) {
@@ -122,7 +102,7 @@ exports.createGallery = function(req, res) {
                         }
                         // path was created unless there was error
                     });
-                    res.json(gallery);
+                    res.json(exhibit);
                 });
             }
         });
@@ -137,83 +117,84 @@ exports.createGallery = function(req, res) {
 
 
 /**
- * Show the current gallery
+ * Show the current exhibit
  */
 exports.read = function(req, res) {
-    res.json(req.gallery);
+    res.json(req.exhibit);
 };
 
 /**
- * Update a gallery
+ * Update a exhibit
  */
 exports.update = function(req, res) {
-    var gallery = req.gallery;
+    var exhibit = req.exhibit;
 
-    gallery = _.extend(gallery, req.body);
+    exhibit = _.extend(exhibit, req.body);
 
-    gallery.save(function(err) {
+    exhibit.save(function(err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.json(gallery);
+            res.json(exhibit);
         }
     });
 };
 
 /**
- * Delete an gallery
+ * Delete an exhibit
  */
 exports.delete = function(req, res) {
-    var gallery = req.gallery;
+    var exhibit = req.exhibit;
 
-    gallery.remove(function(err) {
+    exhibit.remove(function(err) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.json(gallery);
+            res.json(exhibit);
         }
     });
 };
 
 /**
- * List of Galleries
+ * List of Exhibit
  */
 exports.list = function(req, res) {
-    Gallery.find().sort('-created').populate('user', 'displayName').exec(function(err, galleries) {
+    Exhibit.find().sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
             });
         } else {
-            res.json(galleries);
+            res.json(exhibition);
         }
     });
 };
 
 /**
- * Gallery middleware
+ * Exhibit middleware
  */
-exports.galleryByID = function(req, res, next, id) {
-    Gallery.findById(id).populate('user', 'displayName').exec(function(err, gallery) {
+exports.exhibitByID = function(req, res, next, id) {
+    Exhibit.findById(id).populate('user', 'displayName').exec(function(err, exhibit) {
         if (err) return next(err);
-        if (!gallery) return next(new Error('Failed to load gallery ' + id));
-        req.gallery = gallery;
+        if (!exhibit) return next(new Error('Failed to load exhibit ' + id));
+        req.exhibit = exhibit;
         next();
     });
 };
 
 /**
- * Gallery authorization middleware
+ * Exhibit authorization middleware
  */
 exports.hasAuthorization = function(req, res, next) {
-    if (req.gallery.user.id !== req.user.id) {
+    if (req.exhibit.user.id !== req.user.id) {
         return res.status(403).send({
             message: 'User is not authorized'
         });
     }
     next();
 };
+

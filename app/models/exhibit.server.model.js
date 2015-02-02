@@ -12,7 +12,7 @@ var mongoose = require('mongoose'),
 /**
  * Gallery Schema
  */
-var GallerySchema = new Schema({
+var ExhibitSchema = new Schema({
     created: {
         type: Date,
         default: Date.now
@@ -46,4 +46,5 @@ var GallerySchema = new Schema({
     }
 });
 
-mongoose.model('Gallery', GallerySchema);
+mongoose.model('Exhibit', ExhibitSchema);
+

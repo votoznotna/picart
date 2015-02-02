@@ -1,15 +1,13 @@
 /**
- * Created by User on 1/19/2015.
+ * Created by User on 2/1/2015.
  */
 'use strict';
 
 // Configuring the Articles module
-angular.module('galleries').run(['Menus',
+angular.module('exhibition').run(['Menus',
     function(Menus) {
         // Set top bar menu items
         Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', null, null, true);
         Menus.addMenuItem('topbar', 'New Exhibit', 'exhibition/create', null, null, false);
-        //Menus.addSubMenuItem('topbar', 'galleries', 'List of Galleries', 'galleries', null, true);
-        //Menus.addSubMenuItem('topbar', 'galleries', 'New Gallery', 'galleries/create', null, false);
     }
 ]);

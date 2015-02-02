@@ -1,0 +1,19 @@
+<section class="container" data-ng-controller="ExhibitionController" data-ng-init="find()">
+    <div class="page-header">
+        <h1>Exhibition</h1>
+    </div>
+
+    <div class="container padded">
+
+        <div class="row">
+            <div data-ng-repeat="exhibit in exhibition"  style="font-weight:bold"  class="col-sm-6 col-md-3" on-finish-render-filters>
+                <div style="text-align: center;" class="show-title text-shadow" >
+                    <h3 style="margin-bottom: 5px;"><a ng-show="authentication.user._id == exhibit.user._id"  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></h3>
+                    <h3 style="margin-bottom: 5px;" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></h3>
+                </div>
+                <img class="magnify show-img img-border img-responsive" ng-src="{{'/modules/exhibition/pictures/thumbs/' + exhibit._id + '/' + exhibit.picture}}" >
+                <h4 style="margin-top: 7px; text-align: center" class="show-content" ng-bind="exhibit.content"></h4>
+            </div>
+        </div>
+    </div>
+</section>

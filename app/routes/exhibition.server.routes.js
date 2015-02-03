@@ -17,10 +17,9 @@ module.exports = function(app) {
     // Article Routes
     app.route('/exhibition')
         .get(exhibition.list)
-        .post(users.requiresLogin, exhibition.create);
 
     app.route('/upload')
-        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.create);
+        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
 
     app.route('/exhibition/:exhibitId')
         .get(exhibition.read)

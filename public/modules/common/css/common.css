@@ -33,7 +33,9 @@ h1 {
   text-shadow: -1px -1px 1px #ababab, 1px 1px 1px #000;
 }
 .help-block {
-  text-shadow: 2px 2px #b5b5b5;
+  font-size: 1.2em;
+  text-shadow: 1px 1px 1px #a8a8a8;
+  color: #fa2b75;
 }
 html {
   background-repeat: no-repeat;
@@ -42,4 +44,22 @@ html {
   background: -moz-linear-gradient(#fad2af, #e1a696);
   background: linear-gradient(#fad2af, #e1a696);
   height: 100%;
+}
+.shadow3 {
+  -webkit-box-shadow: 3px 3px 3px #000;
+  -moz-box-shadow: 3px 3px 3px #000;
+  box-shadow: 3px 3px 3px #000;
+}
+.btn {
+  -webkit-box-shadow: 3px 3px 3px #000;
+  -moz-box-shadow: 3px 3px 3px #000;
+  box-shadow: 3px 3px 3px #000;
+  cursor: pointer;
+}
+.btn-indent {
+  margin-right: 7px;
+}
+.page-header {
+  margin-top: 20px;
+  padding-bottom: 0;
 }

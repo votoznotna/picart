@@ -8,8 +8,8 @@
             <fieldset>
                 <div class="form-group" show-errors>
                     <label for="title" class="col-sm-3 control-label">Title</label>
-                    <div class="col-sm-9">
-                        <input type="text" id="title" name="title" class="form-control"
+                    <div class="col-sm-9 value-section-vshift">
+                        <input type="text" id="title" name="title" class="form-control shadow3"
                                ng-model="exhibit.title" unique-name mongo-collection="exhibition" ng-required="true"/>
                             <span class="help-block"
                                   ng-if="exhibitForm.title.$error.required">Exhibit Title is required
@@ -24,29 +24,34 @@
                     <label for="picture"  class="col-sm-3 control-label">Image</label>
 
                     <div class="col-sm-9">
-                        <div class="col-sm-12" style="padding-left: 0">
-                            <div class="col-sm-6" style="padding-left: 0; margin-bottom: 5px;" >
-                                <input id="picture"
-                                       name="picture"
-                                       type="file"
-                                       ng-model="exhibit.picture"
-                                       accept="image/*"
-                                       image="exhibit.picture"
-                                       resize-max-height="100"
-                                       resize-max-width="300"
-                                       resize-quality="0.7"
-                                       class="btn btn-default"
-                                       style="width: 100%"
-                                       ng-required="true"
-                                       file-required />
+                        <div class="col-sm-12 value-section-vshift" style="padding-left: 0">
+                            <div class="col-sm-6" style="padding-left: 0;" >
+
+                                <input id="uploadFile" placeholder="Choose File" class="inputUpload shadow3" disabled="disabled" />
+                                <div class="fileUpload btn btn-primary">
+                                    <span>Upload</span>
+                                    <input id="picture"
+                                           name="picture"
+                                           type="file"
+                                           ng-model="exhibit.picture"
+                                           accept="image/*"
+                                           image="exhibit.picture"
+                                           resize-max-height="300"
+                                           resize-max-width="300"
+                                           resize-quality="0.7"
+                                           class="btn btn-default upload"
+                                           style="width: 100%"
+                                           ng-required="true"
+                                           file-required />
+                                </div>
                             </div>
-                            <div style="white-space: nowrap;  margin-bottom: 5px;">
+<!--                            <div style="white-space: nowrap;  margin-bottom: 5px;">
                                 <button type="button" ng-click="clearPicture()" class="btn btn-default" style="margin-left: 10px">Clear</button>
-                            </div>
+                            </div>-->
                         </div>
                         <div class="col-sm-12" style="padding-left: 0;">
                             <!--img-circle-->
-                            <img ng-show="exhibit.picture" class="img-responsive" style="margin-top: 10px" ng-src="{{exhibit.picture.resized.dataURL}}"/>
+                            <img ng-show="exhibit.picture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.picture.resized.dataURL}}"/>
                         </div>
                         <span class="help-block"
                               ng-if="exhibitForm.picture.$error.required">Picture is required</span>
@@ -55,7 +60,7 @@
                 <div class="form-group">
                     <label for="content" class="col-sm-3 control-label">Notes</label>
                     <div class="col-sm-9">
-                <textarea name="content" id="content" class="form-control" rows="8" cols="40"
+                <textarea name="content" id="content" class="form-control shadow3" rows="8" cols="40"
                           ng-model="exhibit.content"></textarea>
                     </div>
                 </div>
@@ -66,10 +71,10 @@
             </fieldset>
 
             <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; marting-top: 30px">
-                <input type="button" class="btn btn-default" value="Cancel"
+                <input type="button" class="btn btn-default btn-indent" value="Cancel"
                        ng-click="cancelForm()" />
-                <input type="submit" class="btn btn-primary" value="Submit"
-                       ng-click="create()" />
+                <input type="submit" class="btn btn-primary btn-indent" value="Submit"
+                       ng-click="save()" />
                 <input type="button" class="btn btn-warning" value="Reset"
                        ng-click="resetForm()" />
                 <div class="alert alert-danger" style="margin-top:15px" ng-if="hasFormError">{{formErrors}}</div>

@@ -7,7 +7,7 @@
 angular.module('exhibition').factory('Exhibition', ['$resource',
     function($resource) {
         return $resource('exhibition/:exhibitId', {
-            articleId: '@_id'
+            exhibitId: '@_id'
         }, {
             update: {
                 method: 'PUT'

@@ -5,78 +5,82 @@
     <div class="col-md-12">
 
         <form name="exhibitForm" class="form-horizontal" novalidate>
-
             <fieldset>
                 <div class="form-group" show-errors>
                     <label for="title" class="col-sm-3 control-label">Title</label>
-                    <div class="col-sm-9">
-                        <input type="text" id="title" name="title" class="form-control"
-                               ng-model="exhibit.title" ng-required="true"/>
+                    <div class="col-sm-9 value-section-vshift">
+                        <input type="text" id="title" name="title" class="form-control shadow3"
+                               ng-model="exhibit.title" unique-name mongo-collection="exhibition" ng-required="true"/>
                             <span class="help-block"
-                                  ng-if="exhibitForm.title.$error.required">Exhibit Title is required</span>
+                                  ng-if="exhibitForm.title.$error.required">Exhibit Title is required
+                            </span>
+                            <span class="help-block"
+                                  ng-if="exhibitForm.title.$error.uniqueName">Duplicated Exhibit Title
+                            </span>
                     </div>
                 </div>
 
-                <div class="form-group" show-errors>
-                    <label for="picture"  class="col-sm-3 control-label">Image</label>
+                <div class="form-group">
+                    <label for="newPicture"  class="col-sm-3 control-label">Image</label>
 
                     <div class="col-sm-9">
-                        <div class="col-sm-12" style="padding-left: 0">
+                        <div class="col-sm-12 value-section-vshift" style="padding-left: 0">
                             <div class="col-sm-6" style="padding-left: 0; margin-bottom: 5px;" >
-                                <input id="picture"
-                                       name="picture"
-                                       type="file"
-                                       ng-model="exhibit.picture"
-                                       accept="image/*"
-                                       image="exhibit.picture"
-                                       resize-max-height="100"
-                                       resize-max-width="300"
-                                       resize-quality="0.7"
-                                       class="btn btn-default"
-                                       style="width: 100%"
-                                       ng-required="true"
-                                       file-required />
+
+                                <input id="uploadNewFile" placeholder="Choose File" class="inputUpload shadow3" disabled="disabled" />
+                                <div class="fileUpload btn btn-primary">
+                                    <span>Upload</span>
+                                    <input id="newPicture"
+                                           name="newPicture"
+                                           type="file"
+                                           data-buttonText="Your label here."
+                                           ng-model="exhibit.newPicture"
+                                           accept="image/*"
+                                           image="exhibit.newPicture"
+                                           resize-max-height="300"
+                                           resize-max-width="300"
+                                           resize-quality="0.7"
+                                           class="btn btn-default upload"
+                                           style="width: 100%" />
+                                </div>
                             </div>
-                            <div style="white-space: nowrap;  margin-bottom: 5px;">
-                                <button type="button" ng-click="clearPicture()" class="btn btn-default" style="margin-left: 10px">Clear</button>
-                            </div>
+<!--                            <div style="white-space: nowrap;  margin-bottom: 5px;">
+                                <button type="button" ng-click="clearPicture(true)" class="btn btn-default" style="margin-left: 10px">Clear</button>
+                            </div>-->
                         </div>
                         <div class="col-sm-12" style="padding-left: 0;">
-                            <!--img-circle-->
-                            <img ng-show="exhibit.picture" class="img-responsive" style="margin-top: 10px" ng-src="{{exhibit.picture.resized.dataURL}}"/>
+                            <img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{'/modules/exhibition/pictures/thumbs/' + exhibit._id + '/' + exhibit.picture}}"/>
+                            <img ng-show="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
                         </div>
-                        <span class="help-block"
-                              ng-if="exhibitForm.picture.$error.required">Picture is required</span>
+<!--                        <span class="help-block"
+                              ng-if="exhibitForm.newPicture.$error.required && exhibitForm.newPicture.$dirty">Picture is required</span>-->
                     </div>
-
                 </div>
-
                 <div class="form-group">
                     <label for="content" class="col-sm-3 control-label">Notes</label>
                     <div class="col-sm-9">
-                <textarea name="content" id="content" class="form-control" rows="8" cols="40"
+                <textarea name="content" id="content" class="form-control shadow3" rows="8" cols="40"
                           ng-model="exhibit.content"></textarea>
                     </div>
                 </div>
-
                 <div class="form-group">
-                    <!--<label for="captcha"  class="col-sm-3 control-label"></label>-->
                     <div class="col-sm-offset-3 col-sm-9" name="recaptcha" id="recaptcha" grecaptcha ng-model="recaptcha"></div>
                 </div>
 
             </fieldset>
 
             <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; marting-top: 30px">
-                <input type="button" class="btn btn-default" value="Cancel"
+                <input type="button" class="btn btn-default btn-indent" value="Cancel"
                        ng-click="cancelForm()" />
-                <input type="submit" class="btn btn-primary" value="Submit"
-                       ng-click="create()" />
-                <input type="button" class="btn btn-warning" value="Reset"
-                       ng-click="resetForm()" />
+                <input type="submit" class="btn btn-primary btn-indent" value="Submit"
+                       ng-click="save(true)" />
+                <input type="button" class="btn btn-warning btn-indent" value="Reset"
+                       ng-click="resetForm(true)" />
+                <input type="button" class="btn btn-danger" value="Delete"
+                       ng-click="delete(true)" />
+
                 <div class="alert alert-danger" style="margin-top:15px" ng-if="hasFormError">{{formErrors}}</div>
             </div>
-
-
         </form>
 
     </div>

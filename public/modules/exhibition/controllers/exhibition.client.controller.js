@@ -4,8 +4,8 @@
 'use strict';
 
 angular.module('exhibition').controller('ExhibitionController',
-    ['$scope', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
-        function($scope, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+    ['$scope', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
+        function($scope, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
 
             $scope.master = {};
 
@@ -15,7 +15,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.authentication = Authentication;
 
-            $scope.create = function() {
+            $scope.save = function(isUpdate) {
 
                 $scope.$broadcast('show-errors-event');
 
@@ -23,7 +23,16 @@ angular.module('exhibition').controller('ExhibitionController',
                     return;
 
                 var formData = new FormData();
-                formData.append('image', $scope.exhibit.picture.file);
+                if(isUpdate)
+                {
+                    if($scope.exhibit.newPicture){
+                        formData.append('image', $scope.exhibit.newPicture.file);
+                    }
+                    formData.append('_id', $scope.exhibit._id);
+                }
+                else{
+                    formData.append('image', $scope.exhibit.picture.file);
+                }
                 formData.append('title', $scope.exhibit.title);
                 formData.append('content', $scope.exhibit.content);
                 formData.append('recaptcha', $scope.recaptcha);
@@ -62,6 +71,10 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
+            $scope.delete = function() {
+
+            };
+
             $scope.update = function() {
 
                 $scope.$broadcast('show-errors-event');
@@ -88,6 +101,11 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.exhibit = Exhibition.get({
                     exhibitId: $stateParams.exhibitId
                 });
+
+                $scope.exhibit.$promise.then(function(data) {
+                    $scope.master = angular.copy(data);
+                    console.log(data);
+                });
             };
 
             $scope.cancelForm = function () {
@@ -95,9 +113,9 @@ angular.module('exhibition').controller('ExhibitionController',
                 $state.go('exhibition');
             };
 
-            $scope.resetForm = function () {
-                $scope.$broadcast('hide-errors-event');
-                $scope.clearPicture();
+            $scope.resetForm = function (isUpdate) {
+                                $scope.$broadcast('hide-errors-event');
+                $scope.clearPicture(isUpdate);
                 $scope.exhibit = angular.copy($scope.master);
                 $scope.hasFormError = false;
                 $scope.formErrors = null;
@@ -105,15 +123,51 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.exhibitForm.$setUntouched();
             };
 
-            $scope.clearPicture = function() {
-                $scope.exhibit.picture  = null;
-                angular.element(document.querySelector('#picture')).val("");
+            $scope.clearPicture = function(isUpdate) {
+                if(isUpdate){
+                    $scope.exhibit.newPicture  = null;
+                    angular.element(document.querySelector('#newPicture')).val("");
+                    angular.element(document.querySelector('#uploadNewFile')).val("");
+                }
+                else{
+                    $scope.exhibit.picture  = null;
+                    angular.element(document.querySelector('#picture')).val("");
+                    angular.element(document.querySelector('#uploadFile')).val("");
+                }
             };
 
             $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
 
                 ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
             });
+
+            function GetFilename(url)
+            {
+                if (url)
+                {
+                    var m = url.toString().match(/.*[\\\/](.+?)\./);
+                    if (m && m.length > 1)
+                    {
+                        return m[1];
+                    }
+                }
+                return "";
+            }
+
+
+
+            if(document.getElementById("picture")) {
+                document.getElementById("picture").onchange = function () {
+                    document.getElementById("uploadFile").value = GetFilename(this.value);
+                };
+            }
+
+            if(document.getElementById("newPicture")) {
+                document.getElementById("newPicture").onchange = function () {
+                    document.getElementById("uploadNewFile").value = GetFilename(this.value);
+                };
+            }
+
 
         }
     ]);

@@ -25,92 +25,203 @@ var mongoose = require('mongoose'),
  * Create an exhibit
  */
 
-exports.create = function(req, res) {
+exports.save = function(req, res) {
 
-    var image = req.files.image;
-    var imageName = image.name;
-    var imagePath = image.path;
+    var exhibit = new Exhibit(req.body);
+    exhibit.title_searchable = req.body.title.toLowerCase();
+    var exhibitId = req.body._id;
 
-    var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
-    var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
+    if(exhibitId){
 
-    if(imagePath && imageName) {
+        exhibit._id = exhibitId ;
 
-        var exhibit = new Exhibit(req.body);
-        exhibit.title_searchable = req.body.title.toLowerCase();
-        exhibit.user = req.user;
-        exhibit.picture = imageName;
-        var galRet = exhibit.save(function(err) {
-            if (err) {
-                return res.status(400).send({
-                    message: errorHandler.getErrorMessage(err)
-                });
-            } else {
+        var image = req.files.image;
 
-                fs.readFile(imagePath, function (err, data) {
+        if(!image) {
 
-                    /// write file to uploads/fullsize folder
-
-                    var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + exhibit._id);
-                    var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
-                    var picFullSize = path.join(picFullSizePath, imageName);
-                    var picThumbs = path.join(picThumbsPath, imageName);
-
-                    mkdirp(picFullSizePath, function (err) {
-
-                        if (err) {
-                            return res.status(400).send({
-                                message: errorHandler.getErrorMessage(err)
-                            })
-                        }
-                        else {
-
-                            mkdirp(picThumbsPath, function (err) {
-
-                                if (err) {
-                                    return res.status(400).send({
-                                        message: errorHandler.getErrorMessage(err)
-                                    })
-                                }
-                                else {
-
-                                    fs.writeFile(picFullSize, data, function (err) {
-
-                                        /// write file to uploads/thumbs folder
-                                        im.resize({
-                                            srcPath: picFullSize,
-                                            dstPath: picThumbs,
-                                            quality: 1,
-                                            width: 1000
-                                        }, function (err, stdout, stderr) {
-                                            rimraf(picFullSizePath, function (er) {
-                                                if (er) {
-                                                    console.log(er)
-                                                }
-                                            })
-                                            if (err) {
-                                                return res.status(400).send({
-                                                    message: errorHandler.getErrorMessage(err)
-                                                });
-                                            }
-                                        });
-                                    });
-                                }
-                                // path was created unless there was error
-
-                            });
-                        }
-                        // path was created unless there was error
+            Exhibit.findByIdAndUpdate(exhibit._id,
+            {
+                title: exhibit.title,
+                title_searchable: exhibit.title_searchable,
+                content: exhibit.content
+            }, function (err, exhibit) {
+                if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
                     });
-                    res.json(exhibit);
-                });
-            }
-        });
+                }
+                if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
+                else res.json(exhibit);
+            });
+        }
+        else {
+
+            var imageName = image.name;
+            var imagePath = image.path;
+
+            var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
+            var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
+
+            exhibit.picture = imageName;
+
+            fs.readFile(imagePath, function (err, data) {
+
+                var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + exhibit._id);
+                var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
+                var picFullSize = path.join(picFullSizePath, imageName);
+                var picThumbs = path.join(picThumbsPath, imageName);
+
+                mkdirp(picFullSizePath, function (err) {
+
+                    if (err) {
+                        return res.status(400).send({
+                            message: errorHandler.getErrorMessage(err)
+                        })
+                    }
+                    else {
+                        mkdirp(picThumbsPath, function (err) {
+                            if (err) {
+                                return res.status(400).send({
+                                    message: errorHandler.getErrorMessage(err)
+                                })
+                            }
+                            else {
+                                fs.writeFile(picFullSize, data, function (err) {
+                                    /// write file to uploads/thumbs folder
+                                    im.resize({
+                                        srcPath: picFullSize,
+                                        dstPath: picThumbs,
+                                        quality: 1,
+                                        width: 1000
+                                    }, function (err, stdout, stderr) {
+                                        rimraf(picFullSizePath, function (er) {
+                                            if (er) {
+                                                console.log(er)
+                                            }
+                                        })
+                                        if (err) {
+                                            return res.status(400).send({
+                                                message: errorHandler.getErrorMessage(err)
+                                            });
+                                        }
+                                        else {
+
+                                            Exhibit.findByIdAndUpdate(exhibit._id,
+                                                {
+                                                    title: exhibit.title,
+                                                    title_searchable: exhibit.title_searchable,
+                                                    content: exhibit.content,
+                                                    picture: exhibit.picture
+                                                }, function (err, exhibit) {
+                                                    if (err) {
+                                                        return res.status(400).send({
+                                                            message: errorHandler.getErrorMessage(err)
+                                                        });
+                                                    }
+                                                    if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
+                                                    else res.json(exhibit);
+                                                }
+                                            );
+                                        }
+                                    });
+                                });
+                            }
+                        })
+                    }
+                })
+            })
+        }
     }
-    else{
-        return res.status(400).send({
-            message: errorHandler.getErrorMessage("Picture is missing")
-        })
+
+    else {
+
+        exhibit.user = req.user;
+        var image = req.files.image;
+
+        if (image) {
+
+
+            var imageName = image.name;
+            var imagePath = image.path;
+
+            var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
+            var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
+
+
+            exhibit.picture = imageName;
+
+            var galRet = exhibit.save(function (err) {
+                if (err) {
+                    return res.status(400).send({
+                        message: errorHandler.getErrorMessage(err)
+                    });
+                } else {
+
+                    fs.readFile(imagePath, function (err, data) {
+
+                        /// write file to uploads/fullsize folder
+
+                        var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + exhibit._id);
+                        var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
+                        var picFullSize = path.join(picFullSizePath, imageName);
+                        var picThumbs = path.join(picThumbsPath, imageName);
+
+                        mkdirp(picFullSizePath, function (err) {
+
+                            if (err) {
+                                return res.status(400).send({
+                                    message: errorHandler.getErrorMessage(err)
+                                })
+                            }
+                            else {
+
+                                mkdirp(picThumbsPath, function (err) {
+
+                                    if (err) {
+                                        return res.status(400).send({
+                                            message: errorHandler.getErrorMessage(err)
+                                        })
+                                    }
+                                    else {
+
+                                        fs.writeFile(picFullSize, data, function (err) {
+
+                                            /// write file to uploads/thumbs folder
+                                            im.resize({
+                                                srcPath: picFullSize,
+                                                dstPath: picThumbs,
+                                                quality: 1,
+                                                width: 1000
+                                            }, function (err, stdout, stderr) {
+                                                rimraf(picFullSizePath, function (er) {
+                                                    if (er) {
+                                                        console.log(er)
+                                                    }
+                                                })
+                                                if (err) {
+                                                    return res.status(400).send({
+                                                        message: errorHandler.getErrorMessage(err)
+                                                    });
+                                                }
+                                            });
+                                        });
+                                    }
+                                    // path was created unless there was error
+
+                                });
+                            }
+                            // path was created unless there was error
+                        });
+                        res.json(exhibit);
+                    });
+                }
+            });
+        }
+        else {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage("Picture is missing")
+            })
+        }
     }
 };
 

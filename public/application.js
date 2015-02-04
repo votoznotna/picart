@@ -10,13 +10,6 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			$locationProvider.hashPrefix('!');
 		}
 	])
-/*	.config(function(blockUIConfig) {
-		//blockUIConfig.templateUrl = 'block-ui-overlay.html';
-		//blockUIConfig.template = '<div class="progress"></div>';
-		//Change the default overlay message
-		//blockUIConfig.message = '';
-
-	})*/
 	.config(function(grecaptchaProvider) {
 		grecaptchaProvider.setParameters({
 			sitekey : window.recaptchaSiteKey,
@@ -25,10 +18,14 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 	})
 	.run(function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
-	});
-	//.run(function($templateCache) {
-	//	$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
-	//});
+	})
+	.run(['$state', '$rootScope', '$location', function($state, $rootScope, $location) {
+		//Check when routing starts
+		//event, next, current
+		$rootScope.$on( '$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+			$rootScope.searchBar = false;
+		});
+	}]);
 
 
 //Then define the init function for starting up the application

@@ -33,3 +33,8 @@
 	background-color: lightgrey;
 	border-radius: 2px;
 }
+
+.signin .form-group
+{
+	width: 190px;
+}

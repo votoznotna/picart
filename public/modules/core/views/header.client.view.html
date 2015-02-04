@@ -24,6 +24,16 @@
 				<a ng-switch-default href="/#!/{{item.link}}" data-ng-bind="item.title"></a>
 			</li>
 		</ul>
+
+
+		<form ng-show="searchBar" class="navbar-form navbar-left" style="margin-left: 20px" role="search">
+			<div class="form-group">
+				<input ng-model="query" type="text" class="form-control" placeholder="Search by Title">
+			</div>
+			<button type="submit" ng-click="searchExhibits()" class="btn btn-primary">Go</button>
+		</form>
+
+
 		<ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
 			<li ui-route="/signup" ng-class="{active: $uiRoute}">
 				<a href="/#!/signup">Sign Up</a>

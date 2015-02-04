@@ -77,10 +77,11 @@ angular.module('imageupload', [])
             restrict: 'A',
             scope: {
                 image: '=',
+                //endUploadCallBack: '&endUploadFn',
                 resizeMaxHeight: '@?',
                 resizeMaxWidth: '@?',
                 resizeQuality: '@?',
-                resizeType: '@?',
+                resizeType: '@?'
             },
             link: function postLink(scope, element, attrs, ctrl) {
 
@@ -89,7 +90,7 @@ angular.module('imageupload', [])
                         var dataURL = resizeImage(image, scope);
                         imageResult.resized = {
                             dataURL: dataURL,
-                            type: dataURL.match(/:(.+\/.+);/)[1],
+                            type: dataURL.match(/:(.+\/.+);/)[1]
                         };
                         callback(imageResult);
                     });
@@ -101,7 +102,7 @@ angular.module('imageupload', [])
                         if(attrs.multiple)
                             scope.image.push(imageResult);
                         else
-                            scope.image = imageResult; 
+                            scope.image = imageResult;
                     });
                 };
 

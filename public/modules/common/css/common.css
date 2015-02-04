@@ -34,7 +34,7 @@ h1 {
 }
 .help-block {
   font-size: 1.2em;
-  text-shadow: 1px 1px 1px #a8a8a8;
+  text-shadow: 1px 1px 1px #242424;
   color: #fa2b75;
 }
 html {
@@ -62,4 +62,15 @@ html {
 .page-header {
   margin-top: 20px;
   padding-bottom: 0;
+}
+.whiteOnBlue {
+  color: #fff;
+  background-color: #296295;
+  padding: 4px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+}
+.modal-body {
+  line-height: 20px;
 }

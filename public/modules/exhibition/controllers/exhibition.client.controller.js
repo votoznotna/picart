@@ -4,8 +4,10 @@
 'use strict';
 
 angular.module('exhibition').controller('ExhibitionController',
-    ['$scope', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
-        function($scope, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+    ['$rootScope','$scope', '$modal', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
+        function($rootScope, $scope, $modal, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+
+            $rootScope.searchBar = $state.current.name.toLowerCase() == 'exhibition' ? true : false;
 
             $scope.master = {};
 
@@ -43,15 +45,15 @@ angular.module('exhibition').controller('ExhibitionController',
                     headers: { 'Content-Type': undefined },
                     transformRequest: angular.identity
                 }).then(
-                    function(result) {
-                        $state.go('exhibition');
-                    },
-                    function(result) {
-                        $scope.hasFormError = true;
-                        $scope.formErrors = result ? result.data.message : "Unknown error";
-                    }).finally(function(){
-                        messaging.publish(events.message._SERVER_REQUEST_ENDED_);
-                    });
+                function(result) {
+                    $state.go('exhibition');
+                },
+                function(result) {
+                    $scope.hasFormError = true;
+                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                }).finally(function(){
+                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                });
 
             };
 
@@ -72,6 +74,32 @@ angular.module('exhibition').controller('ExhibitionController',
             };
 
             $scope.delete = function() {
+
+                var formData = new FormData();
+
+                formData.append('_id', $scope.exhibit._id);
+                formData.append('recaptcha', $scope.recaptcha);
+
+                messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+
+                $http.post('delete', formData, {
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                }).then(
+                function(result) {
+                    for (var ind in $scope.exhibition) {
+                        if ($scope.exhibition[ind] === exhibit) {
+                            $scope.exhibition.splice(ind, 1);
+                        }
+                    }
+                    $state.go('exhibition');
+                },
+                function(result) {
+                    $scope.hasFormError = true;
+                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                }).finally(function(){
+                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                });
 
             };
 
@@ -145,10 +173,12 @@ angular.module('exhibition').controller('ExhibitionController',
             {
                 if (url)
                 {
-                    var m = url.toString().match(/.*[\\\/](.+?)\./);
-                    if (m && m.length > 1)
+                    var pattern = /(?=\w+\.\w{3,4}$).+/;
+                    var m = pattern.exec(url.toString());
+                    //var m = url.toString().match(/(?=\w+\.\w{3,4}$).+/);
+                    if (m && m.length > 0)
                     {
-                        return m[1];
+                        return m[0];
                     }
                 }
                 return "";
@@ -159,15 +189,44 @@ angular.module('exhibition').controller('ExhibitionController',
             if(document.getElementById("picture")) {
                 document.getElementById("picture").onchange = function () {
                     document.getElementById("uploadFile").value = GetFilename(this.value);
+                    //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
 
             if(document.getElementById("newPicture")) {
                 document.getElementById("newPicture").onchange = function () {
                     document.getElementById("uploadNewFile").value = GetFilename(this.value);
+                    //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
 
 
+            $scope.endUpload = function () {
+                messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+            }
+
+
+            $scope.deleteConfirmation = function () {
+
+                var modalInstance = $modal.open({
+                    templateUrl: 'deleteExhibitConfirmation.html',
+                    controller: 'RemoveExhibitionConfirmationController',
+                    size: "sm",
+                    resolve: {
+                        exhibitName: function () {
+                            return $scope.exhibit.title;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function (isConfirmed) {
+                    if(isConfirmed)
+                    {
+                        $scope.delete();
+                    }
+                }, function () {
+
+                });
+            };
         }
     ]);

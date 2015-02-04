@@ -6,7 +6,7 @@
     <div class="container padded">
 
         <div class="row">
-            <div data-ng-repeat="exhibit in exhibition"  style="font-weight:bold"  class="col-sm-6 col-md-3" on-finish-render-filters>
+            <div data-ng-repeat="exhibit in exhibition | filter : { title: exhibitQuery } "  style="font-weight:bold"  class="col-sm-6 col-md-3" on-finish-render-filters>
                 <div  class="show-title" >
                     <div ng-show="authentication.user._id == exhibit.user._id"  class="text-font"><a  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></div>
                     <div class="text-font" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></div>

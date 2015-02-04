@@ -21,10 +21,13 @@ module.exports = function(app) {
     app.route('/upload')
         .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
 
+    app.route('/delete')
+        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
+
     app.route('/exhibition/:exhibitId')
         .get(exhibition.read)
         .put(users.requiresLogin, exhibition.hasAuthorization, exhibition.update)
-        .delete(users.requiresLogin, exhibition.hasAuthorization, exhibition.delete);
+        .delete(users.requiresLogin, exhibition.hasAuthorization, exhibition.remove);
 
     // Finish by binding the article middleware
     app.param('exhibitId', exhibition.exhibitByID);

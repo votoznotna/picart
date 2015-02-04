@@ -256,7 +256,7 @@ exports.update = function(req, res) {
 /**
  * Delete an exhibit
  */
-exports.delete = function(req, res) {
+exports.remove = function(req, res) {
     var exhibit = req.exhibit;
 
     exhibit.remove(function(err) {
@@ -269,6 +269,40 @@ exports.delete = function(req, res) {
         }
     });
 };
+
+exports.delete = function(req, res) {
+
+    var exhibit = new Exhibit(req.body);
+    var exhibitId = req.body._id;
+
+    if(exhibitId) {
+
+        exhibit._id = exhibitId;
+        var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
+        Exhibit.findByIdAndRemove(exhibit._id, function (err, exhibit) {
+            if (err) {
+                return res.status(400).send({
+                    message: errorHandler.getErrorMessage(err)
+                });
+            }
+            if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
+            else {
+
+                rimraf(picThumbsPath, function (er) {
+                    if (er) {
+                        console.log(er)
+                    }
+                })
+                res.json(exhibit);
+            }
+        });
+
+    }  else{
+        res.json(exhibit);
+    }
+
+};
+
 
 /**
  * List of Exhibit

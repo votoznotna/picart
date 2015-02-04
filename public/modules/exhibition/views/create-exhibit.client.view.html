@@ -27,9 +27,9 @@
                         <div class="col-sm-12 value-section-vshift" style="padding-left: 0">
                             <div class="col-sm-6" style="padding-left: 0;" >
 
-                                <input id="uploadFile" placeholder="Choose File" class="inputUpload shadow3" disabled="disabled" />
-                                <div class="fileUpload btn btn-primary">
-                                    <span>Upload</span>
+                                <input id="uploadFile" placeholder="Choose Picture" class="inputUpload shadow3" disabled="disabled" />
+                                <div class="fileUpload btn btn-primary" style="cursor:pointer">
+                                    <span style="cursor:pointer">Upload</span>
                                     <input id="picture"
                                            name="picture"
                                            type="file"
@@ -60,9 +60,12 @@
                 <div class="form-group">
                     <label for="content" class="col-sm-3 control-label">Notes</label>
                     <div class="col-sm-9">
-                <textarea name="content" id="content" class="form-control shadow3" rows="8" cols="40"
+                <textarea name="content" id="content" class="form-control shadow3" rows="8" cols="20"
                           ng-model="exhibit.content"></textarea>
                     </div>
+                </div>
+                <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; padding-right:0">
+                    <div class="alert alert-danger" style="margin-top:5px" ng-if="hasFormError">{{formErrors}}</div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-3 col-sm-9" name="recaptcha" id="recaptcha" grecaptcha ng-model="recaptcha"></div>
@@ -70,7 +73,7 @@
 
             </fieldset>
 
-            <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; marting-top: 30px">
+            <div class="exhibit-buttons col-sm-offset-3 col-sm-9" style="padding-left:7px; marting-top: 30px">
                 <input type="button" class="btn btn-default btn-indent" value="Cancel"
                        ng-click="cancelForm()" />
                 <input type="submit" class="btn btn-primary btn-indent" value="Submit"

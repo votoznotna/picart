@@ -1,0 +1,119 @@
+.show-title {
+  margin: 0;
+  font-weight: normal;
+  text-align: center;
+}
+.show-title div {
+  color: #fff;
+  min-width: 100px;
+  border-top: solid 1px #fff;
+  border-left: solid 1px #fff;
+  border-right: solid 1px #fff;
+  display: inline-block;
+  -webkit-box-shadow: 3px 3px 3px #000;
+  -moz-box-shadow: 3px 3px 3px #000;
+  box-shadow: 3px 3px 3px #000;
+  margin: 0;
+  font-weight: normal;
+  font-size: 1.2em;
+  padding: 1px 5px;
+  -webkit-border-top-right-radius: 5px;
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+  background-color: #9d9d9d;
+}
+.show-title a {
+  color: #6ac4ef;
+  display: inline-block;
+  line-height: 0.9em;
+  background-color: link-background-color;
+  text-decoration: none;
+  padding-bottom: -2px;
+  border-bottom: 2px solid #6ac4ef;
+}
+.show-title ahover {
+  color: #6ac4ef;
+}
+.show-content {
+  color: #fff;
+  font-weight: normal;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.show-content div {
+  border-bottome: solid 1px #fff;
+  border-left: solid 1px #fff;
+  border-right: solid 1px #fff;
+  display: inline-block;
+  -webkit-box-shadow: 3px 3px 3px #000;
+  -moz-box-shadow: 3px 3px 3px #000;
+  box-shadow: 3px 3px 3px #000;
+  margin: 0;
+  font-size: 1.1em;
+  padding: 2px 5px 1px;
+  -webkit-border-bottom-right-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-radius-bottomright: 5px;
+  -moz-border-radius-bottomleft: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
+  background-color: #9d9d9d;
+}
+.show-img {
+  background-color: #aaa;
+  cursor: pointer;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  border: solid 3px #fff;
+  -webkit-box-shadow: 3px 3px 3px #000;
+  -moz-box-shadow: 3px 3px 3px #000;
+  box-shadow: 3px 3px 3px #000;
+}
+.text-font {
+  background-color: #565656;
+  text-shadow: -1px -1px 3px #000;
+/*text-shadow 2px 2px 3px #000000*/
+}
+.img-responsive {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.fileUpload {
+  position: relative;
+  overflow: hidden;
+  margin: 10px;
+}
+.inputUpload {
+  padding: 2px 5px;
+  width: 200px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.fileUpload input.upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 1.2em;
+  cursor: pointer;
+  opacity: 0;
+}
+#recaptcha div div {
+  -webkit-box-shadow: 3px 3px 3px #000;
+  -moz-box-shadow: 3px 3px 3px #000;
+  box-shadow: 3px 3px 3px #000;
+}
+.value-section-vshift {
+  margin-bottom: -10px;
+}
+.exhibit-buttons .btn {
+  margin-bottom: 8px;
+}

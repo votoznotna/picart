@@ -2,6 +2,8 @@
  * Created by User on 1/22/2015.
  */
 
+"use strict";
+
 angular.module('common').directive('showErrors', ["$timeout", function ($timeout) {
 
     return {

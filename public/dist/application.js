@@ -89,6 +89,9 @@ ApplicationConfiguration.registerModule('users');
 /**
  * Created by User on 1/24/2015.
  */
+
+"use strict";
+
 angular.module('common').directive('fileRequired',function(){
     return {
         restrict: 'A',
@@ -111,6 +114,8 @@ angular.module('common').directive('fileRequired',function(){
 /**
  * Created by User on 2/1/2015.
  */
+"use strict";
+
 angular.module('common').directive(
     "imgLazyLoad",
     function( $window, $document ) {
@@ -376,6 +381,8 @@ angular.module('common').directive(
 /**
  * Created by User on 1/31/2015.
  */
+"use strict";
+
 angular.module('common').directive('onFinishRenderFilters', function ($timeout) {
     return {
         restrict: 'A',
@@ -392,6 +399,8 @@ angular.module('common').directive('onFinishRenderFilters', function ($timeout) 
 /**
  * Created by User on 1/22/2015.
  */
+
+"use strict";
 
 angular.module('common').directive('showErrors', ["$timeout", function ($timeout) {
 
@@ -432,6 +441,8 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
 /**
  * Created by User on 1/24/2015.
  */
+"use strict";
+
 angular.module('common').directive('uniqueName', function(mongolab) {
     return {
         restrict: 'A',
@@ -470,6 +481,8 @@ angular.module('common').directive('uniqueName', function(mongolab) {
 /**
  * Created by User on 1/29/2015.
  */
+"use strict";
+
 angular.module('common').directive('waitSpinner', function(messaging, events) {
     return {
         restrict: 'E',
@@ -504,6 +517,8 @@ angular.module('common').directive('waitSpinner', function(messaging, events) {
 /**
  * Created by User on 1/29/2015.
  */
+"use strict";
+
 angular.module('common').constant('events', {
     message: {
         _ADD_ERROR_MESSAGE_: '_ADD_ERROR_MESSAGE_',
@@ -526,6 +541,8 @@ angular.module('common').constant('events', {
 /**
  * Created by User on 1/29/2015.
  */
+"use strict";
+
 angular.module('common').factory('messaging', function () {
     //#region Internal Methods
     var cache = {};
@@ -573,6 +590,8 @@ angular.module('common').factory('messaging', function () {
 /**
  * Created by User on 1/24/2015.
  */
+"use strict";
+
 angular.module('common').factory('mongolab', function ($http) {
     var apiKey = '';
     var baseUrl = 'https://api.mongolab.com/api/1/databases';
@@ -956,6 +975,8 @@ angular.module('exhibition').config(['$stateProvider',
 /**
  * Created by User on 2/3/2015.
  */
+"use strict"
+
 angular.module('exhibition').controller('RemoveExhibitionConfirmationController',
     ['$rootScope','$scope', '$modalInstance', 'exhibitName',
         function($rootScope, $scope, $modalInstance, exhibitName) {
@@ -1530,7 +1551,10 @@ angular.module('users').factory('Users', ['$resource',
  * Feb 8th, 11 (v1.11): Fixed bug that caused script to not work in newever versions of jQuery (ie: v1.4.4)
  */
 
-jQuery.noConflict()
+"use strict";
+
+
+jQuery.noConflict();
 
 jQuery.imageMagnify={
 	dsettings: {
@@ -1547,18 +1571,18 @@ jQuery.imageMagnify={
 	refreshoffsets:function($window, $target, warpshell){
 		var $offsets=$target.offset()
 		var winattrs={x:$window.scrollLeft(), y:$window.scrollTop(), w:$window.width(), h:$window.height()}
-		warpshell.attrs.x=$offsets.left //update x position of original image relative to page
-		warpshell.attrs.y=$offsets.top
-		warpshell.newattrs.x=winattrs.x+winattrs.w/2-warpshell.newattrs.w/2
-		warpshell.newattrs.y=winattrs.y+winattrs.h/2-warpshell.newattrs.h/2
+		warpshell.attrs.x=$offsets.left; //update x position of original image relative to page
+		warpshell.attrs.y=$offsets.top;
+		warpshell.newattrs.x=winattrs.x+winattrs.w/2-warpshell.newattrs.w/2;
+		warpshell.newattrs.y=winattrs.y+winattrs.h/2-warpshell.newattrs.h/2;
 		if (warpshell.newattrs.x<winattrs.x+5){ //no space to the left?
-			warpshell.newattrs.x=winattrs.x+5
+			warpshell.newattrs.x=winattrs.x+5;
 		}
 		else if (warpshell.newattrs.x+warpshell.newattrs.w > winattrs.x+winattrs.w){//no space to the right?
-			warpshell.newattrs.x=winattrs.x+5
+			warpshell.newattrs.x=winattrs.x+5;
 		}
 		if (warpshell.newattrs.y<winattrs.y+5){ //no space at the top?
-			warpshell.newattrs.y=winattrs.y+5
+			warpshell.newattrs.y=winattrs.y+5;
 		}
 	},
 
@@ -1590,81 +1614,79 @@ jQuery.imageMagnify={
 	},
 
 	magnify:function($, $target, options){
-		var setting={} //create blank object to store combined settings
-		var setting=jQuery.extend(setting, this.dsettings, options)
-		var attrs=(options.thumbdimensions)? {w:options.thumbdimensions[0], h:options.thumbdimensions[1]} : {w:$target.outerWidth(), h:$target.outerHeight()}
-		var newattrs={}
+		var setting={}; //create blank object to store combined settings
+		var setting=jQuery.extend(setting, this.dsettings, options);
+		var attrs=(options.thumbdimensions)? {w:options.thumbdimensions[0], h:options.thumbdimensions[1]} : {w:$target.outerWidth(), h:$target.outerHeight()};
+		var newattrs={};
 
 		//newattrs.w= (setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
 		//newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
 
 		//$target.css('cursor', jQuery.imageMagnify.cursorcss)
 		if ($target.data('imgshell')){
-			$target.data('imgshell').$clone.remove()
-			$target.css({opacity:1}).unbind('click.magnify')
+			$target.data('imgshell').$clone.remove();
+			$target.css({opacity:1}).unbind('click.magnify');
 		}
-		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body)
+		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body);
 		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
-		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs})
+		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs});
 		$target.bind('click.magnify', function(e){ //action when original image is clicked on
-			var $this=$(this).css({opacity:setting.imgopacity})
-			var imageinfo=$this.data('imgshell')
+			var $this=$(this).css({opacity:setting.imgopacity});
+			var imageinfo=$this.data('imgshell');
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
-			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo) //refresh offset positions of original and warped images
+			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 
-			var $clone=imageinfo.$clone
+			var $clone=imageinfo.$clone;
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block', display:'block'})
 				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
 					//none added
-				}) //end animate
+				}); //end animate
 		}) //end click
 		$clone.click(function(e){ //action when magnified image is clicked on
-			var $this=$(this)
-			var imageinfo=$this.data('$relatedtarget').data('imgshell')
+			var $this=$(this);
+			var imageinfo=$this.data('$relatedtarget').data('imgshell');
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
-			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo) //refresh offset positions of original and warped images
+			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
 
 			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
 				function(){
-					$this.hide()
-					$this.data('$relatedtarget').css({opacity:1}) //reveal original image
-				}) //end animate
+					$this.hide();
+					$this.data('$relatedtarget').css({opacity:1}); //reveal original image
+				}); //end animate
 		}) //end click
 	}
 };
 
 jQuery.fn.imageMagnify=function(options){
-	var $=jQuery
+	var $=jQuery;
 	return this.each(function(){ //return jQuery obj
-		var $imgref=$(this)
+		var $imgref=$(this);
 		if (this.tagName!="IMG")
-			return true //skip to next matched element
+			return true; //skip to next matched element
 		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.windowFit || options.thumbdimensions ){ //if image has explicit width/height attrs defined
-			jQuery.imageMagnify.magnify($, $imgref, options)
+			jQuery.imageMagnify.magnify($, $imgref, options);
 		}
 		else if (this.complete){ //account for IE not firing image.onload
-			jQuery.imageMagnify.magnify($, $imgref, options)
+			jQuery.imageMagnify.magnify($, $imgref, options);
 		}
 		else{
 			$(this).bind('load', function(){
-				jQuery.imageMagnify.magnify($, $imgref, options)
+				jQuery.imageMagnify.magnify($, $imgref, options);
 			})
 		}
-	})
+	});
 };
 
 jQuery.fn.applyMagnifier=function(options){ //dynamic version of imageMagnify() to apply magnify effect to an image dynamically
-	var $=jQuery
+	var $=jQuery;
 	return this.each(function(){ //return jQuery obj
-		var $imgref=$(this)
+		var $imgref=$(this);
 		if (this.tagName!="IMG")
-			return true //skip to next matched element
-
-	})
-
+			return true; //skip to next matched element
+	});
 };
 
 
@@ -1672,27 +1694,27 @@ jQuery.fn.applyMagnifier=function(options){ //dynamic version of imageMagnify() 
 //** It also looks for links with attr rel="magnify[targetimageid]" and makes them togglers for that image
 
 jQuery(document).ready(function($){
-	var $targets=$('.magnify')
+	var $targets=$('.magnify');
 	$targets.each(function(i){
-		var $target=$(this)
-		var options={}
+		var $target=$(this);
+		var options={};
 		if ($target.attr('data-magnifyto'))
-			options.magnifyto=parseFloat($target.attr('data-magnifyto'))
+			options.magnifyto=parseFloat($target.attr('data-magnifyto'));
 		if ($target.attr('data-magnifyby'))
-			options.magnifyby=parseFloat($target.attr('data-magnifyby'))
+			options.magnifyby=parseFloat($target.attr('data-magnifyby'));
 		if ($target.attr('data-magnifyduration'))
-			options.duration=parseInt($target.attr('data-magnifyduration'))
-		$target.imageMagnify(options)
-	})
-	var $triggers=$('a[rel^="magnify["]')
+			options.duration=parseInt($target.attr('data-magnifyduration'));
+		$target.imageMagnify(options);
+	});
+	var $triggers=$('a[rel^="magnify["]');
 	$triggers.each(function(i){
-		var $trigger=$(this)
-		var targetid=$trigger.attr('rel').match(/\[.+\]/)[0].replace(/[\[\]']/g, '') //parse 'id' from rel='magnify[id]'
-		$trigger.data('magnifyimageid', targetid)
+		var $trigger=$(this);
+		var targetid=$trigger.attr('rel').match(/\[.+\]/)[0].replace(/[\[\]']/g, ''); //parse 'id' from rel='magnify[id]'
+		$trigger.data('magnifyimageid', targetid);
 		$trigger.click(function(e){
-			$('#'+$(this).data('magnifyimageid')).trigger('click.magnify')
-			e.preventDefault()
-		})
-	})
-})
+			$('#'+$(this).data('magnifyimageid')).trigger('click.magnify');
+			e.preventDefault();
+		});
+	});
+});
 

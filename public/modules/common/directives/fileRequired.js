@@ -1,6 +1,9 @@
 /**
  * Created by User on 1/24/2015.
  */
+
+"use strict";
+
 angular.module('common').directive('fileRequired',function(){
     return {
         restrict: 'A',

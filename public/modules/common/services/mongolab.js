@@ -1,6 +1,8 @@
 /**
  * Created by User on 1/24/2015.
  */
+"use strict";
+
 angular.module('common').factory('mongolab', function ($http) {
     var apiKey = '';
     var baseUrl = 'https://api.mongolab.com/api/1/databases';

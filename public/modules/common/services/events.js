@@ -1,6 +1,8 @@
 /**
  * Created by User on 1/29/2015.
  */
+"use strict";
+
 angular.module('common').constant('events', {
     message: {
         _ADD_ERROR_MESSAGE_: '_ADD_ERROR_MESSAGE_',

@@ -4,6 +4,8 @@
 /**
  * Created by User on 2/1/2015.
  */
+"use strict";
+
 angular.module('common').directive(
     "imgLazyLoad",
     function( $window, $document ) {

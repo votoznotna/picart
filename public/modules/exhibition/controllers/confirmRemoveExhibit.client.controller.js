@@ -1,6 +1,8 @@
 /**
  * Created by User on 2/3/2015.
  */
+"use strict"
+
 angular.module('exhibition').controller('RemoveExhibitionConfirmationController',
     ['$rootScope','$scope', '$modalInstance', 'exhibitName',
         function($rootScope, $scope, $modalInstance, exhibitName) {

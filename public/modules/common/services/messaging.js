@@ -1,6 +1,8 @@
 /**
  * Created by User on 1/29/2015.
  */
+"use strict";
+
 angular.module('common').factory('messaging', function () {
     //#region Internal Methods
     var cache = {};

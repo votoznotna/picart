@@ -34,15 +34,15 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			$locationProvider.hashPrefix('!');
 		}
 	])
-	.config(function(grecaptchaProvider) {
+	.config(["grecaptchaProvider", function(grecaptchaProvider) {
 		grecaptchaProvider.setParameters({
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
-	})
-	.run(function (mongolab) {
+	}])
+	.run(["mongolab", function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
-	})
+	}])
 	.run(['$state', '$rootScope', '$location', function($state, $rootScope, $location) {
 		//Check when routing starts
 		//event, next, current
@@ -118,7 +118,7 @@ angular.module('common').directive('fileRequired',function(){
 
 angular.module('common').directive(
     "imgLazyLoad",
-    function( $window, $document ) {
+    ["$window", "$document", function( $window, $document ) {
 
         var lazyLoader = (function() {
 
@@ -374,7 +374,7 @@ angular.module('common').directive(
             link: link,
             restrict: "A"
         });
-    }
+    }]
 );
 
 
@@ -383,7 +383,7 @@ angular.module('common').directive(
  */
 "use strict";
 
-angular.module('common').directive('onFinishRenderFilters', function ($timeout) {
+angular.module('common').directive('onFinishRenderFilters', ["$timeout", function ($timeout) {
     return {
         restrict: 'A',
         link: function (scope, element, attr) {
@@ -394,7 +394,7 @@ angular.module('common').directive('onFinishRenderFilters', function ($timeout) 
             }
         }
     }
-});
+}]);
 
 /**
  * Created by User on 1/22/2015.
@@ -443,7 +443,7 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
  */
 "use strict";
 
-angular.module('common').directive('uniqueName', function(mongolab) {
+angular.module('common').directive('uniqueName', ["mongolab", function(mongolab) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -476,14 +476,14 @@ angular.module('common').directive('uniqueName', function(mongolab) {
             });
         }
     };
-});
+}]);
 
 /**
  * Created by User on 1/29/2015.
  */
 "use strict";
 
-angular.module('common').directive('waitSpinner', function(messaging, events) {
+angular.module('common').directive('waitSpinner', ["messaging", "events", function(messaging, events) {
     return {
         restrict: 'E',
         replace: true,
@@ -512,7 +512,7 @@ angular.module('common').directive('waitSpinner', function(messaging, events) {
             });
         }
     };
-});
+}]);
 
 /**
  * Created by User on 1/29/2015.
@@ -592,7 +592,7 @@ angular.module('common').factory('messaging', function () {
  */
 "use strict";
 
-angular.module('common').factory('mongolab', function ($http) {
+angular.module('common').factory('mongolab', ["$http", function ($http) {
     var apiKey = '';
     var baseUrl = 'https://api.mongolab.com/api/1/databases';
 
@@ -707,7 +707,7 @@ angular.module('common').factory('mongolab', function ($http) {
     };
 
     return mongolab;
-});
+}]);
 
 'use strict';
 
@@ -1638,7 +1638,7 @@ jQuery.imageMagnify={
 
 			var $clone=imageinfo.$clone;
 
-			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block', display:'block'})
+			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
 				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete

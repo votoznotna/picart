@@ -1,8 +1,8 @@
 'use strict';
 
 module.exports = {
-	db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/picart',
-	dbName: 'picart',
+	db: process.env.MONGOHQ_URL || process.env.MONGOLAB_URI || 'mongodb://' + (process.env.DB_1_PORT_27017_TCP_ADDR || 'localhost') + '/' + process.env.DB_NAME,
+	dbName: process.env.DB_NAME,
 	assets: {
 		lib: {
 			css: [

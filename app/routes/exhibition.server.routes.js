@@ -19,10 +19,12 @@ module.exports = function(app) {
         .get(exhibition.list)
 
     app.route('/upload')
-        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
+        //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
+        .post(users.requiresLogin, multipartMiddleware, exhibition.save);
 
     app.route('/delete')
-        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
+        //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
+        .post(users.requiresLogin, multipartMiddleware, exhibition.delete);
 
     app.route('/exhibition/:exhibitId')
         .get(exhibition.read)

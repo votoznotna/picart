@@ -33,8 +33,8 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.js',
 				'public/lib/angular-ui-utils/ui-utils.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-				'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
-				'public/lib/angular-grecaptcha/grecaptcha.js'
+				'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js'//,
+				//'public/lib/angular-grecaptcha/grecaptcha.js'
 			]
 		},
 		css: [

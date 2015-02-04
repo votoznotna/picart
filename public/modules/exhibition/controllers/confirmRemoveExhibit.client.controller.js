@@ -1,7 +1,7 @@
 /**
  * Created by User on 2/3/2015.
  */
-"use strict"
+"use strict";
 
 angular.module('exhibition').controller('RemoveExhibitionConfirmationController',
     ['$rootScope','$scope', '$modalInstance', 'exhibitName',

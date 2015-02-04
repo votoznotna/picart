@@ -34,25 +34,22 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			$locationProvider.hashPrefix('!');
 		}
 	])
-/*	.config(function(blockUIConfig) {
-		//blockUIConfig.templateUrl = 'block-ui-overlay.html';
-		//blockUIConfig.template = '<div class="progress"></div>';
-		//Change the default overlay message
-		//blockUIConfig.message = '';
-
-	})*/
-	.config(["grecaptchaProvider", function(grecaptchaProvider) {
+	.config(function(grecaptchaProvider) {
 		grecaptchaProvider.setParameters({
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
-	}])
-	.run(["mongolab", function (mongolab) {
+	})
+	.run(function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
+	})
+	.run(['$state', '$rootScope', '$location', function($state, $rootScope, $location) {
+		//Check when routing starts
+		//event, next, current
+		$rootScope.$on( '$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
+			$rootScope.searchBar = false;
+		});
 	}]);
-	//.run(function($templateCache) {
-	//	$templateCache.put('block-ui-overlay.html', '<div class="progress"></div>');
-	//});
 
 
 //Then define the init function for starting up the application
@@ -64,10 +61,6 @@ angular.element(document).ready(function() {
 	angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
 });
 
-'use strict';
-
-// Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('articles');
 /**
  * Created by User on 1/22/2015.
  */
@@ -81,126 +74,18 @@ ApplicationConfiguration.registerModule('common');
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('core');
 /**
- * Created by User on 1/19/2015.
+ * Created by User on 2/1/2015.
  */
 'use strict';
 
 // Use Applicaion configuration module to register a new module
-ApplicationConfiguration.registerModule('galleries',['common', 'imageupload']);
+ApplicationConfiguration.registerModule('exhibition',['common', 'imageupload']);
+
 
 'use strict';
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
-'use strict';
-
-// Configuring the Articles module
-angular.module('articles').run(['Menus',
-	function(Menus) {
-		// Set top bar menu items
-		//Menus.addMenuItem('topbar', 'Articles', 'articles', 'dropdown', '/articles(/create)?', true);
-		//Menus.addSubMenuItem('topbar', 'articles', 'List Articles', 'articles', null, true);
-		//Menus.addSubMenuItem('topbar', 'articles', 'Post Article', 'articles/create', null, false);
-	}
-]);
-
-'use strict';
-
-// Setting up route
-angular.module('articles').config(['$stateProvider',
-	function($stateProvider) {
-		// Articles state routing
-		$stateProvider.
-		state('listArticles', {
-			url: '/articles',
-			templateUrl: 'modules/articles/views/list-articles.client.view.html'
-		}).
-		state('createArticle', {
-			url: '/articles/create',
-			templateUrl: 'modules/articles/views/create-article.client.view.html'
-		}).
-		state('viewArticle', {
-			url: '/articles/:articleId',
-			templateUrl: 'modules/articles/views/view-article.client.view.html'
-		}).
-		state('editArticle', {
-			url: '/articles/:articleId/edit',
-			templateUrl: 'modules/articles/views/edit-article.client.view.html'
-		});
-	}
-]);
-'use strict';
-
-angular.module('articles').controller('ArticlesController', ['$scope', '$stateParams', '$location', 'Authentication', 'Articles',
-	function($scope, $stateParams, $location, Authentication, Articles) {
-		$scope.authentication = Authentication;
-
-		$scope.create = function() {
-			var article = new Articles({
-				title: this.title,
-				content: this.content
-			});
-			article.$save(function(response) {
-				$location.path('articles/' + response._id);
-
-				$scope.title = '';
-				$scope.content = '';
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		$scope.remove = function(article) {
-			if (article) {
-				article.$remove();
-
-				for (var i in $scope.articles) {
-					if ($scope.articles[i] === article) {
-						$scope.articles.splice(i, 1);
-					}
-				}
-			} else {
-				$scope.article.$remove(function() {
-					$location.path('articles');
-				});
-			}
-		};
-
-		$scope.update = function() {
-			var article = $scope.article;
-
-			article.$update(function() {
-				$location.path('articles/' + article._id);
-			}, function(errorResponse) {
-				$scope.error = errorResponse.data.message;
-			});
-		};
-
-		$scope.find = function() {
-			$scope.articles = Articles.query();
-		};
-
-		$scope.findOne = function() {
-			$scope.article = Articles.get({
-				articleId: $stateParams.articleId
-			});
-		};
-	}
-]);
-'use strict';
-
-//Articles service used for communicating with the articles REST endpoints
-angular.module('articles').factory('Articles', ['$resource',
-	function($resource) {
-		return $resource('articles/:articleId', {
-			articleId: '@_id'
-		}, {
-			update: {
-				method: 'PUT'
-			}
-		});
-	}
-]);
 /**
  * Created by User on 1/24/2015.
  */
@@ -208,9 +93,10 @@ angular.module('common').directive('fileRequired',function(){
     return {
         restrict: 'A',
         require: 'ngModel',
+
         link:function(scope, el, attrs, ngModel){
-            el.bind('change',function(){
-                scope.$apply(function(){
+            el.bind('change',function() {
+                scope.$apply(function () {
                     ngModel.$setViewValue(el.val());
                     ngModel.$render();
                 });
@@ -220,9 +106,277 @@ angular.module('common').directive('fileRequired',function(){
 });
 
 /**
+ * Created by User on 2/1/2015.
+ */
+/**
+ * Created by User on 2/1/2015.
+ */
+angular.module('common').directive(
+    "imgLazyLoad",
+    function( $window, $document ) {
+
+        var lazyLoader = (function() {
+
+            var images = [];
+
+            // Define the render timer for the lazy loading
+            // images to that the DOM-querying (for offsets)
+            // is chunked in groups.
+            var renderTimer = null;
+            var renderDelay = 100;
+
+            // I cache the window element as a jQuery reference.
+            var win = jQuery( $window );
+
+            // Cache the document document height so that
+            // we can respond to changes in the height due to
+            // dynamic content.
+            var doc = $document;
+            var documentHeight = doc.height();
+            var documentTimer = null;
+            var documentDelay = 2000;
+
+            // I determine if the window dimension events
+            // (ie. resize, scroll) are currenlty being
+            // monitored for changes.
+            var isWatchingWindow = false;
+
+            function addImage( image ) {
+
+                images.push( image );
+
+                if ( ! renderTimer ) {
+                    startRenderTimer();
+                }
+
+                if ( ! isWatchingWindow ) {
+                    startWatchingWindow();
+                }
+            }
+
+            function removeImage( image ) {
+
+                // Remove the given image from the render queue.
+                for ( var i = 0 ; i < images.length ; i++ ) {
+                    if ( images[ i ] === image ) {
+                        images.splice( i, 1 );
+                        break;
+                    }
+                }
+
+                // If removing the given image has cleared the
+                // render queue, then we can stop monitoring
+                // the window and the image queue.
+                if ( ! images.length ) {
+                    clearRenderTimer();
+                    stopWatchingWindow();
+                }
+            }
+
+            function checkDocumentHeight() {
+                // If the render time is currently active, then
+                // don't bother getting the document height -
+                // it won't actually do anything.
+                if ( renderTimer ) {
+                    return;
+                }
+
+                var currentDocumentHeight = doc.height();
+                // If the height has not changed, then ignore -
+                // no more images could have come into view.
+                if ( currentDocumentHeight === documentHeight ) {
+                    return;
+                }
+
+                // Cache the new document height.
+                documentHeight = currentDocumentHeight;
+                startRenderTimer();
+            }
+
+            function checkImages() {
+
+                // Log here so we can see how often this
+                // gets called during page activity.
+                //console.log( "Checking for visible images..." );
+
+                var visible = [];
+                var hidden = [];
+
+                // Determine the window dimensions.
+                var windowHeight = win.height();
+                var scrollTop = win.scrollTop();
+
+                // Calculate the viewport offsets.
+                var topFoldOffset = scrollTop;
+                var bottomFoldOffset = ( topFoldOffset + windowHeight );
+
+                for ( var i = 0 ; i < images.length ; i++ ) {
+                    var image = images[ i ];
+                    if ( image.isVisible( topFoldOffset, bottomFoldOffset ) ) {
+                        visible.push( image );
+                    } else {
+                        hidden.push( image );
+                    }
+                }
+
+                // Update the DOM with new image source values.
+                for ( var i = 0 ; i < visible.length ; i++ ) {
+                    visible[ i ].render();
+                }
+                images = hidden;
+
+                clearRenderTimer();
+
+                if ( ! images.length ) {
+                    stopWatchingWindow();
+                }
+            }
+
+            function clearRenderTimer() {
+                clearTimeout( renderTimer );
+                renderTimer = null;
+            }
+
+            function startRenderTimer() {
+
+                renderTimer = setTimeout( checkImages, renderDelay );
+
+            }
+
+            function startWatchingWindow() {
+                isWatchingWindow = true;
+                // Listen for window changes.
+                win.on( "resize.imgLazyLoad", windowChanged );
+                win.on( "scroll.imgLazyLoad", windowChanged );
+                // Set up a timer to watch for document-height changes.
+                documentTimer = setInterval( checkDocumentHeight, documentDelay );
+            }
+
+            // I stop watching the window for changes in dimension.
+            function stopWatchingWindow() {
+                isWatchingWindow = false;
+                // Stop watching for window changes.
+                win.off( "resize.imgLazyLoad" );
+                win.off( "scroll.imgLazyLoad" );
+                // Stop watching for document changes.
+                clearInterval( documentTimer );
+            }
+
+            // I start the render time if the window changes.
+            function windowChanged() {
+                if ( ! renderTimer ) {
+                    startRenderTimer();
+                }
+            }
+
+            // Return the public API.
+            return({
+                addImage: addImage,
+                removeImage: removeImage
+            });
+
+        })();
+
+        // ------------------------------------------ //
+        // ------------------------------------------ //
+
+        function LazyImage( element ) {
+
+            var source = null;
+            var isRendered = false;
+            var height = null;
+
+            function isVisible( topFoldOffset, bottomFoldOffset ) {
+                if ( ! element.is( ":visible" ) ) {
+                    return( false );
+                }
+                if ( height === null ) {
+                    height = element.height();
+                }
+                var top = element.offset().top;
+                var bottom = ( top + height );
+
+                // Return true if the element is:
+                // 1. The top offset is in view.
+                // 2. The bottom offset is in view.
+                // 3. The element is overlapping the viewport.
+                return(
+                (
+                ( top <= bottomFoldOffset ) &&
+                ( top >= topFoldOffset )
+                )
+                ||
+                (
+                ( bottom <= bottomFoldOffset ) &&
+                ( bottom >= topFoldOffset )
+                )
+                ||
+                (
+                ( top <= topFoldOffset ) &&
+                ( bottom >= bottomFoldOffset )
+                )
+                );
+
+            }
+
+            function render() {
+                isRendered = true;
+                renderSource();
+            }
+
+            function setSource( newSource ) {
+
+                source = newSource;
+                if ( isRendered ) {
+                    renderSource();
+                }
+            }
+
+            function renderSource() {
+                element[ 0 ].src = source;
+            }
+
+            // Return the public API.
+            return({
+                isVisible: isVisible,
+                render: render,
+                setSource: setSource
+            });
+        }
+
+        function link( $scope, element, attributes ) {
+            var lazyImage = new LazyImage( element );
+
+            lazyLoader.addImage( lazyImage );
+
+            attributes.$observe(
+                "imgLazyLoad",
+                function( newSource ) {
+                    lazyImage.setSource( newSource );
+                }
+            );
+
+            $scope.$on(
+                "$destroy",
+                function() {
+                    lazyLoader.removeImage( lazyImage );
+                }
+            );
+        }
+
+        // Return the directive configuration.
+        return({
+            link: link,
+            restrict: "A"
+        });
+    }
+);
+
+
+/**
  * Created by User on 1/31/2015.
  */
-angular.module('common').directive('onFinishRenderFilters', ["$timeout", function ($timeout) {
+angular.module('common').directive('onFinishRenderFilters', function ($timeout) {
     return {
         restrict: 'A',
         link: function (scope, element, attr) {
@@ -233,7 +387,7 @@ angular.module('common').directive('onFinishRenderFilters', ["$timeout", functio
             }
         }
     }
-}]);
+});
 
 /**
  * Created by User on 1/22/2015.
@@ -278,7 +432,7 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
 /**
  * Created by User on 1/24/2015.
  */
-angular.module('common').directive('uniqueName', ["mongolab", function(mongolab) {
+angular.module('common').directive('uniqueName', function(mongolab) {
     return {
         restrict: 'A',
         require: 'ngModel',
@@ -311,12 +465,12 @@ angular.module('common').directive('uniqueName', ["mongolab", function(mongolab)
             });
         }
     };
-}]);
+});
 
 /**
  * Created by User on 1/29/2015.
  */
-angular.module('common').directive('waitSpinner', ["messaging", "events", function(messaging, events) {
+angular.module('common').directive('waitSpinner', function(messaging, events) {
     return {
         restrict: 'E',
         replace: true,
@@ -345,7 +499,7 @@ angular.module('common').directive('waitSpinner', ["messaging", "events", functi
             });
         }
     };
-}]);
+});
 
 /**
  * Created by User on 1/29/2015.
@@ -419,7 +573,7 @@ angular.module('common').factory('messaging', function () {
 /**
  * Created by User on 1/24/2015.
  */
-angular.module('common').factory('mongolab', ["$http", function ($http) {
+angular.module('common').factory('mongolab', function ($http) {
     var apiKey = '';
     var baseUrl = 'https://api.mongolab.com/api/1/databases';
 
@@ -534,7 +688,7 @@ angular.module('common').factory('mongolab', ["$http", function ($http) {
     };
 
     return mongolab;
-}]);
+});
 
 'use strict';
 
@@ -554,8 +708,11 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 ]);
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
-	function($scope, Authentication, Menus) {
+angular.module('core').controller('HeaderController', ['$rootScope', '$scope', 'Authentication', 'Menus',
+	function($rootScope, $scope, Authentication, Menus) {
+
+		$rootScope.exhibitQuery = "";
+
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
 		$scope.menu = Menus.getMenu('topbar');
@@ -568,8 +725,14 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
 		$scope.$on('$stateChangeSuccess', function() {
 			$scope.isCollapsed = false;
 		});
+
+		$scope.searchExhibits = function(){
+
+			$rootScope.exhibitQuery = $scope.query;
+		}
 	}
 ]);
+
 'use strict';
 
 
@@ -579,6 +742,7 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 		$scope.authentication = Authentication;
 	}
 ]);
+
 'use strict';
 
 //Menu service used for managing  menus
@@ -747,88 +911,113 @@ angular.module('core').service('Menus', [
 ]);
 
 /**
- * Created by User on 1/19/2015.
+ * Created by User on 2/1/2015.
  */
 'use strict';
 
 // Configuring the Articles module
-angular.module('galleries').run(['Menus',
+angular.module('exhibition').run(['Menus',
     function(Menus) {
         // Set top bar menu items
         Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', null, null, true);
         Menus.addMenuItem('topbar', 'New Exhibit', 'exhibition/create', null, null, false);
-        //Menus.addSubMenuItem('topbar', 'galleries', 'List of Galleries', 'galleries', null, true);
-        //Menus.addSubMenuItem('topbar', 'galleries', 'New Gallery', 'galleries/create', null, false);
     }
 ]);
 
 /**
- * Created by User on 1/19/2015.
+ * Created by User on 2/1/2015.
  */
 'use strict';
 
 // Setting up route
-angular.module('galleries').config(['$stateProvider',
+angular.module('exhibition').config(['$stateProvider',
     function($stateProvider) {
-        // Galleries state routing
+        // Exhibition state routing
         $stateProvider.
             state('exhibition', {
                 url: '/exhibition',
-                templateUrl: 'modules/galleries/views/list-galleries.client.view.html'
+                templateUrl: 'modules/exhibition/views/list-exhibition.client.view.html'
             }).
             state('createExhibit', {
                 url: '/exhibition/create',
-                templateUrl: 'modules/galleries/views/create-gallery.client.view.html'
+                templateUrl: 'modules/exhibition/views/create-exhibit.client.view.html'
             }).
             state('viewExhibit', {
                 url: '/exhibition/:exhibitId',
-                templateUrl: 'modules/galleries/views/view-gallery.client.view.html'
+                templateUrl: 'modules/exhibition/views/view-exhibit.client.view.html'
             }).
             state('editExhibit', {
                 url: '/exhibition/:exhibitId/edit',
-                templateUrl: 'modules/galleries/views/edit-gallery.client.view.html'
+                templateUrl: 'modules/exhibition/views/edit-exhibit.client.view.html'
             });
     }
 ]);
 
 /**
- * Created by User on 1/19/2015.
+ * Created by User on 2/3/2015.
  */
+angular.module('exhibition').controller('RemoveExhibitionConfirmationController',
+    ['$rootScope','$scope', '$modalInstance', 'exhibitName',
+        function($rootScope, $scope, $modalInstance, exhibitName) {
 
+    $scope.exhibitName = exhibitName;
+
+    $scope.ok = function () {
+            $modalInstance.close(true);
+    };
+
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+}]);
+
+/**
+ * Created by User on 2/1/2015.
+ */
 'use strict';
 
-angular.module('galleries').controller('GalleriesController',
-    ['$scope', '$stateParams', '$state','$http', '$window', 'Authentication', 'Galleries', 'messaging', 'events',
-    function($scope, $stateParams, $state, $http,  $window, Authentication, Galleries, messaging, events) {
+angular.module('exhibition').controller('ExhibitionController',
+    ['$rootScope','$scope', '$modal', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
+        function($rootScope, $scope, $modal, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
 
-        $scope.master = {};
+            $rootScope.searchBar = $state.current.name.toLowerCase() == 'exhibition' ? true : false;
 
-        $scope.recaptcha = null;
+            $scope.master = {};
 
-        $scope.gallery = angular.copy($scope.master);
+            $scope.recaptcha = null;
 
-        $scope.authentication = Authentication;
+            $scope.exhibit = angular.copy($scope.master);
 
-        $scope.create = function() {
+            $scope.authentication = Authentication;
 
-            $scope.$broadcast('show-errors-event');
+            $scope.save = function(isUpdate) {
 
-            if ($scope.galleryForm.$invalid)
-                return;
+                $scope.$broadcast('show-errors-event');
 
-            var formData = new FormData();
-            formData.append('image', $scope.gallery.picture.file);
-            formData.append('title', $scope.gallery.title);
-            formData.append('content', $scope.gallery.content);
-            formData.append('recaptcha', $scope.recaptcha);
-            //formData.append('g-recaptcha-response', angular.element(document.getElementById("g-recaptcha-response")).val());
+                if ($scope.exhibitForm.$invalid)
+                    return;
 
-            messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+                var formData = new FormData();
+                if(isUpdate)
+                {
+                    if($scope.exhibit.newPicture){
+                        formData.append('image', $scope.exhibit.newPicture.file);
+                    }
+                    formData.append('_id', $scope.exhibit._id);
+                }
+                else{
+                    formData.append('image', $scope.exhibit.picture.file);
+                }
+                formData.append('title', $scope.exhibit.title);
+                formData.append('content', $scope.exhibit.content);
+                formData.append('recaptcha', $scope.recaptcha);
 
-            $http.post('upload', formData, {
-                headers: { 'Content-Type': undefined },
-                transformRequest: angular.identity
-            }).then(
+                messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+
+                $http.post('upload', formData, {
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                }).then(
                 function(result) {
                     $state.go('exhibition');
                 },
@@ -839,96 +1028,192 @@ angular.module('galleries').controller('GalleriesController',
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
 
-        };
+            };
 
+            $scope.remove = function(exhibit) {
+                if (exhibit)    {
+                    exhibit.$remove();
 
-        $scope.remove = function(gallery) {
-            if (gallery)    {
-                gallery.$remove();
+                    for (var i in $scope.exhibition) {
+                        if ($scope.exhibition[i] === exhibit) {
+                            $scope.exhibition.splice(i, 1);
+                        }
+                    }
+                } else {
+                    $scope.exhibit.$remove(function() {
+                        $state.go('exhibition');
+                    });
+                }
+            };
 
-                for (var i in $scope.galleries) {
-                    if ($scope.galleries[i] === gallery) {
-                        $scope.galleries.splice(i, 1);
+            $scope.delete = function() {
+
+                var formData = new FormData();
+
+                formData.append('_id', $scope.exhibit._id);
+                formData.append('recaptcha', $scope.recaptcha);
+
+                messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+
+                $http.post('delete', formData, {
+                    headers: { 'Content-Type': undefined },
+                    transformRequest: angular.identity
+                }).then(
+                function(result) {
+                    for (var ind in $scope.exhibition) {
+                        if ($scope.exhibition[ind] === exhibit) {
+                            $scope.exhibition.splice(ind, 1);
+                        }
+                    }
+                    $state.go('exhibition');
+                },
+                function(result) {
+                    $scope.hasFormError = true;
+                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                }).finally(function(){
+                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                });
+
+            };
+
+            $scope.update = function() {
+
+                $scope.$broadcast('show-errors-event');
+
+                if ($scope.exhibitForm.$invalid)
+                    return;
+
+                var exhibit = $scope.exhibit;
+
+                exhibit.$update(function() {
+                    $state.go('exhibition');
+                }, function(errorResponse) {
+                    $scope.hasFormError = true;
+                    $scope.formErrors = errorResponse.statusText;
+                    //$scope.error = errorResponse.data.message;
+                });
+            };
+
+            $scope.find = function() {
+                $scope.exhibition = Exhibition.query();
+            };
+
+            $scope.findOne = function() {
+                $scope.exhibit = Exhibition.get({
+                    exhibitId: $stateParams.exhibitId
+                });
+
+                $scope.exhibit.$promise.then(function(data) {
+                    $scope.master = angular.copy(data);
+                    console.log(data);
+                });
+            };
+
+            $scope.cancelForm = function () {
+                // $window.history.back();
+                $state.go('exhibition');
+            };
+
+            $scope.resetForm = function (isUpdate) {
+                                $scope.$broadcast('hide-errors-event');
+                $scope.clearPicture(isUpdate);
+                $scope.exhibit = angular.copy($scope.master);
+                $scope.hasFormError = false;
+                $scope.formErrors = null;
+                $scope.exhibitForm.$setPristine();
+                $scope.exhibitForm.$setUntouched();
+            };
+
+            $scope.clearPicture = function(isUpdate) {
+                if(isUpdate){
+                    $scope.exhibit.newPicture  = null;
+                    angular.element(document.querySelector('#newPicture')).val("");
+                    angular.element(document.querySelector('#uploadNewFile')).val("");
+                }
+                else{
+                    $scope.exhibit.picture  = null;
+                    angular.element(document.querySelector('#picture')).val("");
+                    angular.element(document.querySelector('#uploadFile')).val("");
+                }
+            };
+
+            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+
+                ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
+            });
+
+            function GetFilename(url)
+            {
+                if (url)
+                {
+                    var pattern = /(?=\w+\.\w{3,4}$).+/;
+                    var m = pattern.exec(url.toString());
+                    //var m = url.toString().match(/(?=\w+\.\w{3,4}$).+/);
+                    if (m && m.length > 0)
+                    {
+                        return m[0];
                     }
                 }
-            } else {
-                $scope.gallery.$remove(function() {
-                    $state.go('exhibition');
-                });
+                return "";
             }
-        };
 
-        $scope.update = function() {
 
-            $scope.$broadcast('show-errors-event');
 
-            if ($scope.galleryForm.$invalid)
-                return;
+            if(document.getElementById("picture")) {
+                document.getElementById("picture").onchange = function () {
+                    document.getElementById("uploadFile").value = GetFilename(this.value);
+                    //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+                };
+            }
 
-            var gallery = $scope.gallery;
+            if(document.getElementById("newPicture")) {
+                document.getElementById("newPicture").onchange = function () {
+                    document.getElementById("uploadNewFile").value = GetFilename(this.value);
+                    //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+                };
+            }
 
-            gallery.$update(function() {
-                $state.go('exhibition');
-            }, function(errorResponse) {
-                $scope.hasFormError = true;
-                $scope.formErrors = errorResponse.statusText;
-                //$scope.error = errorResponse.data.message;
-            });
-        };
 
-        $scope.find = function() {
-            $scope.galleries = Galleries.query();
-        };
+            $scope.endUpload = function () {
+                messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+            }
 
-        $scope.findOne = function() {
-            $scope.gallery = Galleries.get({
-                galleryId: $stateParams.galleryId
-            });
-        };
 
-        $scope.cancelForm = function () {
-           // $window.history.back();
-            $state.go('exhibition');
-        };
+            $scope.deleteConfirmation = function () {
 
-        $scope.resetForm = function () {
-            $scope.$broadcast('hide-errors-event');
-            $scope.clearPicture();
-            $scope.gallery = angular.copy($scope.master);
-            $scope.hasFormError = false;
-            $scope.formErrors = null;
-            $scope.galleryForm.$setPristine();
-            $scope.galleryForm.$setUntouched();
-        };
+                var modalInstance = $modal.open({
+                    templateUrl: 'deleteExhibitConfirmation.html',
+                    controller: 'RemoveExhibitionConfirmationController',
+                    size: "sm",
+                    resolve: {
+                        exhibitName: function () {
+                            return $scope.exhibit.title;
+                        }
+                    }
+                });
 
-        $scope.clearPicture = function() {
-            $scope.gallery.picture  = null;
-            angular.element(document.querySelector('#picture')).val("");
-        };
+                modalInstance.result.then(function (isConfirmed) {
+                    if(isConfirmed)
+                    {
+                        $scope.delete();
+                    }
+                }, function () {
 
-        $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-
-            jQuery('.magnify').imageMagnify(
-                {
-                    magnifyby: 3.5,
-                    thumbdimensions: [300, 200]
-                }
-            );
-        });
-
-    }
-]);
+                });
+            };
+        }
+    ]);
 
 /**
- * Created by User on 1/19/2015.
+ * Created by User on 2/1/2015.
  */
 'use strict';
 
-//Galleries service used for communicating with the galleries REST endpoints
-angular.module('galleries').factory('Galleries', ['$resource',
+//Exhibition service used for communicating with the exhibition REST endpoints
+angular.module('exhibition').factory('Exhibition', ['$resource',
     function($resource) {
-        return $resource('galleries/:galleryId', {
-            articleId: '@_id'
+        return $resource('exhibition/:exhibitId', {
+            exhibitId: '@_id'
         }, {
             update: {
                 method: 'PUT'
@@ -938,30 +1223,47 @@ angular.module('galleries').factory('Galleries', ['$resource',
 ]);
 
 
-angular.module('galleries').factory('GalleryService', ['$http', '$q'],
-    function albumService($http, $q) {
-        // interface
-        var service = {
-            albums: [],
-            getAlbums: getAlbums
-        };
-        return service;
+angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($timeout) {
 
-        // implementation
-        function getAlbums() {
-            var def = $q.defer();
+        function runMagnify(elements, pollingInterval, magnifyby) {
 
-            $http.get("./albums.ms")
-                .success(function(data) {
-                    service.albums = data;
-                    def.resolve(data);
-                })
-                .error(function() {
-                    def.reject("Failed to get albums");
-                });
-            return def.promise;
+            var loadingCount = 0;
+
+            elements.each(function () {
+
+                var domImg = jQuery(this).get(0);
+                if (domImg.complete == false || domImg.naturalHeight == 0 || domImg.naturalWidth == 0) {
+                    loadingCount++;
+                } else {
+                    var natHeight = domImg.naturalHeight;
+                    var natWidth = domImg.naturalWidth;
+                    var thumbHeight = natHeight / magnifyby;
+                    var thumbWidth = natWidth / magnifyby;
+                    var thumbdimensions = [thumbWidth, thumbHeight];
+
+                    jQuery(this).imageMagnify(
+                        {
+                            vIndent: 55,
+                            hIndent: 5,
+                            magnifyby: magnifyby,
+                            thumbdimensions: thumbdimensions
+                        }
+                    );
+                }
+            });
+
+            if (loadingCount) {
+                $timeout(function () {
+                    runMagnify(elements, pollingInterval, magnifyby)
+                }, pollingInterval);
+            }
         }
-    });
+
+        return {
+            runMagnify: runMagnify
+        }
+    }
+]);
 
 'use strict';
 
@@ -1042,6 +1344,7 @@ angular.module('users').config(['$stateProvider',
 
 angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
 	function($scope, $http, $location, Authentication) {
+
 		$scope.authentication = Authentication;
 
 		// If user is signed in then redirect back home
@@ -1231,6 +1534,9 @@ jQuery.noConflict()
 
 jQuery.imageMagnify={
 	dsettings: {
+		windowFit: true,
+		vIndent: 0,
+		hIndent: 0,
 		magnifyby: 3, //default increase factor of enlarged image
 		duration: 500, //default duration of animation, in millisec
 		imgopacity: 0.2 //opacify of original image when enlarged image overlays it
@@ -1256,28 +1562,61 @@ jQuery.imageMagnify={
 		}
 	},
 
+	refreshSize: function($window, $target, imageinfo, setting){
+
+		var element = $target.get(0);
+		var natHeight = element.naturalHeight;
+		var natWidth = element.naturalWidth;
+
+		if(natHeight >= natWidth)
+		{
+			imageinfo.newattrs.h = (natHeight < $window.height() - setting.vIndent) ? natHeight : $window.height() - setting.vIndent;
+			imageinfo.newattrs.w =  imageinfo.newattrs.h * natWidth / natHeight;
+			if(imageinfo.newattrs.w >   $window.width()){
+				imageinfo.newattrs.w = (imageinfo.newattrs.w < $window.width() - setting.hIndent) ? imageinfo.newattrs.w :  $window.width() - setting.hIndent;
+				imageinfo.newattrs.h =  imageinfo.newattrs.w * natHeight / natWidth;
+			}
+		}
+		else{
+			imageinfo.newattrs.w =  (natWidth < $window.width() - setting.hIndent) ? natWidth :  $window.width() - setting.hIndent;
+			imageinfo.newattrs.h =  imageinfo.newattrs.w * natHeight / natWidth;
+
+			if(imageinfo.newattrs.h >   $window.height() - setting.vIndent){
+				imageinfo.newattrs.h = (imageinfo.newattrs.h < $window.height() - setting.vIndent) ? imageinfo.newattrs.h : $window.height() - setting.vIndent;
+				imageinfo.newattrs.w =  imageinfo.newattrs.h * natWidth / natHeight;
+			}
+		}
+
+	},
+
 	magnify:function($, $target, options){
 		var setting={} //create blank object to store combined settings
 		var setting=jQuery.extend(setting, this.dsettings, options)
 		var attrs=(options.thumbdimensions)? {w:options.thumbdimensions[0], h:options.thumbdimensions[1]} : {w:$target.outerWidth(), h:$target.outerHeight()}
 		var newattrs={}
-		newattrs.w=(setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
-		newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
-		$target.css('cursor', jQuery.imageMagnify.cursorcss)
+
+		//newattrs.w= (setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
+		//newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
+
+		//$target.css('cursor', jQuery.imageMagnify.cursorcss)
 		if ($target.data('imgshell')){
 			$target.data('imgshell').$clone.remove()
 			$target.css({opacity:1}).unbind('click.magnify')
 		}
-		var $clone=$target.clone().css({position:'absolute', left:0, top:0, visibility:'hidden', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body)
+		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body)
 		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
 		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs})
 		$target.bind('click.magnify', function(e){ //action when original image is clicked on
 			var $this=$(this).css({opacity:setting.imgopacity})
 			var imageinfo=$this.data('imgshell')
+			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo) //refresh offset positions of original and warped images
+
 			var $clone=imageinfo.$clone
-			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, visibility:'visible', display:'block'})
-				.animate({opacity:1, left:imageinfo.newattrs.x, top:imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+
+			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block', display:'block'})
+				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
 					//none added
 				}) //end animate
@@ -1285,8 +1624,10 @@ jQuery.imageMagnify={
 		$clone.click(function(e){ //action when magnified image is clicked on
 			var $this=$(this)
 			var imageinfo=$this.data('$relatedtarget').data('imgshell')
+			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo) //refresh offset positions of original and warped images
-			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
+
+			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
 				function(){
 					$this.hide()
 					$this.data('$relatedtarget').css({opacity:1}) //reveal original image
@@ -1301,7 +1642,7 @@ jQuery.fn.imageMagnify=function(options){
 		var $imgref=$(this)
 		if (this.tagName!="IMG")
 			return true //skip to next matched element
-		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.thumbdimensions){ //if image has explicit width/height attrs defined
+		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.windowFit || options.thumbdimensions ){ //if image has explicit width/height attrs defined
 			jQuery.imageMagnify.magnify($, $imgref, options)
 		}
 		else if (this.complete){ //account for IE not firing image.onload

@@ -1003,6 +1003,8 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $rootScope.searchBar = $state.current.name.toLowerCase() == 'exhibition' ? true : false;
 
+            $rootScope.urlRoot = $window.urlRoot;
+
             $scope.master = {};
 
             $scope.recaptcha = null;
@@ -1044,7 +1046,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                    $scope.formErrors = result && result.data ? result.data.message : "Unknown error";
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
@@ -1090,7 +1092,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result ? result.data.message : "Unknown error";
+                    $scope.formErrors = result && result.data.message ? result.data.message : "Unknown error";
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });

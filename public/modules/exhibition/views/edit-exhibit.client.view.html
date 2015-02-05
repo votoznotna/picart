@@ -64,7 +64,7 @@
                             </div>-->
                         </div>
                         <div class="col-sm-12" style="padding-left: 0;">
-                            <img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{'/modules/exhibition/pictures/thumbs/' + exhibit._id + '/' + exhibit.picture}}"/>
+                            <img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{window.urlRoot + exhibit._id + '/' + exhibit.picture}}"/>
                             <img ng-show="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
                         </div>
 <!--                        <span class="help-block"

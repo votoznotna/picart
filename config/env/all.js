@@ -10,6 +10,8 @@ module.exports = {
 		siteKey: "6LcoKAETAAAAAKwFYgZv-n6wF1ypYUwT2LTVo2QK",
 		secretKey: "6LcoKAETAAAAAF1dMHwGPQ5s9pmPeRdUQBfcPILn"
 	},
+	urlRoot:  process.env.URL_ROOT  || "/modules/exhibition/pictures/thumbs/",
+	dataRoot: process.env.DATA_ROOT,
 	mongolabApiKey: "dGQuMot_LYxBs9JYXjU_T56eRiYJQ9L7",
 	picturesRoot: '../../public/modules/exhibition/pictures',
 	port: process.env.PORT || 3000,

@@ -21,6 +21,7 @@ var mongoose = require('mongoose'),
     Exhibit = mongoose.model('Exhibit'),
     _ = require('lodash');
 
+var dataRoot = config.dataRoot ?  config.dataRoot : __dirname;
 /**
  * Create an exhibit
  */
@@ -59,15 +60,15 @@ exports.save = function(req, res) {
             var imageName = image.name;
             var imagePath = image.path;
 
-            var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
-            var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
+            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
+            var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
             exhibit.picture = imageName;
 
             fs.readFile(imagePath, function (err, data) {
 
-                var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + exhibit._id);
-                var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
+                var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
+                var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
                 var picFullSize = path.join(picFullSizePath, imageName);
                 var picThumbs = path.join(picThumbsPath, imageName);
 
@@ -144,8 +145,8 @@ exports.save = function(req, res) {
             var imageName = image.name;
             var imagePath = image.path;
 
-            var picFullSize = path.join(__dirname, config.picturesRoot + '/fullsize', imageName);
-            var picThumbs = path.join(__dirname, config.picturesRoot + '/thumbs', imageName);
+            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
+            var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
 
             exhibit.picture = imageName;
@@ -161,8 +162,8 @@ exports.save = function(req, res) {
 
                         /// write file to uploads/fullsize folder
 
-                        var picFullSizePath = path.join(__dirname, config.picturesRoot + '/fullsize/' + exhibit._id);
-                        var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
+                        var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
+                        var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
                         var picFullSize = path.join(picFullSizePath, imageName);
                         var picThumbs = path.join(picThumbsPath, imageName);
 
@@ -278,7 +279,7 @@ exports.delete = function(req, res) {
     if(exhibitId) {
 
         exhibit._id = exhibitId;
-        var picThumbsPath = path.join(__dirname, config.picturesRoot + '/thumbs/' + exhibit._id);
+        var picThumbsPath = path.join(config.DATA_ROOT, config.picturesRoot + '/thumbs/' + exhibit._id);
         Exhibit.findByIdAndRemove(exhibit._id, function (err, exhibit) {
             if (err) {
                 return res.status(400).send({

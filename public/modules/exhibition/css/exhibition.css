@@ -1,22 +1,23 @@
 .show-title {
-  margin: 0;
+  margin: 0 0 -5px;
+  z-index: -1;
   font-weight: normal;
   text-align: center;
 }
 .show-title div {
   color: #fff;
-  min-width: 100px;
+/*min-width 100px*/
   border-top: solid 1px #fff;
   border-left: solid 1px #fff;
   border-right: solid 1px #fff;
-  display: inline-block;
+/*display inline-block*/
   -webkit-box-shadow: 3px 3px 3px #000;
   -moz-box-shadow: 3px 3px 3px #000;
   box-shadow: 3px 3px 3px #000;
   margin: 0;
   font-weight: normal;
   font-size: 1.2em;
-  padding: 1px 5px;
+  padding: 1px 5px 5px;
   -webkit-border-top-right-radius: 5px;
   -webkit-border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
@@ -40,20 +41,19 @@
 .show-content {
   color: #fff;
   font-weight: normal;
-  margin-bottom: 10px;
+  margin: -5px 0 10px;
+  z-index: -1;
   text-align: center;
 }
 .show-content div {
   border-bottome: solid 1px #fff;
   border-left: solid 1px #fff;
   border-right: solid 1px #fff;
-  display: inline-block;
   -webkit-box-shadow: 3px 3px 3px #000;
   -moz-box-shadow: 3px 3px 3px #000;
   box-shadow: 3px 3px 3px #000;
-  margin: 0;
   font-size: 1.1em;
-  padding: 2px 5px 1px;
+  padding: 7px 5px 1px;
   -webkit-border-bottom-right-radius: 5px;
   -webkit-border-bottom-left-radius: 5px;
   -moz-border-radius-bottomright: 5px;

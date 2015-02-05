@@ -34,7 +34,7 @@
 
 <body class="ng-cloak" onload="bodyLoaded()">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" style="opacity:1.0" class="navbar navbar-fixed-top navbar-inverse"></header>
-	<section id="main" class="content" style="margin-bottom: 25px">
+	<section id="main" class="content" ng-cloak style="margin-bottom: 25px">
 		<wait-spinner></wait-spinner>
 			{% block content %}{% endblock %}
 	</section>

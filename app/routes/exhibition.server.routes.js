@@ -22,6 +22,10 @@ module.exports = function(app) {
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
         .post(users.requiresLogin, multipartMiddleware, exhibition.save);
 
+    app.route('/pic/:exhibitId')
+        //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
+        .get(exhibition.image);
+
     app.route('/delete')
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
         .post(users.requiresLogin, multipartMiddleware, exhibition.delete);

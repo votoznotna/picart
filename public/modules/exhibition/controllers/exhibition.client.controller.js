@@ -134,7 +134,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 $scope.exhibit.$promise.then(function(data) {
                     $scope.master = angular.copy(data);
-                    console.log(data);
+                    jQuery("#uploadNewFile").val(data.picture);
                 });
             };
 
@@ -151,6 +151,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.formErrors = null;
                 $scope.exhibitForm.$setPristine();
                 $scope.exhibitForm.$setUntouched();
+                jQuery("#uploadNewFile").val($scope.exhibit.picture);
             };
 
             $scope.clearPicture = function(isUpdate) {

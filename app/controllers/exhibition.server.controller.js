@@ -59,7 +59,6 @@ exports.save = function(req, res) {
 
             var imageName = image.name;
             var imagePath = image.path;
-
             var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
             var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
@@ -107,22 +106,42 @@ exports.save = function(req, res) {
                                         }
                                         else {
 
-                                            Exhibit.findByIdAndUpdate(exhibit._id,
-                                                {
-                                                    title: exhibit.title,
-                                                    title_searchable: exhibit.title_searchable,
-                                                    content: exhibit.content,
-                                                    picture: exhibit.picture
-                                                }, function (err, exhibit) {
-                                                    if (err) {
-                                                        return res.status(400).send({
-                                                            message: errorHandler.getErrorMessage(err)
-                                                        });
-                                                    }
-                                                    if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
-                                                    else res.json(exhibit);
-                                                }
-                                            );
+                                            fs.readFile(picThumbs, function(err, data) {
+                                                if (err) return res.status(400).send({
+                                                    message: errorHandler.getErrorMessage(err)
+                                                });
+                                                Exhibit.findByIdAndUpdate(exhibit._id,
+                                                    {
+                                                        title: exhibit.title,
+                                                        title_searchable: exhibit.title_searchable,
+                                                        content: exhibit.content,
+                                                        picture: exhibit.picture,
+                                                        pic:
+                                                        {
+                                                            name: image.name,
+                                                            size: image.size,
+                                                            mime: image.type,
+                                                            data: new Buffer(data).toString('base64')
+                                                        }
+                                                    }, function (err, exhibit) {
+                                                        if (err) {
+                                                            return res.status(400).send({
+                                                                message: errorHandler.getErrorMessage(err)
+                                                            });
+                                                        }
+                                                        if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
+                                                        else {
+/*                                                            rimraf(picThumbs, function (er) {
+                                                                if (er) {
+                                                                    console.log(er)
+                                                                }
+                                                            });*/
+                                                            res.json(exhibit);
+                                                        }
+
+                                                    });
+
+                                            });
                                         }
                                     });
                                 });
@@ -141,13 +160,10 @@ exports.save = function(req, res) {
 
         if (image) {
 
-
             var imageName = image.name;
             var imagePath = image.path;
-
             var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
             var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
-
 
             exhibit.picture = imageName;
 
@@ -159,8 +175,6 @@ exports.save = function(req, res) {
                 } else {
 
                     fs.readFile(imagePath, function (err, data) {
-
-                        /// write file to uploads/fullsize folder
 
                         var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
                         var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
@@ -204,16 +218,44 @@ exports.save = function(req, res) {
                                                         message: errorHandler.getErrorMessage(err)
                                                     });
                                                 }
+
+                                                fs.readFile(picThumbs, function(err, data) {
+                                                    if (err) return res.status(400).send({
+                                                        message: errorHandler.getErrorMessage(err)
+                                                    });
+
+                                                    Exhibit.findByIdAndUpdate(exhibit._id,
+                                                    {
+                                                        pic:
+                                                        {
+                                                            name: image.name,
+                                                            size: image.size,
+                                                            mime: image.type,
+                                                            data: new Buffer(data).toString('base64')
+                                                        }
+                                                    }, function (err, exhibit) {
+                                                        if (err) {
+                                                            return res.status(400).send({
+                                                                message: errorHandler.getErrorMessage(err)
+                                                            });
+                                                        }
+                                                        if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
+                                                        else {
+/*                                                            rimraf(picThumbs, function (er) {
+                                                                if (er) {
+                                                                    console.log(er)
+                                                                }
+                                                            });*/
+                                                            res.json(exhibit);
+                                                        }
+                                                    });
+                                                });
                                             });
                                         });
                                     }
-                                    // path was created unless there was error
-
                                 });
                             }
-                            // path was created unless there was error
                         });
-                        res.json(exhibit);
                     });
                 }
             });
@@ -234,6 +276,28 @@ exports.save = function(req, res) {
 exports.read = function(req, res) {
     res.json(req.exhibit);
 };
+
+exports.image = function(req, res) {
+    Exhibit.find().sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
+        if (err) {
+            return res.status(400).send({
+                message: errorHandler.getErrorMessage(err)
+            });
+        } else {
+            res.json(exhibition);
+        }
+    });
+};
+
+exports.pic = function(req, res, next, id) {
+    Exhibit.findById(id).populate('pic').exec(function(err, pic) {
+        if (err) return next(err);
+        if (!pic) return next(new Error('Failed to load picture ' + id));
+        res.set('Content-Type', pic.mime);
+        res.send( pic.data );
+    });
+};
+
 
 /**
  * Update a exhibit

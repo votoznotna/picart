@@ -43,7 +43,7 @@
                         <div class="col-sm-12 value-section-vshift" style="padding-left: 0">
                             <div class="col-sm-6" style="padding-left: 0; margin-bottom: 5px;" >
 
-                                <input id="uploadNewFile" placeholder="Choose New Picture" class="inputUpload shadow3" disabled="disabled" />
+                                <input id="uploadNewFile" ng-model="selPicture" placeholder="Choose New Picture" class="inputUpload shadow3" disabled="disabled" />
                                 <div class="fileUpload btn btn-primary" style="cursor:pointer">
                                     <span style="cursor:pointer">Upload</span>
                                     <input id="newPicture"
@@ -64,7 +64,7 @@
                             </div>-->
                         </div>
                         <div class="col-sm-12" style="padding-left: 0;">
-                            <img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{window.urlRoot + exhibit._id + '/' + exhibit.picture}}"/>
+                            <img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{urlRoot + exhibit._id + '/' + exhibit.picture}}"/>
                             <img ng-show="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
                         </div>
 <!--                        <span class="help-block"

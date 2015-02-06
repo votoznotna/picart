@@ -10,6 +10,12 @@
   border-top: solid 1px #fff;
   border-left: solid 1px #fff;
   border-right: solid 1px #fff;
+  -webkit-border-topm: solid 1px #fff;
+  -webkit-border-left: solid 1px #fff;
+  -webkit-border-right: solid 1px #fff;
+  -moz-border-top: solid 1px #fff;
+  -moz-border-right: solid 1px #fff;
+  -moz-border-left: solid 1px #fff;
 /*display inline-block*/
   -webkit-box-shadow: 3px 3px 3px #000;
   -moz-box-shadow: 3px 3px 3px #000;
@@ -47,9 +53,15 @@
   text-align: center;
 }
 .show-content div {
-  border-bottome: solid 1px #fff;
+  border-bottom: solid 1px #fff;
   border-left: solid 1px #fff;
   border-right: solid 1px #fff;
+  -webkit-border-bottom: solid 1px #fff;
+  -webkit-border-left: solid 1px #fff;
+  -webkit-border-right: solid 1px #fff;
+  -moz-border-bottom: solid 1px #fff;
+  -moz-border-right: solid 1px #fff;
+  -moz-border-left: solid 1px #fff;
   word-wrap: break-word;
   -webkit-box-shadow: 3px 3px 3px #000;
   -moz-box-shadow: 3px 3px 3px #000;
@@ -72,6 +84,8 @@
   -moz-border-radius: 10px;
   border-radius: 10px;
   border: solid 3px #fff;
+  -moz-border: solid 3px #fff;
+  -webkit-border: solid 3px #fff;
   -webkit-box-shadow: 3px 3px 3px #000;
   -moz-box-shadow: 3px 3px 3px #000;
   box-shadow: 3px 3px 3px #000;

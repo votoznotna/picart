@@ -9,7 +9,7 @@
                             <div ng-show="authentication.user._id == exhibit.user._id"  class="text-font"><a  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></div>
                             <div class="text-font" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></div>
                         </div>
-                        <img img-loaded class="magnify show-img img-responsive" ng-src="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title}}">
+                        <img img-loaded class="magnify show-img img-responsive" ng-src="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">
                         <div class="show-content">
                             <div ng-if="exhibit.content" class="text-font">{{exhibit.content}}</div>
                         </div>

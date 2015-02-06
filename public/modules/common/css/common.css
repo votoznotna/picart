@@ -3,7 +3,7 @@ body {
   padding-bottom: 20px;
 }
 .bg-body {
-  background: url("/modules/core/img/brand/bridge.jpg") no-repeat fixed;
+  background: url("/modules/core/img/brand/bridge.jpg") no-repeat center center fixed;
   background-size: cover;
   -webkit-background-size: cover;
   -moz-background-size: cover;

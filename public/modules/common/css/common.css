@@ -46,7 +46,8 @@ h1 {
   text-shadow: 1px 1px 1px #242424;
   color: #fa2b75;
 }
-html {
+html,
+body {
   background-repeat: no-repeat;
   background: -webkit-linear-gradient(#fad2af, #e1a696);
   background: -o-linear-gradient(#fad2af, #e1a696);

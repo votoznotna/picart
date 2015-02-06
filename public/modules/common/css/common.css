@@ -2,6 +2,13 @@ body {
   color: #14171f;
   padding-bottom: 20px;
 }
+.bg-body {
+  background: url("/modules/core/img/brand/bridge.jpg") no-repeat fixed;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
 .navbar-inverse {
   background: -webkit-linear-gradient(#14171f, #222);
   background: -o-linear-gradient(#14171f, #222);

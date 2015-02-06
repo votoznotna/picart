@@ -21,10 +21,10 @@ module.exports = function(app) {
     app.route('/upload')
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
         .post(users.requiresLogin, multipartMiddleware, exhibition.save);
-
-    app.route('/pic/:exhibitId')
+    // get the image of a particular exhibit
+    app.route('/pic/:id/:name')
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
-        .get(exhibition.image);
+        .get(exhibition.pic);
 
     app.route('/delete')
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);

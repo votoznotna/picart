@@ -121,7 +121,7 @@ exports.save = function(req, res) {
                                                             name: image.name,
                                                             size: image.size,
                                                             mime: image.type,
-                                                            data: new Buffer(data).toString('base64')
+                                                            data: new Buffer(data)//.toString('base64')
                                                         }
                                                     }, function (err, exhibit) {
                                                         if (err) {
@@ -131,11 +131,11 @@ exports.save = function(req, res) {
                                                         }
                                                         if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
                                                         else {
-/*                                                            rimraf(picThumbs, function (er) {
+                                                            rimraf(picThumbsPath, function (er) {
                                                                 if (er) {
                                                                     console.log(er)
                                                                 }
-                                                            });*/
+                                                            });
                                                             res.json(exhibit);
                                                         }
 
@@ -231,21 +231,20 @@ exports.save = function(req, res) {
                                                             name: image.name,
                                                             size: image.size,
                                                             mime: image.type,
-                                                            data: new Buffer(data).toString('base64')
+                                                            data: new Buffer(data)//.toString('base64')
                                                         }
                                                     }, function (err, exhibit) {
-                                                        if (err) {
+                                                        if (err || !exhibit) {
                                                             return res.status(400).send({
                                                                 message: errorHandler.getErrorMessage(err)
                                                             });
                                                         }
-                                                        if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
                                                         else {
-/*                                                            rimraf(picThumbs, function (er) {
+                                                            rimraf(picThumbsPath, function (er) {
                                                                 if (er) {
                                                                     console.log(er)
                                                                 }
-                                                            });*/
+                                                            });
                                                             res.json(exhibit);
                                                         }
                                                     });
@@ -277,24 +276,17 @@ exports.read = function(req, res) {
     res.json(req.exhibit);
 };
 
-exports.image = function(req, res) {
-    Exhibit.find().sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
-        if (err) {
-            return res.status(400).send({
-                message: errorHandler.getErrorMessage(err)
-            });
-        } else {
-            res.json(exhibition);
-        }
-    });
-};
+exports.pic = function(req, res) {
 
-exports.pic = function(req, res, next, id) {
-    Exhibit.findById(id).populate('pic').exec(function(err, pic) {
-        if (err) return next(err);
-        if (!pic) return next(new Error('Failed to load picture ' + id));
-        res.set('Content-Type', pic.mime);
-        res.send( pic.data );
+    var arr =  req.url.split('/');
+    var exhibitId = arr[arr.length - 2];
+    Exhibit.findById(exhibitId).select('pic.mime pic.data').exec(function(err, exhibit) {
+        if (err || !exhibit)
+            return res.status(400).send({
+                message: 'Failed to load picture ' + req.params.exhibitId
+            });
+        res.contentType(exhibit.pic.mime);
+        res.end(exhibit.pic.data, "binary");
     });
 };
 
@@ -343,7 +335,6 @@ exports.delete = function(req, res) {
     if(exhibitId) {
 
         exhibit._id = exhibitId;
-        var picThumbsPath = path.join(config.DATA_ROOT, config.picturesRoot + '/thumbs/' + exhibit._id);
         Exhibit.findByIdAndRemove(exhibit._id, function (err, exhibit) {
             if (err) {
                 return res.status(400).send({
@@ -352,12 +343,6 @@ exports.delete = function(req, res) {
             }
             if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
             else {
-
-                rimraf(picThumbsPath, function (er) {
-                    if (er) {
-                        console.log(er)
-                    }
-                })
                 res.json(exhibit);
             }
         });
@@ -367,13 +352,11 @@ exports.delete = function(req, res) {
     }
 
 };
-
-
 /**
  * List of Exhibit
  */
 exports.list = function(req, res) {
-    Exhibit.find().sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
+    Exhibit.find().select('_id title title_searchable content pic.name user').sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -388,7 +371,7 @@ exports.list = function(req, res) {
  * Exhibit middleware
  */
 exports.exhibitByID = function(req, res, next, id) {
-    Exhibit.findById(id).populate('user', 'displayName').exec(function(err, exhibit) {
+    Exhibit.findById(id).select('_id title content pic.name user').populate('user', 'displayName').exec(function(err, exhibit) {
         if (err) return next(err);
         if (!exhibit) return next(new Error('Failed to load exhibit ' + id));
         req.exhibit = exhibit;

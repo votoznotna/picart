@@ -5,7 +5,7 @@
             <h3 class="modal-title">Delete Exhibit</h3>
         </div>
         <div class="modal-body">
-            Exhibit <b>{{exhibitName}}</b> will be removed after pressing the <span class="whiteOnBlue">Confirm</span> button below. This action cannot be undone.
+            This Exhibit will be removed after pressing the <span class="whiteOnBlue">Confirm</span> button below. This action cannot be undone.
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">Confirm</button>
@@ -64,7 +64,8 @@
                             </div>-->
                         </div>
                         <div class="col-sm-12" style="padding-left: 0;">
-                            <img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{urlRoot + exhibit._id + '/' + exhibit.picture}}"/>
+                            <!--<img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{urlRoot + exhibit._id + '/' + exhibit.picture}}"/>-->
+                            <img ng-hide="exhibit.newPicture"  ng-if="exhibit._id" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}"/>
                             <img ng-show="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
                         </div>
 <!--                        <span class="help-block"

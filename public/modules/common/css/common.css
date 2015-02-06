@@ -73,3 +73,6 @@ html {
 .modal-body {
   line-height: 20px;
 }
+.long-name {
+  word-break: break-all;
+}

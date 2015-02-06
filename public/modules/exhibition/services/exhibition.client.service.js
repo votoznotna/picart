@@ -16,7 +16,6 @@ angular.module('exhibition').factory('Exhibition', ['$resource',
     }
 ]);
 
-
 angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($timeout) {
 
         function runMagnify(elements, pollingInterval, magnifyby) {

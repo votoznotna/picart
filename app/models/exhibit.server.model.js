@@ -29,17 +29,17 @@ var ExhibitSchema = new Schema({
         trim: true,
         required: 'Title cannot be blank'
     },
-    picture: {
-        type: String,
-        default: '',
-        trim: true,
-        required: 'Picture cannot be blank'
-    },
+    //picture: {
+    //    type: String,
+    //    default: '',
+    //    trim: true,
+    //    required: 'Picture cannot be blank'
+    //},
     pic: {
         name: { type: String, default: '', trim: true },
         size: { type: Number, default: 0 },
         mime: { type: String, default: ''},
-        data: { type: Buffer, default: null }
+        data: { type: Buffer, default: null}
     },
     content: {
         type: String,

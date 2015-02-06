@@ -38,7 +38,7 @@ angular.module('exhibition').controller('ExhibitionController',
                     formData.append('image', $scope.exhibit.picture.file);
                 }
                 formData.append('title', $scope.exhibit.title);
-                formData.append('content', $scope.exhibit.content);
+                formData.append('content', $scope.exhibit.content ? $scope.exhibit.content : "");
                 formData.append('recaptcha', $scope.recaptcha);
 
                 messaging.publish(events.message._SERVER_REQUEST_STARTED_);
@@ -58,6 +58,11 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
 
             };
+
+            $scope.getPic = function(pic){
+                    return 'data:' + pic.mime + ";base64," + btoa(pic.data);
+            };
+
 
             $scope.remove = function(exhibit) {
                 if (exhibit)    {
@@ -134,7 +139,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 $scope.exhibit.$promise.then(function(data) {
                     $scope.master = angular.copy(data);
-                    jQuery("#uploadNewFile").val(data.picture);
+                    jQuery("#uploadNewFile").val(data.pic.name);
                 });
             };
 
@@ -151,7 +156,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.formErrors = null;
                 $scope.exhibitForm.$setPristine();
                 $scope.exhibitForm.$setUntouched();
-                jQuery("#uploadNewFile").val($scope.exhibit.picture);
+                jQuery("#uploadNewFile").val($scope.exhibit.pic.name);
             };
 
             $scope.clearPicture = function(isUpdate) {

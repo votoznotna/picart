@@ -2,7 +2,6 @@
     <div class="page-header" style="margin-bottom:10px">
         <h1>Exhibition</h1>
     </div>
-
     <div class="container padded">
             <div data-ng-repeat="exhibit in exhibition | filter : exhibitQuery "  style="font-weight:bold"  on-finish-render-filters>
                 <div class="col-sm-6 col-md-3">
@@ -10,16 +9,13 @@
                         <div ng-show="authentication.user._id == exhibit.user._id"  class="text-font"><a  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></div>
                         <div class="text-font" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></div>
                     </div>
-                    <!--<img class="magnify show-img img-responsive" ng-src="{{urlRoot + exhibit._id + '/' + exhibit.picture}}" title="{{exhibit.title}}">-->
-                    <!--<img class="magnify show-img img-responsive" ng-src="{{getPic(exhibit.pic)}}" title="{{exhibit.title}}">-->
                     <img class="magnify show-img img-responsive" ng-src="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title}}">
-
                     <div class="show-content">
                         <div ng-if="exhibit.content" class="text-font">{{exhibit.content}}</div>
                     </div>
                 </div>
-                <div class="clearfix visible-sm-block" ng-if="$index%2==1"></div><!--For col-XX-6 class-->
-                <div class="clearfix visible-md-block" ng-if="$index%4==3"></div><!--For col-XX-3 class-->
+                <div class="clearfix visible-sm-block" ng-if="$index%2==1"></div>
+                <div class="clearfix visible-md-block" ng-if="$index%4==3"></div>
             </div>
     </div>
 </section>

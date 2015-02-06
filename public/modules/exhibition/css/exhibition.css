@@ -1,5 +1,5 @@
 .show-title {
-  margin: 5px 0 -5px;
+  margin: 10px 0 -5px;
   z-index: -1;
   font-weight: normal;
   text-align: center;
@@ -93,7 +93,7 @@
 }
 .inputUpload {
   padding: 2px 5px;
-  width: 200px;
+/*width 100%*/
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;

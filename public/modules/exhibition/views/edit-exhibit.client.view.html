@@ -41,12 +41,13 @@
 
                     <div class="col-sm-9">
                         <div class="col-sm-12 value-section-vshift" style="padding-left: 0">
-                            <div class="col-sm-6" style="padding-left: 0; margin-bottom: 5px;" >
+                            <div class="col-sm-10" style="padding-left: 0; margin-bottom: 5px" >
 
                                 <input id="uploadNewFile" ng-model="selPicture" placeholder="Choose New Picture" class="inputUpload shadow3" disabled="disabled" />
-                                <div class="fileUpload btn btn-primary" style="cursor:pointer">
-                                    <span style="cursor:pointer">Upload</span>
+                                <div class="fileUpload btn btn-primary">
+                                    <span>Upload</span>
                                     <input id="newPicture"
+                                           style="cursor:pointer"
                                            name="newPicture"
                                            type="file"
                                            ng-model="exhibit.newPicture"

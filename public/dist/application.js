@@ -1661,6 +1661,10 @@ jQuery.imageMagnify={
 
 			var $clone=imageinfo.$clone;
 
+			$(window).on('scroll resize', function(){
+				$clone.trigger('click')
+			});
+
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
 				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,

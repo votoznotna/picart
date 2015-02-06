@@ -379,6 +379,22 @@ angular.module('common').directive(
 
 
 /**
+ * Created by User on 2/6/2015.
+ */
+angular.module('common').directive('imgLoaded', function () {
+    return {
+        restrict: 'A',
+
+        link: function(scope, element, attrs) {
+
+            element.bind("load" , function(e){
+                element.closest(".img-box").css('opacity', 1);
+            });
+        }
+    }
+});
+
+/**
  * Created by User on 1/31/2015.
  */
 "use strict";
@@ -1272,7 +1288,7 @@ angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($ti
                     jQuery(this).imageMagnify(
                         {
                             vIndent: 50,
-                            hIndent: 5,
+                            hIndent: 0,
                             magnifyby: magnifyby,
                             thumbdimensions: thumbdimensions
                         }

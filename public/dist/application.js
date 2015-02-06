@@ -1271,7 +1271,7 @@ angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($ti
 
                     jQuery(this).imageMagnify(
                         {
-                            vIndent: 55,
+                            vIndent: 50,
                             hIndent: 5,
                             magnifyby: magnifyby,
                             thumbdimensions: thumbdimensions

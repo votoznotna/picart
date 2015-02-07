@@ -94,9 +94,11 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone;
 
-			$(window)
-				.off('scroll resize', function(){$clone.trigger('click')})
-				.on('scroll resize',  function(){$clone.trigger('click')});
+			$(window).on('scroll resize',  function(){$clone.trigger('click')});
+
+/*			$(document).click(function() {
+				jQuery.imageMagnify.zoomOut($clone, setting);
+			});*/
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
 				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
@@ -104,9 +106,29 @@ jQuery.imageMagnify={
 				function(){ //callback function after warping is complete
 					//none added
 				}); //end animate
-			}) //end click
-		$clone.click(function(e){ //action when magnified image is clicked on
+			}); //end click
+		$clone.on('click', function(e){
+				var $=jQuery;
+				var $this=$(this);
+				var imageinfo=$this.data('$relatedtarget').data('imgshell');
+				if(!imageinfo) return;
+				jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
+				jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
+
+				$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
+					function(){
+						$this.hide();
+						$this.data('$relatedtarget').css({opacity:1}); //reveal original image
+					}); //end animate
+			}
+		);
+
+		$clone.on('clickoutside', function(e){
+			var $=jQuery;
 			var $this=$(this);
+			//var target = $(e.target);
+			if($this.css('opacity') == 0) return;
+
 			var imageinfo=$this.data('$relatedtarget').data('imgshell');
 			if(!imageinfo) return;
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
@@ -117,7 +139,7 @@ jQuery.imageMagnify={
 					$this.hide();
 					$this.data('$relatedtarget').css({opacity:1}); //reveal original image
 				}); //end animate
-		}) //end click
+		});
 	}
 };
 

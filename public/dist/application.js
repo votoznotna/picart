@@ -1591,7 +1591,7 @@ jQuery.imageMagnify={
 	cursorcss: 'url(/modules/common/js/magnify/magnify.cur), -moz-zoom-in', //Value for CSS's 'cursor' attribute, added to original image
 	zIndexcounter: 100,
 
-	refreshoffsets:function($window, $target, warpshell){
+		refreshoffsets:function($window, $target, warpshell){
 		var $offsets=$target.offset()
 		var winattrs={x:$window.scrollLeft(), y:$window.scrollTop(), w:$window.width(), h:$window.height()}
 		warpshell.attrs.x=$offsets.left; //update x position of original image relative to page
@@ -1658,12 +1658,11 @@ jQuery.imageMagnify={
 			var imageinfo=$this.data('imgshell');
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
-
 			var $clone=imageinfo.$clone;
 
-			$(window).on('scroll resize', function(){
-				$clone.trigger('click')
-			});
+			$(window)
+				.off('scroll resize', function(){$clone.trigger('click')})
+				.on('scroll resize',  function(){$clone.trigger('click')});
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
 				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
@@ -1671,7 +1670,7 @@ jQuery.imageMagnify={
 				function(){ //callback function after warping is complete
 					//none added
 				}); //end animate
-		}) //end click
+			}) //end click
 		$clone.click(function(e){ //action when magnified image is clicked on
 			var $this=$(this);
 			var imageinfo=$this.data('$relatedtarget').data('imgshell');

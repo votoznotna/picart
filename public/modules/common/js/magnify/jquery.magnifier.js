@@ -89,6 +89,7 @@ jQuery.imageMagnify={
 		$target.bind('click.magnify', function(e){ //action when original image is clicked on
 			var $this=$(this).css({opacity:setting.imgopacity});
 			var imageinfo=$this.data('imgshell');
+			if(!imageinfo) return;
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone;
@@ -107,6 +108,7 @@ jQuery.imageMagnify={
 		$clone.click(function(e){ //action when magnified image is clicked on
 			var $this=$(this);
 			var imageinfo=$this.data('$relatedtarget').data('imgshell');
+			if(!imageinfo) return;
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
 

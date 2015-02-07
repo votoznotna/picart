@@ -85,6 +85,8 @@ jQuery.imageMagnify={
 		}
 		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body);
 		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
+		$clone.data('$zoomOutProgress', '0');
+		$clone.data('$zoomStatus', '0');
 		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs});
 		$target.bind('click.magnify', function(e){ //action when original image is clicked on
 			var $this=$(this).css({opacity:setting.imgopacity});
@@ -93,17 +95,23 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone;
+			$clone.data('$zoomStatus', '0');
+			$(window).on('scroll resize click',  function(e){
+				var  var1 = $clone.css('opacity');
+				if(	e.target !== $clone.get(0)
+					//&& $clone.css('opacity') == 1
+					&& $clone.data('$zoomStatus') == '1'
+					&& $clone.data('$zoomOutProgress') == '0') {
 
-			$(window).on('scroll resize',  function(){$clone.trigger('click')});
-
-/*			$(document).click(function() {
-				jQuery.imageMagnify.zoomOut($clone, setting);
-			});*/
+					$clone.trigger('click');
+				}
+			});
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
 				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
+					$clone.data('$zoomStatus', '1');
 					//none added
 				}); //end animate
 			}); //end click
@@ -112,6 +120,7 @@ jQuery.imageMagnify={
 				var $this=$(this);
 				var imageinfo=$this.data('$relatedtarget').data('imgshell');
 				if(!imageinfo) return;
+				$this.data('$zoomOutProgress', '1');
 				jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 				jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
 
@@ -119,27 +128,11 @@ jQuery.imageMagnify={
 					function(){
 						$this.hide();
 						$this.data('$relatedtarget').css({opacity:1}); //reveal original image
+						$this.data('$zoomOutProgress', '0');
+						$clone.data('$zoomStatus', '0');
 					}); //end animate
 			}
 		);
-
-		$clone.on('clickoutside', function(e){
-			var $=jQuery;
-			var $this=$(this);
-			//var target = $(e.target);
-			if($this.css('opacity') == 0) return;
-
-			var imageinfo=$this.data('$relatedtarget').data('imgshell');
-			if(!imageinfo) return;
-			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
-			jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
-
-			$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
-				function(){
-					$this.hide();
-					$this.data('$relatedtarget').css({opacity:1}); //reveal original image
-				}); //end animate
-		});
 	}
 };
 

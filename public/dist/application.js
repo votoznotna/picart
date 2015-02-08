@@ -139,7 +139,7 @@ angular.module('common').directive(
             var doc = $document;
             var documentHeight = doc.height();
             var documentTimer = null;
-            var documentDelay = 1000;
+            var documentDelay = 2000;
 
             // I determine if the window dimension events
             // (ie. resize, scroll) are currenlty being
@@ -239,12 +239,14 @@ angular.module('common').directive(
 
             function clearRenderTimer() {
                 clearTimeout( renderTimer );
+                console.log('clearRenderTimer.');
                 renderTimer = null;
             }
 
             function startRenderTimer() {
 
                 renderTimer = setTimeout( checkImages, renderDelay );
+                console.log('startRenderTimer.');
 
             }
 
@@ -369,7 +371,7 @@ angular.module('common').directive(
             );
 
             jQuery(element).closest(".img-top").find('.img-spin').css('display', 'none');
-            jQuery(element).closest(".img-top").find('.img-box').css('opacity', 1);
+            jQuery(element).closest(".img-top").find('.img-box').css({'opacity': 1});
         };
 
         function link( $scope, element, attributes ) {

@@ -1,7 +1,7 @@
 /**
  * Created by User on 1/24/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').directive('uniqueName', function(mongolab) {
     return {
@@ -9,7 +9,7 @@ angular.module('common').directive('uniqueName', function(mongolab) {
         require: 'ngModel',
         link: function (scope, element, attrs, ctrl) {
 
-            var mongoDbCollection = attrs["mongoCollection"];
+            var mongoDbCollection = attrs['mongoCollection'];
             var mongoDbName = window.dbName;
 
             var getByNameSuccessHandler = function (response) {

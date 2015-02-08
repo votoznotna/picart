@@ -7,7 +7,7 @@
  * Feb 8th, 11 (v1.11): Fixed bug that caused script to not work in newever versions of jQuery (ie: v1.4.4)
  */
 
-"use strict";
+'use strict';
 
 
 jQuery.noConflict();
@@ -25,8 +25,8 @@ jQuery.imageMagnify={
 	zIndexcounter: 100,
 
 		refreshoffsets:function($window, $target, warpshell){
-		var $offsets=$target.offset()
-		var winattrs={x:$window.scrollLeft(), y:$window.scrollTop(), w:$window.width(), h:$window.height()}
+		var $offsets=$target.offset();
+		var winattrs={x:$window.scrollLeft(), y:$window.scrollTop(), w:$window.width(), h:$window.height()};
 		warpshell.attrs.x=$offsets.left; //update x position of original image relative to page
 		warpshell.attrs.y=$offsets.top;
 		warpshell.newattrs.x=winattrs.x+winattrs.w/2-warpshell.newattrs.w/2;
@@ -84,7 +84,7 @@ jQuery.imageMagnify={
 			$target.css({opacity:1}).unbind('click.magnify');
 		}
 		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body);
-		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
+		$clone.data('$relatedtarget', $target); //save $target image this enlarged image is associated with
 		$clone.data('$zoomOutProgress', '0');
 		$clone.data('$zoomStatus', '0');
 		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs});
@@ -140,7 +140,7 @@ jQuery.fn.imageMagnify=function(options){
 	var $=jQuery;
 	return this.each(function(){ //return jQuery obj
 		var $imgref=$(this);
-		if (this.tagName!="IMG")
+		if (this.tagName && this.tagName.toUpperCase()!='IMG')
 			return true; //skip to next matched element
 		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.windowFit || options.thumbdimensions ){ //if image has explicit width/height attrs defined
 			jQuery.imageMagnify.magnify($, $imgref, options);
@@ -160,7 +160,7 @@ jQuery.fn.applyMagnifier=function(options){ //dynamic version of imageMagnify() 
 	var $=jQuery;
 	return this.each(function(){ //return jQuery obj
 		var $imgref=$(this);
-		if (this.tagName!="IMG")
+		if (this.tagName && this.tagName.toUpperCase()!="IMG")
 			return true; //skip to next matched element
 	});
 };

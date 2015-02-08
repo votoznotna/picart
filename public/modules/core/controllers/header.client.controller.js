@@ -3,7 +3,7 @@
 angular.module('core').controller('HeaderController', ['$rootScope', '$scope', 'Authentication', 'Menus',
 	function($rootScope, $scope, Authentication, Menus) {
 
-		$rootScope.exhibitQuery = "";
+		$rootScope.exhibitQuery = '';
 
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;

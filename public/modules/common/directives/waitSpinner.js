@@ -1,7 +1,7 @@
 /**
  * Created by User on 1/29/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').directive('waitSpinner', function(messaging, events) {
     return {

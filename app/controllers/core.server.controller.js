@@ -35,7 +35,7 @@ exports.hasValidCaptcha = function(req, res, next){
 
 	var req_options = {
 		host: API_HOST,
-		path: API_END_POINT + "?" + data_str,
+		path: API_END_POINT + '?' + data_str,
 		port: 443,
 		method: 'GET'
 	};

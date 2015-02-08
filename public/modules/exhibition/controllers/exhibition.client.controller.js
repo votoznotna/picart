@@ -7,7 +7,7 @@ angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$modal', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
         function($rootScope, $scope, $modal, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
 
-            $rootScope.searchBar = $state.current.name.toLowerCase() == 'exhibition' ? true : false;
+            $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
 
             $rootScope.urlRoot = $window.urlRoot;
 
@@ -38,7 +38,7 @@ angular.module('exhibition').controller('ExhibitionController',
                     formData.append('image', $scope.exhibit.picture.file);
                 }
                 formData.append('title', $scope.exhibit.title);
-                formData.append('content', $scope.exhibit.content ? $scope.exhibit.content : "");
+                formData.append('content', $scope.exhibit.content ? $scope.exhibit.content : '');
                 formData.append('recaptcha', $scope.recaptcha);
 
                 messaging.publish(events.message._SERVER_REQUEST_STARTED_);
@@ -52,7 +52,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data ? result.data.message : "Unknown error";
+                    $scope.formErrors = result && result.data ? result.data.message : 'Unknown error';
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
@@ -60,7 +60,7 @@ angular.module('exhibition').controller('ExhibitionController',
             };
 
             $scope.getPic = function(pic){
-                    return 'data:' + pic.mime + ";base64," + btoa(pic.data);
+                    return 'data:' + pic.mime + ';base64,' + btoa(pic.data);
             };
 
 
@@ -95,7 +95,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 }).then(
                 function(result) {
                     for (var ind in $scope.exhibition) {
-                        if ($scope.exhibition[ind] === exhibit) {
+                        if ($scope.exhibition[ind] === $scope.exhibit) {
                             $scope.exhibition.splice(ind, 1);
                         }
                     }
@@ -103,7 +103,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data.message ? result.data.message : "Unknown error";
+                    $scope.formErrors = result && result.data.message ? result.data.message : 'Unknown error';
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
@@ -139,7 +139,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 $scope.exhibit.$promise.then(function(data) {
                     $scope.master = angular.copy(data);
-                    jQuery("#uploadNewFile").val(data.pic.name);
+                    jQuery('#uploadNewFile').val(data.pic.name);
                 });
             };
 
@@ -156,19 +156,19 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.formErrors = null;
                 $scope.exhibitForm.$setPristine();
                 $scope.exhibitForm.$setUntouched();
-                jQuery("#uploadNewFile").val($scope.exhibit.pic.name);
+                jQuery('#uploadNewFile').val($scope.exhibit.pic.name);
             };
 
             $scope.clearPicture = function(isUpdate) {
                 if(isUpdate){
                     $scope.exhibit.newPicture  = null;
-                    angular.element(document.querySelector('#newPicture')).val("");
-                    angular.element(document.querySelector('#uploadNewFile')).val("");
+                    angular.element(document.querySelector('#newPicture')).val('');
+                    angular.element(document.querySelector('#uploadNewFile')).val('');
                 }
                 else{
                     $scope.exhibit.picture  = null;
-                    angular.element(document.querySelector('#picture')).val("");
-                    angular.element(document.querySelector('#uploadFile')).val("");
+                    angular.element(document.querySelector('#picture')).val('');
+                    angular.element(document.querySelector('#uploadFile')).val('');
                 }
             };
 
@@ -189,21 +189,21 @@ angular.module('exhibition').controller('ExhibitionController',
                         return m[0];
                     }
                 }
-                return "";
+                return '';
             }
 
 
 
-            if(document.getElementById("picture")) {
-                document.getElementById("picture").onchange = function () {
-                    document.getElementById("uploadFile").value = GetFilename(this.value);
+            if(document.getElementById('picture')) {
+                document.getElementById('picture').onchange = function () {
+                    document.getElementById('uploadFile').value = GetFilename(this.value);
                     //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
 
-            if(document.getElementById("newPicture")) {
-                document.getElementById("newPicture").onchange = function () {
-                    document.getElementById("uploadNewFile").value = GetFilename(this.value);
+            if(document.getElementById('newPicture')) {
+                document.getElementById('newPicture').onchange = function () {
+                    document.getElementById('uploadNewFile').value = GetFilename(this.value);
                     //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
@@ -211,7 +211,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.endUpload = function () {
                 messaging.publish(events.message._SERVER_REQUEST_ENDED_);
-            }
+            };
 
 
             $scope.deleteConfirmation = function () {

@@ -1,7 +1,7 @@
 /**
  * Created by User on 1/24/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').factory('mongolab', function ($http) {
     var apiKey = '';
@@ -50,7 +50,7 @@ angular.module('common').factory('mongolab', function ($http) {
         parameters = parameters || {};
         parameters['apiKey'] = apiKey;
         var uri = baseUrl + '/' + database + '/collections/' + collection;
-        return $http({method: "GET", url: uri, params: parameters, cache: false});
+        return $http({method: 'GET', url: uri, params: parameters, cache: false});
     };
 
     /**
@@ -77,7 +77,7 @@ angular.module('common').factory('mongolab', function ($http) {
      */
     var createObject = function (database, collection, object) {
         var uri = baseUrl + '/' + database + '/collections/' + collection + '?apiKey=' + apiKey;
-        return $http({method: "POST", url: uri, data: angular.toJson(object), cache: false});
+        return $http({method: 'POST', url: uri, data: angular.toJson(object), cache: false});
     };
 
     /**
@@ -90,7 +90,7 @@ angular.module('common').factory('mongolab', function ($http) {
     var updateObject = function (database, collection, object) {
         var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + object._id.$oid + '?apiKey=' + apiKey;
         delete object._id;
-        return $http({method: "PUT", url: uri, data: angular.toJson(object), cache: false});
+        return $http({method: 'PUT', url: uri, data: angular.toJson(object), cache: false});
     };
 
     /**
@@ -102,7 +102,7 @@ angular.module('common').factory('mongolab', function ($http) {
      */
     var deleteObject = function (database, collection, object) {
         var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + object._id.$oid + '?apiKey=' + apiKey;
-        return $http({method: "DELETE", url: uri, cache: false});
+        return $http({method: 'DELETE', url: uri, cache: false});
     };
 
     var mongolab = {

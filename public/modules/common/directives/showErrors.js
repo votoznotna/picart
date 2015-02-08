@@ -2,9 +2,9 @@
  * Created by User on 1/22/2015.
  */
 
-"use strict";
+'use strict';
 
-angular.module('common').directive('showErrors', ["$timeout", function ($timeout) {
+angular.module('common').directive('showErrors', ['$timeout', function ($timeout) {
 
     return {
         restrict: 'A',
@@ -12,7 +12,7 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
         link: function (scope, el, attrs, formCtrl) {
 
             // find the text box element, which has the 'name' attribute
-            var inputEl = el[0].querySelector("[name]");
+            var inputEl = el[0].querySelector('[name]');
 
             // convert the native text box element to an angular element
             var inputNgEl = angular.element(inputEl);
@@ -36,6 +36,5 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
                 }, 0, false);
             });
         }
-    }
-
+    };
 }]);

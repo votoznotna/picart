@@ -12,7 +12,7 @@
 var mongoose = require('mongoose'),
     im = require('imagemagick'),
     fs = require('fs'),
-    rimraf = require("rimraf"),
+    rimraf = require('rimraf'),
     path = require('path'),
     mkdirp = require('mkdirp'),
     errorHandler = require('./errors.server.controller'),
@@ -31,12 +31,11 @@ exports.save = function(req, res) {
     var exhibit = new Exhibit(req.body);
     exhibit.title_searchable = req.body.title.toLowerCase();
     var exhibitId = req.body._id;
+    var image = req.files.image;
 
     if(exhibitId){
 
         exhibit._id = exhibitId ;
-
-        var image = req.files.image;
 
         if(!image) {
 
@@ -76,14 +75,14 @@ exports.save = function(req, res) {
                     if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
-                        })
+                        });
                     }
                     else {
                         mkdirp(picThumbsPath, function (err) {
                             if (err) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
-                                })
+                                });
                             }
                             else {
                                 fs.writeFile(picFullSize, data, function (err) {
@@ -96,9 +95,9 @@ exports.save = function(req, res) {
                                     }, function (err, stdout, stderr) {
                                         rimraf(picFullSizePath, function (er) {
                                             if (er) {
-                                                console.log(er)
+                                                console.log(er);
                                             }
-                                        })
+                                        });
                                         if (err) {
                                             return res.status(400).send({
                                                 message: errorHandler.getErrorMessage(err)
@@ -133,7 +132,7 @@ exports.save = function(req, res) {
                                                         else {
                                                             rimraf(picThumbsPath, function (er) {
                                                                 if (er) {
-                                                                    console.log(er)
+                                                                    console.log(er);
                                                                 }
                                                             });
                                                             res.json(exhibit);
@@ -148,15 +147,14 @@ exports.save = function(req, res) {
                             }
                         })
                     }
-                })
-            })
+                });
+            });
         }
     }
 
     else {
 
         exhibit.user = req.user;
-        var image = req.files.image;
 
         if (image) {
 
@@ -195,7 +193,7 @@ exports.save = function(req, res) {
                                     if (err) {
                                         return res.status(400).send({
                                             message: errorHandler.getErrorMessage(err)
-                                        })
+                                        });
                                     }
                                     else {
 
@@ -212,7 +210,7 @@ exports.save = function(req, res) {
                                                     if (er) {
                                                         console.log(er)
                                                     }
-                                                })
+                                                });
                                                 if (err) {
                                                     return res.status(400).send({
                                                         message: errorHandler.getErrorMessage(err)

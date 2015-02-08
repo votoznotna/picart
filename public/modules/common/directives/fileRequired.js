@@ -2,7 +2,7 @@
  * Created by User on 1/24/2015.
  */
 
-"use strict";
+'use strict';
 
 angular.module('common').directive('fileRequired',function(){
     return {
@@ -17,5 +17,5 @@ angular.module('common').directive('fileRequired',function(){
                 });
             });
         }
-    }
+    };
 });

@@ -25,7 +25,7 @@ angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($ti
             elements.each(function () {
 
                 var domImg = jQuery(this).get(0);
-                if (domImg.complete == false || domImg.naturalHeight == 0 || domImg.naturalWidth == 0) {
+                if (domImg.complete === false || domImg.naturalHeight === 0 || domImg.naturalWidth === 0) {
                     loadingCount++;
                 } else {
                     var natHeight = domImg.naturalHeight;
@@ -47,7 +47,7 @@ angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($ti
 
             if (loadingCount) {
                 $timeout(function () {
-                    runMagnify(elements, pollingInterval, magnifyby)
+                    runMagnify(elements, pollingInterval, magnifyby);
                 }, pollingInterval);
             }
         }

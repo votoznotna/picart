@@ -90,7 +90,7 @@ ApplicationConfiguration.registerModule('users');
  * Created by User on 1/24/2015.
  */
 
-"use strict";
+'use strict';
 
 angular.module('common').directive('fileRequired',function(){
     return {
@@ -105,7 +105,7 @@ angular.module('common').directive('fileRequired',function(){
                 });
             });
         }
-    }
+    };
 });
 
 /**
@@ -402,14 +402,15 @@ angular.module('common').directive(
 /**
  * Created by User on 2/6/2015.
  */
+'use strict';
 angular.module('common').directive('imgLoaded', function () {
     return {
         restrict: 'A',
 
         link: function(scope, element, attrs) {
 
-            element.bind("load" , function(e){
-                element.closest(".img-box").css('opacity', 1);
+            element.bind('load' , function(e){
+                element.closest('.img-box').css('opacity', 1);
             });
         }
     }
@@ -418,7 +419,7 @@ angular.module('common').directive('imgLoaded', function () {
 /**
  * Created by User on 1/31/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').directive('onFinishRenderFilters', ["$timeout", function ($timeout) {
     return {
@@ -430,16 +431,16 @@ angular.module('common').directive('onFinishRenderFilters', ["$timeout", functio
                 });
             }
         }
-    }
+    };
 }]);
 
 /**
  * Created by User on 1/22/2015.
  */
 
-"use strict";
+'use strict';
 
-angular.module('common').directive('showErrors', ["$timeout", function ($timeout) {
+angular.module('common').directive('showErrors', ['$timeout', function ($timeout) {
 
     return {
         restrict: 'A',
@@ -447,7 +448,7 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
         link: function (scope, el, attrs, formCtrl) {
 
             // find the text box element, which has the 'name' attribute
-            var inputEl = el[0].querySelector("[name]");
+            var inputEl = el[0].querySelector('[name]');
 
             // convert the native text box element to an angular element
             var inputNgEl = angular.element(inputEl);
@@ -471,14 +472,13 @@ angular.module('common').directive('showErrors', ["$timeout", function ($timeout
                 }, 0, false);
             });
         }
-    }
-
+    };
 }]);
 
 /**
  * Created by User on 1/24/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').directive('uniqueName', ["mongolab", function(mongolab) {
     return {
@@ -486,7 +486,7 @@ angular.module('common').directive('uniqueName', ["mongolab", function(mongolab)
         require: 'ngModel',
         link: function (scope, element, attrs, ctrl) {
 
-            var mongoDbCollection = attrs["mongoCollection"];
+            var mongoDbCollection = attrs['mongoCollection'];
             var mongoDbName = window.dbName;
 
             var getByNameSuccessHandler = function (response) {
@@ -518,7 +518,7 @@ angular.module('common').directive('uniqueName', ["mongolab", function(mongolab)
 /**
  * Created by User on 1/29/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').directive('waitSpinner', ["messaging", "events", function(messaging, events) {
     return {
@@ -554,7 +554,7 @@ angular.module('common').directive('waitSpinner', ["messaging", "events", functi
 /**
  * Created by User on 1/29/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').constant('events', {
     message: {
@@ -578,7 +578,7 @@ angular.module('common').constant('events', {
 /**
  * Created by User on 1/29/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').factory('messaging', function () {
     //#region Internal Methods
@@ -627,7 +627,7 @@ angular.module('common').factory('messaging', function () {
 /**
  * Created by User on 1/24/2015.
  */
-"use strict";
+'use strict';
 
 angular.module('common').factory('mongolab', ["$http", function ($http) {
     var apiKey = '';
@@ -676,7 +676,7 @@ angular.module('common').factory('mongolab', ["$http", function ($http) {
         parameters = parameters || {};
         parameters['apiKey'] = apiKey;
         var uri = baseUrl + '/' + database + '/collections/' + collection;
-        return $http({method: "GET", url: uri, params: parameters, cache: false});
+        return $http({method: 'GET', url: uri, params: parameters, cache: false});
     };
 
     /**
@@ -703,7 +703,7 @@ angular.module('common').factory('mongolab', ["$http", function ($http) {
      */
     var createObject = function (database, collection, object) {
         var uri = baseUrl + '/' + database + '/collections/' + collection + '?apiKey=' + apiKey;
-        return $http({method: "POST", url: uri, data: angular.toJson(object), cache: false});
+        return $http({method: 'POST', url: uri, data: angular.toJson(object), cache: false});
     };
 
     /**
@@ -716,7 +716,7 @@ angular.module('common').factory('mongolab', ["$http", function ($http) {
     var updateObject = function (database, collection, object) {
         var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + object._id.$oid + '?apiKey=' + apiKey;
         delete object._id;
-        return $http({method: "PUT", url: uri, data: angular.toJson(object), cache: false});
+        return $http({method: 'PUT', url: uri, data: angular.toJson(object), cache: false});
     };
 
     /**
@@ -728,7 +728,7 @@ angular.module('common').factory('mongolab', ["$http", function ($http) {
      */
     var deleteObject = function (database, collection, object) {
         var uri = baseUrl + '/' + database + '/collections/' + collection + '/' + object._id.$oid + '?apiKey=' + apiKey;
-        return $http({method: "DELETE", url: uri, cache: false});
+        return $http({method: 'DELETE', url: uri, cache: false});
     };
 
     var mongolab = {
@@ -767,7 +767,7 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 angular.module('core').controller('HeaderController', ['$rootScope', '$scope', 'Authentication', 'Menus',
 	function($rootScope, $scope, Authentication, Menus) {
 
-		$rootScope.exhibitQuery = "";
+		$rootScope.exhibitQuery = '';
 
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
@@ -1038,7 +1038,7 @@ angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$modal', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
         function($rootScope, $scope, $modal, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
 
-            $rootScope.searchBar = $state.current.name.toLowerCase() == 'exhibition' ? true : false;
+            $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
 
             $rootScope.urlRoot = $window.urlRoot;
 
@@ -1069,7 +1069,7 @@ angular.module('exhibition').controller('ExhibitionController',
                     formData.append('image', $scope.exhibit.picture.file);
                 }
                 formData.append('title', $scope.exhibit.title);
-                formData.append('content', $scope.exhibit.content ? $scope.exhibit.content : "");
+                formData.append('content', $scope.exhibit.content ? $scope.exhibit.content : '');
                 formData.append('recaptcha', $scope.recaptcha);
 
                 messaging.publish(events.message._SERVER_REQUEST_STARTED_);
@@ -1083,7 +1083,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data ? result.data.message : "Unknown error";
+                    $scope.formErrors = result && result.data ? result.data.message : 'Unknown error';
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
@@ -1091,7 +1091,7 @@ angular.module('exhibition').controller('ExhibitionController',
             };
 
             $scope.getPic = function(pic){
-                    return 'data:' + pic.mime + ";base64," + btoa(pic.data);
+                    return 'data:' + pic.mime + ';base64,' + btoa(pic.data);
             };
 
 
@@ -1126,7 +1126,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 }).then(
                 function(result) {
                     for (var ind in $scope.exhibition) {
-                        if ($scope.exhibition[ind] === exhibit) {
+                        if ($scope.exhibition[ind] === $scope.exhibit) {
                             $scope.exhibition.splice(ind, 1);
                         }
                     }
@@ -1134,7 +1134,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data.message ? result.data.message : "Unknown error";
+                    $scope.formErrors = result && result.data.message ? result.data.message : 'Unknown error';
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
@@ -1170,7 +1170,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 $scope.exhibit.$promise.then(function(data) {
                     $scope.master = angular.copy(data);
-                    jQuery("#uploadNewFile").val(data.pic.name);
+                    jQuery('#uploadNewFile').val(data.pic.name);
                 });
             };
 
@@ -1187,19 +1187,19 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.formErrors = null;
                 $scope.exhibitForm.$setPristine();
                 $scope.exhibitForm.$setUntouched();
-                jQuery("#uploadNewFile").val($scope.exhibit.pic.name);
+                jQuery('#uploadNewFile').val($scope.exhibit.pic.name);
             };
 
             $scope.clearPicture = function(isUpdate) {
                 if(isUpdate){
                     $scope.exhibit.newPicture  = null;
-                    angular.element(document.querySelector('#newPicture')).val("");
-                    angular.element(document.querySelector('#uploadNewFile')).val("");
+                    angular.element(document.querySelector('#newPicture')).val('');
+                    angular.element(document.querySelector('#uploadNewFile')).val('');
                 }
                 else{
                     $scope.exhibit.picture  = null;
-                    angular.element(document.querySelector('#picture')).val("");
-                    angular.element(document.querySelector('#uploadFile')).val("");
+                    angular.element(document.querySelector('#picture')).val('');
+                    angular.element(document.querySelector('#uploadFile')).val('');
                 }
             };
 
@@ -1220,21 +1220,21 @@ angular.module('exhibition').controller('ExhibitionController',
                         return m[0];
                     }
                 }
-                return "";
+                return '';
             }
 
 
 
-            if(document.getElementById("picture")) {
-                document.getElementById("picture").onchange = function () {
-                    document.getElementById("uploadFile").value = GetFilename(this.value);
+            if(document.getElementById('picture')) {
+                document.getElementById('picture').onchange = function () {
+                    document.getElementById('uploadFile').value = GetFilename(this.value);
                     //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
 
-            if(document.getElementById("newPicture")) {
-                document.getElementById("newPicture").onchange = function () {
-                    document.getElementById("uploadNewFile").value = GetFilename(this.value);
+            if(document.getElementById('newPicture')) {
+                document.getElementById('newPicture').onchange = function () {
+                    document.getElementById('uploadNewFile').value = GetFilename(this.value);
                     //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
@@ -1242,7 +1242,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.endUpload = function () {
                 messaging.publish(events.message._SERVER_REQUEST_ENDED_);
-            }
+            };
 
 
             $scope.deleteConfirmation = function () {
@@ -1297,7 +1297,7 @@ angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($ti
             elements.each(function () {
 
                 var domImg = jQuery(this).get(0);
-                if (domImg.complete == false || domImg.naturalHeight == 0 || domImg.naturalWidth == 0) {
+                if (domImg.complete === false || domImg.naturalHeight === 0 || domImg.naturalWidth === 0) {
                     loadingCount++;
                 } else {
                     var natHeight = domImg.naturalHeight;
@@ -1319,7 +1319,7 @@ angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($ti
 
             if (loadingCount) {
                 $timeout(function () {
-                    runMagnify(elements, pollingInterval, magnifyby)
+                    runMagnify(elements, pollingInterval, magnifyby);
                 }, pollingInterval);
             }
         }
@@ -1595,7 +1595,7 @@ angular.module('users').factory('Users', ['$resource',
  * Feb 8th, 11 (v1.11): Fixed bug that caused script to not work in newever versions of jQuery (ie: v1.4.4)
  */
 
-"use strict";
+'use strict';
 
 
 jQuery.noConflict();
@@ -1613,8 +1613,8 @@ jQuery.imageMagnify={
 	zIndexcounter: 100,
 
 		refreshoffsets:function($window, $target, warpshell){
-		var $offsets=$target.offset()
-		var winattrs={x:$window.scrollLeft(), y:$window.scrollTop(), w:$window.width(), h:$window.height()}
+		var $offsets=$target.offset();
+		var winattrs={x:$window.scrollLeft(), y:$window.scrollTop(), w:$window.width(), h:$window.height()};
 		warpshell.attrs.x=$offsets.left; //update x position of original image relative to page
 		warpshell.attrs.y=$offsets.top;
 		warpshell.newattrs.x=winattrs.x+winattrs.w/2-warpshell.newattrs.w/2;
@@ -1672,7 +1672,7 @@ jQuery.imageMagnify={
 			$target.css({opacity:1}).unbind('click.magnify');
 		}
 		var $clone=$target.clone().css({position:'absolute', left:0, top:0, display:'none', border:'1px solid gray', cursor:'pointer'}).appendTo(document.body);
-		$clone.data('$relatedtarget', $target) //save $target image this enlarged image is associated with
+		$clone.data('$relatedtarget', $target); //save $target image this enlarged image is associated with
 		$clone.data('$zoomOutProgress', '0');
 		$clone.data('$zoomStatus', '0');
 		$target.data('imgshell', {$clone:$clone, attrs:attrs, newattrs:newattrs});
@@ -1728,7 +1728,7 @@ jQuery.fn.imageMagnify=function(options){
 	var $=jQuery;
 	return this.each(function(){ //return jQuery obj
 		var $imgref=$(this);
-		if (this.tagName!="IMG")
+		if (this.tagName && this.tagName.toUpperCase()!='IMG')
 			return true; //skip to next matched element
 		if (parseInt($imgref.css('width'))>0 && parseInt($imgref.css('height'))>0 || options.windowFit || options.thumbdimensions ){ //if image has explicit width/height attrs defined
 			jQuery.imageMagnify.magnify($, $imgref, options);
@@ -1748,7 +1748,7 @@ jQuery.fn.applyMagnifier=function(options){ //dynamic version of imageMagnify() 
 	var $=jQuery;
 	return this.each(function(){ //return jQuery obj
 		var $imgref=$(this);
-		if (this.tagName!="IMG")
+		if (this.tagName && this.tagName.toUpperCase()!="IMG")
 			return true; //skip to next matched element
 	});
 };

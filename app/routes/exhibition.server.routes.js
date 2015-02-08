@@ -16,7 +16,7 @@ var multipartMiddleware = multipart();
 module.exports = function(app) {
     // Article Routes
     app.route('/exhibition')
-        .get(exhibition.list)
+        .get(exhibition.list);
 
     app.route('/upload')
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);

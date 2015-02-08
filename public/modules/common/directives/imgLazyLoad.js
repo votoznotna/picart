@@ -229,6 +229,7 @@ angular.module('common').directive(
 
             function renderSource() {
                 element[ 0 ].src = source;
+                jQuery(element).closest(".img-top").find('.img-spin').css('display', 'block');
             }
 
             // Return the public API.
@@ -256,7 +257,9 @@ angular.module('common').directive(
                     thumbdimensions: thumbdimensions
                 }
             );
-            jQuery(element).closest(".img-box").css('opacity', 1);
+
+            jQuery(element).closest(".img-top").find('.img-spin').css('display', 'none');
+            jQuery(element).closest(".img-top").find('.img-box').css('opacity', 1);
         };
 
         function link( $scope, element, attributes ) {

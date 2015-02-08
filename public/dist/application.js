@@ -360,8 +360,8 @@ angular.module('common').directive(
 
             jQuery(element).imageMagnify(
                 {
-                    vIndent: 50,
-                    hIndent: 0,
+                    vIndent: 34,
+                    heightPad: -43,
                     magnifyby: magnifyby,
                     thumbdimensions: thumbdimensions
                 }
@@ -1605,6 +1605,8 @@ jQuery.imageMagnify={
 		windowFit: true,
 		vIndent: 0,
 		hIndent: 0,
+		heightPad: 0,
+		widthPad: 0,
 		magnifyby: 3, //default increase factor of enlarged image
 		duration: 500, //default duration of animation, in millisec
 		imgopacity: 0.2 //opacify of original image when enlarged image overlays it
@@ -1696,7 +1698,7 @@ jQuery.imageMagnify={
 			});
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
-				.animate({opacity:1, left:imageinfo.newattrs.x, top: imageinfo.newattrs.y < setting.vIndent ? setting.vIndent : imageinfo.newattrs.y, width:imageinfo.newattrs.w, height:imageinfo.newattrs.h}, setting.duration,
+				.animate({opacity:1, left:imageinfo.newattrs.x + setting.hIndent, top: imageinfo.newattrs.y + setting.vIndent, width:imageinfo.newattrs.w + setting.widthPad, height:imageinfo.newattrs.h + setting.heightPad}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
 					$clone.data('$zoomStatus', '1');

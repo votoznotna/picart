@@ -251,7 +251,7 @@ angular.module('common').directive(
             jQuery(element).imageMagnify(
                 {
                     vIndent: 34,
-                    heightPad: -43,
+                    heightPad: 0,
                     magnifyby: magnifyby,
                     thumbdimensions: thumbdimensions
                 }

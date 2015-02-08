@@ -3,13 +3,15 @@
         <h1>Exhibition</h1>
     </div>
     <div class="container padded">
-            <div data-ng-repeat="exhibit in exhibition | filter : exhibitQuery "  style="font-weight:bold"  on-finish-render-filters>
-                     <div class="col-sm-6 col-md-3 col-lg-2 img-box">
+            <!--<div data-ng-repeat="exhibit in exhibition | filter : exhibitQuery" on-finish-render-filters style="font-weight:bold" >-->
+            <div data-ng-repeat="exhibit in exhibition | filter : exhibitQuery" style="font-weight:bold" >
+                <div class="col-sm-6 col-md-3 col-lg-2 img-box">
                        <div  class="show-title" >
                            <div ng-show="authentication.user._id == exhibit.user._id"  class="text-font"><a  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></div>
                            <div class="text-font" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></div>
                        </div>
-                       <img img-loaded class="magnify show-img img-responsive" img-lazy-load="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">
+                      <img class="magnify show-img img-responsive" img-lazy-load="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">
+                      <!--<img img-loaded class="magnify show-img img-responsive" img-lazy-load="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">-->
                          <div class="show-content">
                             <div ng-if="exhibit.content" class="text-font">{{exhibit.content}}</div>
                         </div>

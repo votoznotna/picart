@@ -172,10 +172,10 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+/*            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
 
                 ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
-            });
+            });*/
 
             function GetFilename(url)
             {

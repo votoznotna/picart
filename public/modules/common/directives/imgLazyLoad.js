@@ -237,10 +237,31 @@ angular.module('common').directive(
                 render: render,
                 setSource: setSource
             });
-        }
+        };
+
+        function imgOnLoad(event){
+            var magnifyby = 3.5;
+            var element = event.target;
+            var natHeight = element.naturalHeight;
+            var natWidth = element.naturalWidth;
+            var thumbHeight = natHeight / magnifyby;
+            var thumbWidth = natWidth / magnifyby;
+            var thumbdimensions = [thumbWidth, thumbHeight];
+
+            jQuery(element).imageMagnify(
+                {
+                    vIndent: 50,
+                    hIndent: 0,
+                    magnifyby: magnifyby,
+                    thumbdimensions: thumbdimensions
+                }
+            );
+            jQuery(element).closest(".img-box").css('opacity', 1);
+        };
 
         function link( $scope, element, attributes ) {
             var lazyImage = new LazyImage( element );
+            element.get(0).addEventListener("load", imgOnLoad);
 
             lazyLoader.addImage( lazyImage );
 

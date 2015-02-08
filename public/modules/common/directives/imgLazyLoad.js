@@ -29,7 +29,7 @@ angular.module('common').directive(
             var doc = $document;
             var documentHeight = doc.height();
             var documentTimer = null;
-            var documentDelay = 2000;
+            var documentDelay = 1000;
 
             // I determine if the window dimension events
             // (ie. resize, scroll) are currenlty being
@@ -106,7 +106,7 @@ angular.module('common').directive(
                 var bottomFoldOffset = ( topFoldOffset + windowHeight );
 
                 for ( var i = 0 ; i < images.length ; i++ ) {
-                    var image = images[ i ];
+                        var image = images[ i ];
                     if ( image.isVisible( topFoldOffset, bottomFoldOffset ) ) {
                         visible.push( image );
                     } else {

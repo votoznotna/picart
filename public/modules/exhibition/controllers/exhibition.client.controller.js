@@ -52,7 +52,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data ? result.data.message : 'Unknown error';
+                    $scope.formErrors = result && result.data.message ? (result.data.message ? result.data.message : result.statusText) : 'Unknown error';
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
@@ -103,29 +103,11 @@ angular.module('exhibition').controller('ExhibitionController',
                 },
                 function(result) {
                     $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data.message ? result.data.message : 'Unknown error';
+                    $scope.formErrors = result && result.data.message ? (result.data.message ? result.data.message : result.statusText) : 'Unknown error';
                 }).finally(function(){
                     messaging.publish(events.message._SERVER_REQUEST_ENDED_);
                 });
 
-            };
-
-            $scope.update = function() {
-
-                $scope.$broadcast('show-errors-event');
-
-                if ($scope.exhibitForm.$invalid)
-                    return;
-
-                var exhibit = $scope.exhibit;
-
-                exhibit.$update(function() {
-                    $state.go('exhibition');
-                }, function(errorResponse) {
-                    $scope.hasFormError = true;
-                    $scope.formErrors = errorResponse.statusText;
-                    //$scope.error = errorResponse.data.message;
-                });
             };
 
             $scope.find = function() {

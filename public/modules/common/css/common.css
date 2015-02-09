@@ -10,10 +10,17 @@ body {
   -o-background-size: cover;
 }
 .navbar-inverse {
-  background: -webkit-linear-gradient(#14171f, #222);
-  background: -o-linear-gradient(#14171f, #222);
-  background: -moz-linear-gradient(#14171f, #222);
-  background: linear-gradient(#14171f, #222);
+  background: -webkit-linear-gradient(#bc0069, #222);
+  background: -o-linear-gradient(#bc0069, #222);
+  background: -moz-linear-gradient(#bc0069, #222);
+  background: linear-gradient(#bc0069, #222);
+}
+.navbar-inverse .navbar-nav > .open > a,
+.navbar-inverse .navbar-nav > .active > a {
+  background-image: -webkit-linear-gradient(to bottom, #a7025e 0%, #0f0f0f 100%);
+  background-image: -o-linear-gradient(to bottom, #a7025e 0%, #0f0f0f 100%);
+  background-image: -moz-linear-gradient(to bottom, #a7025e 0%, #0f0f0f 100%);
+  background-image: linear-gradient(to bottom, #a7025e 0%, #0f0f0f 100%);
 }
 .field-validation-error {
   color: #b94a48;

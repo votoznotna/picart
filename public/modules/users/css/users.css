@@ -34,7 +34,8 @@
 	border-radius: 2px;
 }
 
-.signin .form-group
+.signin .form-group-sm .form-control,
 {
-	width: 190px;
+	width: auto;
+	/*width: 190px;*/
 }

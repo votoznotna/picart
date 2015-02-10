@@ -33,9 +33,3 @@
 	background-color: lightgrey;
 	border-radius: 2px;
 }
-
-.signin .form-group-sm .form-control,
-{
-	width: auto;
-	/*width: 190px;*/
-}

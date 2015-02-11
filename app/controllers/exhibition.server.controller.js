@@ -63,21 +63,21 @@ exports.save = function(req, res) {
 
             exhibit.picture = imageName;
 
-            fs.readFile(imagePath, function (err, data) {
+            fs.readFile(imagePath, 'binary', function (err, data) {
 
-                var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
+                //var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
                 var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
-                var picFullSize = path.join(picFullSizePath, imageName);
+                //var picFullSize = path.join(picFullSizePath, imageName);
                 var picThumbs = path.join(picThumbsPath, imageName);
 
-                mkdirp(picFullSizePath, function (err) {
+/*                mkdirp(picFullSizePath, function (err) {
 
                     if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
                         });
                     }
-                    else {
+                    else {*/
                         mkdirp(picThumbsPath, function (err) {
                             if (err) {
                                 return res.status(400).send({
@@ -85,19 +85,19 @@ exports.save = function(req, res) {
                                 });
                             }
                             else {
-                                fs.writeFile(picFullSize, data, function (err) {
+                                //fs.writeFile(picFullSize, data, function (err) {
                                     /// write file to uploads/thumbs folder
                                     im.resize({
-                                        srcPath: picFullSize,
+                                        srcData: data,
                                         dstPath: picThumbs,
                                         quality: 1,
                                         width: 1000
                                     }, function (err, stdout, stderr) {
-                                        rimraf(picFullSizePath, function (er) {
+/*                                        rimraf(picFullSizePath, function (er) {
                                             if (er) {
                                                 console.log(er);
                                             }
-                                        });
+                                        });*/
                                         if (err) {
                                             return res.status(400).send({
                                                 message: errorHandler.getErrorMessage(err)
@@ -143,11 +143,11 @@ exports.save = function(req, res) {
                                             });
                                         }
                                     });
-                                });
+                                //});
                             }
                         })
-                    }
-                });
+/*                    }
+                });*/
             });
         }
     }
@@ -160,10 +160,6 @@ exports.save = function(req, res) {
 
             var imageName = image.name;
             var imagePath = image.path;
-            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
-            var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
-
-            exhibit.picture = imageName;
 
             var galRet = exhibit.save(function (err) {
                 if (err) {
@@ -172,21 +168,21 @@ exports.save = function(req, res) {
                     });
                 } else {
 
-                    fs.readFile(imagePath, function (err, data) {
+                    fs.readFile(imagePath, 'binary', function (err, data) {
 
-                        var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
+                        //var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
                         var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
-                        var picFullSize = path.join(picFullSizePath, imageName);
+                        //var picFullSize = path.join(picFullSizePath, imageName);
                         var picThumbs = path.join(picThumbsPath, imageName);
 
-                        mkdirp(picFullSizePath, function (err) {
+/*                        mkdirp(picFullSizePath, function (err) {
 
                             if (err) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
                                 })
                             }
-                            else {
+                            else {*/
 
                                 mkdirp(picThumbsPath, function (err) {
 
@@ -197,20 +193,21 @@ exports.save = function(req, res) {
                                     }
                                     else {
 
-                                        fs.writeFile(picFullSize, data, function (err) {
+                                       // fs.writeFile(picFullSize, data, function (err) {
 
                                             /// write file to uploads/thumbs folder
                                             im.resize({
-                                                srcPath: picFullSize,
+                                                //srcPath: picFullSize,
+                                                srcData: data,
                                                 dstPath: picThumbs,
                                                 quality: 1,
                                                 width: 1000
                                             }, function (err, stdout, stderr) {
-                                                rimraf(picFullSizePath, function (er) {
+/*                                                rimraf(picFullSizePath, function (er) {
                                                     if (er) {
                                                         console.log(er)
                                                     }
-                                                });
+                                                });*/
                                                 if (err) {
                                                     return res.status(400).send({
                                                         message: errorHandler.getErrorMessage(err)
@@ -248,14 +245,15 @@ exports.save = function(req, res) {
                                                     });
                                                 });
                                             });
-                                        });
+                                       // });
                                     }
                                 });
-                            }
-                        });
+/*                            }
+                        });*/
                     });
                 }
             });
+
         }
         else {
             return res.status(400).send({

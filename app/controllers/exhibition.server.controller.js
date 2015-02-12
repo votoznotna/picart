@@ -40,19 +40,19 @@ exports.save = function(req, res) {
         if(!image) {
 
             Exhibit.findByIdAndUpdate(exhibit._id,
-            {
-                title: exhibit.title,
-                title_searchable: exhibit.title_searchable,
-                content: exhibit.content
-            }, function (err, exhibit) {
-                if (err) {
-                    return res.status(400).send({
-                        message: errorHandler.getErrorMessage(err)
-                    });
-                }
-                if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
-                else res.json(exhibit);
-            });
+                {
+                    title: exhibit.title,
+                    title_searchable: exhibit.title_searchable,
+                    content: exhibit.content
+                }, function (err, exhibit) {
+                    if (err) {
+                        return res.status(400).send({
+                            message: errorHandler.getErrorMessage(err)
+                        });
+                    }
+                    if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
+                    else res.json(exhibit);
+                });
         }
         else {
 
@@ -61,8 +61,6 @@ exports.save = function(req, res) {
             var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
             var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
-            exhibit.picture = imageName;
-
             fs.readFile(imagePath, 'binary', function (err, data) {
 
                 //var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
@@ -70,84 +68,82 @@ exports.save = function(req, res) {
                 //var picFullSize = path.join(picFullSizePath, imageName);
                 var picThumbs = path.join(picThumbsPath, imageName);
 
-/*                mkdirp(picFullSizePath, function (err) {
-
+                /*                mkdirp(picFullSizePath, function (err) {
+                 if (err) {
+                 return res.status(400).send({
+                 message: errorHandler.getErrorMessage(err)
+                 });
+                 }
+                 else {*/
+                mkdirp(picThumbsPath, function (err) {
                     if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
                         });
                     }
-                    else {*/
-                        mkdirp(picThumbsPath, function (err) {
-                            if (err) {
+                    else {
+                        //fs.writeFile(picFullSize, data, function (err) {
+                        /// write file to uploads/thumbs folder
+                        im.resize({
+                            srcData: data,
+                            dstPath: picThumbs,
+                            quality: 1,
+                            width: 1000
+                        }, function (err, stdout, stderr) {
+
+                            if (stderr) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
                                 });
                             }
                             else {
-                                //fs.writeFile(picFullSize, data, function (err) {
-                                    /// write file to uploads/thumbs folder
-                                    im.resize({
-                                        srcData: data,
-                                        dstPath: picThumbs,
-                                        quality: 1,
-                                        width: 1000
-                                    }, function (err, stdout, stderr) {
-/*                                        rimraf(picFullSizePath, function (er) {
-                                            if (er) {
-                                                console.log(er);
-                                            }
-                                        });*/
-                                        if (err) {
-                                            return res.status(400).send({
-                                                message: errorHandler.getErrorMessage(err)
-                                            });
-                                        }
-                                        else {
 
-                                            fs.readFile(picThumbs, function(err, data) {
-                                                if (err) return res.status(400).send({
-                                                    message: errorHandler.getErrorMessage(err)
-                                                });
-                                                Exhibit.findByIdAndUpdate(exhibit._id,
-                                                    {
-                                                        title: exhibit.title,
-                                                        title_searchable: exhibit.title_searchable,
-                                                        content: exhibit.content,
-                                                        picture: exhibit.picture,
-                                                        pic:
-                                                        {
-                                                            name: image.name,
-                                                            size: image.size,
-                                                            mime: image.type,
-                                                            data: new Buffer(data)//.toString('base64')
-                                                        }
-                                                    }, function (err, exhibit) {
-                                                        if (err) {
-                                                            return res.status(400).send({
-                                                                message: errorHandler.getErrorMessage(err)
-                                                            });
-                                                        }
-                                                        if (!exhibit) return next(new Error('Failed to load exhibit ' + exhibitId));
-                                                        else {
-                                                            rimraf(picThumbsPath, function (er) {
-                                                                if (er) {
-                                                                    console.log(er);
-                                                                }
-                                                            });
-                                                            res.json(exhibit);
-                                                        }
-
+                                fs.readFile(picThumbs, function(err, data) {
+                                    if (err) {
+                                        return res.status(400).send({
+                                            message: errorHandler.getErrorMessage(err)
+                                        });
+                                    }
+                                    else{
+                                        var picData = new Buffer(data);
+                                        Exhibit.findByIdAndUpdate(exhibit._id,
+                                            {
+                                                title: exhibit.title,
+                                                title_searchable: exhibit.title_searchable,
+                                                content: exhibit.content,
+                                                pic:
+                                                {
+                                                    name: image.name,
+                                                    size: picData.length,
+                                                    mime: image.type,
+                                                    data: picData//.toString('base64')
+                                                }
+                                            }, function (err, exhibit) {
+                                                if (err) {
+                                                    return res.status(400).send({
+                                                        message: errorHandler.getErrorMessage(err)
                                                     });
+                                                }
+                                                else {
+                                                    rimraf(picThumbsPath, function (er) {
+                                                        if (er) {
+                                                            console.log(er);
+                                                        }
+                                                    });
+                                                    res.json(exhibit);
+                                                }
 
                                             });
-                                        }
-                                    });
-                                //});
+                                    }
+
+                                });
                             }
-                        })
-/*                    }
-                });*/
+                        });
+                        //});
+                    }
+                })
+                /*                    }
+                 });*/
             });
         }
     }
@@ -175,58 +171,55 @@ exports.save = function(req, res) {
                         //var picFullSize = path.join(picFullSizePath, imageName);
                         var picThumbs = path.join(picThumbsPath, imageName);
 
-/*                        mkdirp(picFullSizePath, function (err) {
+                        /*                        mkdirp(picFullSizePath, function (err) {
+                         if (err) {
+                         return res.status(400).send({
+                         message: errorHandler.getErrorMessage(err)
+                         })
+                         }
+                         else {*/
+
+                        mkdirp(picThumbsPath, function (err) {
 
                             if (err) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
-                                })
+                                });
                             }
-                            else {*/
+                            else {
 
-                                mkdirp(picThumbsPath, function (err) {
+                                // fs.writeFile(picFullSize, data, function (err) {
 
-                                    if (err) {
+                                /// write file to uploads/thumbs folder
+                                im.resize({
+                                    //srcPath: picFullSize,
+                                    srcData: data,
+                                    dstPath: picThumbs,
+                                    quality: 1,
+                                    width: 1000
+                                }, function (err, stdout, stderr) {
+
+                                    if (stderr) {
                                         return res.status(400).send({
                                             message: errorHandler.getErrorMessage(err)
                                         });
                                     }
                                     else {
-
-                                       // fs.writeFile(picFullSize, data, function (err) {
-
-                                            /// write file to uploads/thumbs folder
-                                            im.resize({
-                                                //srcPath: picFullSize,
-                                                srcData: data,
-                                                dstPath: picThumbs,
-                                                quality: 1,
-                                                width: 1000
-                                            }, function (err, stdout, stderr) {
-/*                                                rimraf(picFullSizePath, function (er) {
-                                                    if (er) {
-                                                        console.log(er)
-                                                    }
-                                                });*/
-                                                if (err) {
-                                                    return res.status(400).send({
-                                                        message: errorHandler.getErrorMessage(err)
-                                                    });
-                                                }
-
-                                                fs.readFile(picThumbs, function(err, data) {
-                                                    if (err) return res.status(400).send({
-                                                        message: errorHandler.getErrorMessage(err)
-                                                    });
-
-                                                    Exhibit.findByIdAndUpdate(exhibit._id,
+                                        fs.readFile(picThumbs, function (err, data) {
+                                            if (err) {
+                                                return res.status(400).send({
+                                                    message: errorHandler.getErrorMessage(err)
+                                                });
+                                            }
+                                            else {
+                                                var picData = new Buffer(data);
+                                                Exhibit.findByIdAndUpdate(exhibit._id,
                                                     {
-                                                        pic:
-                                                        {
+                                                        pic: {
                                                             name: image.name,
-                                                            size: image.size,
+                                                            size: picData.length,
                                                             mime: image.type,
-                                                            data: new Buffer(data)//.toString('base64')
+                                                            data: picData//.toString('base64')
                                                         }
                                                     }, function (err, exhibit) {
                                                         if (err || !exhibit) {
@@ -243,13 +236,16 @@ exports.save = function(req, res) {
                                                             res.json(exhibit);
                                                         }
                                                     });
-                                                });
-                                            });
-                                       // });
+
+                                            }
+                                        });
                                     }
                                 });
-/*                            }
-                        });*/
+                                // });
+                            }
+                        });
+                        /*                            }
+                         });*/
                     });
                 }
             });
@@ -352,7 +348,7 @@ exports.delete = function(req, res) {
  * List of Exhibit
  */
 exports.list = function(req, res) {
-    Exhibit.find().select('_id title title_searchable content pic.name user').sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
+    Exhibit.find().select('_id title title_searchable content pic.name pic.size user').sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
         if (err) {
             return res.status(400).send({
                 message: errorHandler.getErrorMessage(err)
@@ -386,4 +382,3 @@ exports.hasAuthorization = function(req, res, next) {
     }
     next();
 };
-

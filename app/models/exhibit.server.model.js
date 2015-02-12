@@ -29,18 +29,18 @@ var ExhibitSchema = new Schema({
         trim: true,
         required: 'Title cannot be blank'
     },
-    //picture: {
-    //    type: String,
-    //    default: '',
-    //    trim: true,
-    //    required: 'Picture cannot be blank'
-    //},
+/*    pic: {
+     name: { type: String, default: '', trim: true, required: 'Picture Name cannot be blank' },
+     size: { type: Number, default: 0 },
+     mime: { type: String, default: '', required: 'Picture MIME cannot be blank'},
+     data: { type: Buffer, default: null,  required: 'Picture cannot be blank'}
+     },*/
     pic: {
-        name: { type: String, default: '', trim: true },
-        size: { type: Number, default: 0 },
-        mime: { type: String, default: ''},
-        data: { type: Buffer, default: null}
-    },
+         name: { type: String, default: '', trim: true },
+         size: { type: Number, default: 0 },
+         mime: { type: String, default: ''},
+         data: { type: Buffer, default: null}
+     },
     content: {
         type: String,
         default: '',

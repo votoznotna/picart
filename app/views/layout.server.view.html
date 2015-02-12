@@ -32,12 +32,12 @@
 	<![endif]-->
 </head>
 
-<body class="ng-cloak" onload="bodyLoaded()">
+<body class="ng-cloak" onload="bodyLoaded()" >
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" style="opacity:1.0" class="navbar navbar-fixed-top navbar-inverse"></header>
-	<section id="main" class="content" ng-cloak style="margin-bottom: 40px">
+	<div id="main" class="content" ng-cloak style="padding-bottom: 50px;">
 		<wait-spinner></wait-spinner>
 			{% block content %}{% endblock %}
-	</section>
+	</div>
 	<footer class="text-center clearfix">
 		<div class="box text-center">
 			<p>

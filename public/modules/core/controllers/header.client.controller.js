@@ -22,5 +22,9 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 
 			$rootScope.exhibitQuery = $scope.query;
 		}
+
+		$scope.clearSearch = function(){
+			$scope.query = '';
+		}
 	}
 ]);

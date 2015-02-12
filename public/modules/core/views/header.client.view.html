@@ -27,8 +27,10 @@
 
 
 		<form ng-show="searchBar" class="navbar-form navbar-left" style="margin-left: 20px" role="search">
-			<div class="form-group">
+			<div class="form-group" style="position: relative">
 				<input ng-model="query" type="text" class="form-control" placeholder="Search">
+				<span ng-show="query" ng-click="clearSearch()" class="searchclear glyphicon glyphicon-remove-circle"></span>
+				</input>
 			</div>
 			<button type="submit" ng-click="searchExhibits()" class="btn btn-primary">Go</button>
 		</form>

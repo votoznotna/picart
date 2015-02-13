@@ -48,6 +48,7 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 		//event, next, current
 		$rootScope.$on( '$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
 			$rootScope.searchBar = false;
+			$rootScope.playerBar = false;
 		});
 	}]);
 

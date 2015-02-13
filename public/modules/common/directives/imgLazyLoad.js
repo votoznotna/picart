@@ -265,15 +265,18 @@ angular.module('common').directive(
         };
 
         function link( $scope, element, attributes ) {
-            var lazyImage = new LazyImage( element );
-            element.get(0).addEventListener("load", imgOnLoad);
 
-            lazyLoader.addImage( lazyImage );
+            var isPlayer = attributes["player"] ? true : false;
+            var slideNumber = attributes["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
+
+            var lazyImage = new LazyImage( element, isPlayer );
+            element.get(0).addEventListener("load", imgOnLoad);
 
             attributes.$observe(
                 "imgLazyLoad",
                 function( newSource ) {
                     lazyImage.setSource( newSource );
+                    lazyImage.render();
                 }
             );
 

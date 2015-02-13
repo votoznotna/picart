@@ -15,6 +15,12 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.recaptcha = null;
 
+            $scope.playerActive = false;
+
+            $scope.slideIndex = 0;
+
+            $scope.slidesLength = 0;
+
             $scope.exhibit = angular.copy($scope.master);
 
             $scope.authentication = Authentication;
@@ -112,6 +118,10 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.find = function() {
                 $scope.exhibition = Exhibition.query();
+
+                $scope.exhibition.$promise.then(function(data) {
+                    $scope.slidesLength = data ? data.length : 0;
+                });
             };
 
             $scope.findOne = function() {
@@ -154,8 +164,8 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-
+/*
+            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
                 ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
             });*/
 
@@ -174,8 +184,6 @@ angular.module('exhibition').controller('ExhibitionController',
                 return '';
             }
 
-
-
             if(document.getElementById('picture')) {
                 document.getElementById('picture').onchange = function () {
                     document.getElementById('uploadFile').value = GetFilename(this.value);
@@ -190,11 +198,9 @@ angular.module('exhibition').controller('ExhibitionController',
                 };
             }
 
-
             $scope.endUpload = function () {
                 messaging.publish(events.message._SERVER_REQUEST_ENDED_);
             };
-
 
             $scope.deleteConfirmation = function () {
 
@@ -218,5 +224,12 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 });
             };
+
+            $scope.runPlayer = function(){
+                $scope.playerActive = !$scope.playerActive;
+                var imgPlay = angular.element(document.querySelector('#img-play'));
+                var rotator = angular.element(document.querySelector('#rotator'));
+
+            }
         }
     ]);

@@ -12,6 +12,10 @@ angular.module('exhibition').config(['$stateProvider',
                 url: '/exhibition',
                 templateUrl: 'modules/exhibition/views/list-exhibition.client.view.html'
             }).
+            state('player', {
+                url: '/player',
+                templateUrl: 'modules/exhibition/views/player-exhibition.client.view.html'
+            }).
             state('createExhibit', {
                 url: '/exhibition/create',
                 templateUrl: 'modules/exhibition/views/create-exhibit.client.view.html'

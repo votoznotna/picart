@@ -375,15 +375,18 @@ angular.module('common').directive(
         };
 
         function link( $scope, element, attributes ) {
-            var lazyImage = new LazyImage( element );
-            element.get(0).addEventListener("load", imgOnLoad);
 
-            lazyLoader.addImage( lazyImage );
+            var isPlayer = attributes["player"] ? true : false;
+            var slideNumber = attributes["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
+
+            var lazyImage = new LazyImage( element, isPlayer );
+            element.get(0).addEventListener("load", imgOnLoad);
 
             attributes.$observe(
                 "imgLazyLoad",
                 function( newSource ) {
                     lazyImage.setSource( newSource );
+                    lazyImage.render();
                 }
             );
 
@@ -985,6 +988,7 @@ angular.module('exhibition').run(['Menus',
     function(Menus) {
         // Set top bar menu items
         Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', null, null, true);
+        //Menus.addMenuItem('topbar', 'Player', 'player', null, null, true);
         Menus.addMenuItem('topbar', 'New Exhibit', 'exhibition/create', null, null, false);
     }
 ]);
@@ -1002,6 +1006,10 @@ angular.module('exhibition').config(['$stateProvider',
             state('exhibition', {
                 url: '/exhibition',
                 templateUrl: 'modules/exhibition/views/list-exhibition.client.view.html'
+            }).
+            state('player', {
+                url: '/player',
+                templateUrl: 'modules/exhibition/views/player-exhibition.client.view.html'
             }).
             state('createExhibit', {
                 url: '/exhibition/create',
@@ -1054,6 +1062,12 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.master = {};
 
             $scope.recaptcha = null;
+
+            $scope.playerActive = false;
+
+            $scope.slideIndex = 0;
+
+            $scope.slidesLength = 0;
 
             $scope.exhibit = angular.copy($scope.master);
 
@@ -1152,6 +1166,10 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.find = function() {
                 $scope.exhibition = Exhibition.query();
+
+                $scope.exhibition.$promise.then(function(data) {
+                    $scope.slidesLength = data ? data.length : 0;
+                });
             };
 
             $scope.findOne = function() {
@@ -1194,8 +1212,8 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-
+/*
+            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
                 ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
             });*/
 
@@ -1214,8 +1232,6 @@ angular.module('exhibition').controller('ExhibitionController',
                 return '';
             }
 
-
-
             if(document.getElementById('picture')) {
                 document.getElementById('picture').onchange = function () {
                     document.getElementById('uploadFile').value = GetFilename(this.value);
@@ -1230,11 +1246,9 @@ angular.module('exhibition').controller('ExhibitionController',
                 };
             }
 
-
             $scope.endUpload = function () {
                 messaging.publish(events.message._SERVER_REQUEST_ENDED_);
             };
-
 
             $scope.deleteConfirmation = function () {
 
@@ -1258,6 +1272,13 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 });
             };
+
+            $scope.runPlayer = function(){
+                $scope.playerActive = !$scope.playerActive;
+                var imgPlay = angular.element(document.querySelector('#img-play'));
+                var rotator = angular.element(document.querySelector('#rotator'));
+
+            }
         }
     ]);
 

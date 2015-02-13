@@ -14,10 +14,11 @@
 <!--                <div id="img-play" class="active-player-button" ng-if="!playerActive" ng-click="runPlayer(true)">
                     <img img-responsive src="/modules/core/img/player/video_box.png">
                 </div>-->
-                <div class="img-spin" style="text-align:center; margin-top: 20px; display: none">
+                <div class="img-spin img-spin-player" style="display: none">
                     <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                 </div>
                 <div class="img-box-player">
+
                     <div  class="show-title" >
                         <div ng-show="authentication.user._id == exhibit.user._id"  class="text-font"><a  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></div>
                         <div class="text-font" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></div>

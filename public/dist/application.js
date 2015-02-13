@@ -342,7 +342,7 @@ angular.module('common').directive(
             function renderSource() {
                 var elem = element[0];
                 elem.src = source;
-                if(!elem.complete || !elem.width || !elem.height) {
+                if(!elem.complete || !elem.naturalWidth || !elem.naturalHeight) {
                     jQuery(elem).closest(".img-top").find('.img-spin').css('display', 'block');
                 }
                 else  {
@@ -1312,7 +1312,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             function nextShot(){
                 $scope.slideIndex = ($scope.slideIndex == $scope.slidesLength - 1) ? 0 : $scope.slideIndex + 1;
-                timer = $timeout(nextShot, 3000);
+                timer = $timeout(nextShot, 5000);
             };
 
             $scope.$on('startPlayer', function(){

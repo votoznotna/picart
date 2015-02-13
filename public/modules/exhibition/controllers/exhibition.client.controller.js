@@ -234,7 +234,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             function nextShot(){
                 $scope.slideIndex = ($scope.slideIndex == $scope.slidesLength - 1) ? 0 : $scope.slideIndex + 1;
-                timer = $timeout(nextShot, 3000);
+                timer = $timeout(nextShot, 5000);
             };
 
             $scope.$on('startPlayer', function(){

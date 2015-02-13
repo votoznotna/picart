@@ -171,9 +171,12 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*
-            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-                ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
+/*            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+
+                jQuery(function() {
+                    jQuery( "[title]" ).tooltip();
+                });
+
             });*/
 
             function GetFilename(url)
@@ -251,7 +254,6 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.$on('stopPlayer', function(){
                 $timeout.cancel( timer );
             });
-
 
             $scope.$on(
                 '$destroy',

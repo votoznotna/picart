@@ -349,6 +349,14 @@ angular.module('common').directive(
                 else  {
                     var $imgTop = jQuery(elem).closest('.img-top');
                     $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+/*                    jQuery(elem).tooltip(
+                        {
+                            position: {
+                                my: "left top",
+                                at: "right+5 top-5"
+                            }
+                        }
+                    );*/
                 }
 
             };
@@ -382,15 +390,17 @@ angular.module('common').directive(
                 }
             );
 
-/*            if (!$element.attr('player')) {
-
-
-            }*/
-
             var $imgTop = $element.closest(".img-top");
             $imgTop.find('.img-spin').css('display', 'none');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
+/*            jQuery(element).tooltip(
+                {
+                    position: {
+                        my: "left top",
+                        at: "right+5 top-5"
+                    }
+                });*/
             //$rootScope.loadedSlides.push($element.attr('src').toLowerCase())
         };
 
@@ -456,6 +466,7 @@ angular.module('common').directive('onFinishRenderFilters', ["$timeout", functio
             if (scope.$last === true) {
                 $timeout(function () {
                     scope.$emit('ngRepeatFinished');
+                    scope.$broadcast('ngRepeatFinished');
                 });
             }
         }
@@ -823,6 +834,7 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 			$rootScope.playerActive = value;
 			var action = value ? 'startPlayer' : 'stopPlayer';
 			$rootScope.$broadcast(action);
+			angular.element('body').trigger('click');
 		}
 
 		$rootScope.$on('pressStopButton', function(){
@@ -840,6 +852,8 @@ angular.module('core').controller('HomeController', ['$scope', 'Authentication',
 		// This provides Authentication context.
 		$scope.authentication = Authentication;
 	}
+
+
 ]);
 
 'use strict';
@@ -1250,9 +1264,12 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*
-            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-                ExhibitMagnify.runMagnify(jQuery('.magnify'), 500, 3.5);
+/*            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
+
+                jQuery(function() {
+                    jQuery( "[title]" ).tooltip();
+                });
+
             });*/
 
             function GetFilename(url)
@@ -1330,7 +1347,6 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.$on('stopPlayer', function(){
                 $timeout.cancel( timer );
             });
-
 
             $scope.$on(
                 '$destroy',
@@ -1778,10 +1794,21 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone;
 			$clone.data('$zoomStatus', '0');
-			$(window).on('scroll resize click',  function(e){
+			$('body').on('click',  function(e){
 				var  var1 = $clone.css('opacity');
 				if(	e.target !== $clone.get(0)
 					//&& $clone.css('opacity') == 1
+					&& $clone.data('$zoomStatus') == '1'
+					&& $clone.data('$zoomOutProgress') == '0') {
+
+					$clone.trigger('click');
+				}
+			});
+
+			$(window).on('click scroll resize',  function(e){
+				var  var1 = $clone.css('opacity');
+				if(	e.target !== $clone.get(0)
+						//&& $clone.css('opacity') == 1
 					&& $clone.data('$zoomStatus') == '1'
 					&& $clone.data('$zoomOutProgress') == '0') {
 

@@ -35,10 +35,11 @@
 			<button type="submit" ng-click="searchExhibits()" class="btn btn-primary">Go</button>
 		</form>
 
-		<form ng-show="playerBar" class="navbar-form navbar-left" style="margin-left: 20px" >
-			<button ng-show="!playerActive" type="submit" ng-click="playGo(true)" class="btn btn-primary">Start</button>
-			<button ng-show="playerActive" type="submit" ng-click="playGo(false)" class="btn btn-primary">Stop</button>
-		</form>
+		<div ng-show="playerBar" class="navbar-form navbar-left" style="margin-left: 20px" >
+			<button ng-show="!playerActive" type="button" ng-click="playGo(true)" class="btn btn-primary">Start</button>
+
+			<button ng-show="playerActive" type="button" ng-click="playGo(false)" class="btn btn-primary">Stop</button>
+		</div>
 
 		<ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">
 			<li ui-route="/signup" ng-class="{active: $uiRoute}">

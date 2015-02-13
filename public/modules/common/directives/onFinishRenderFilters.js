@@ -10,6 +10,7 @@ angular.module('common').directive('onFinishRenderFilters', function ($timeout) 
             if (scope.$last === true) {
                 $timeout(function () {
                     scope.$emit('ngRepeatFinished');
+                    scope.$broadcast('ngRepeatFinished');
                 });
             }
         }

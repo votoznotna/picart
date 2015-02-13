@@ -98,10 +98,21 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone;
 			$clone.data('$zoomStatus', '0');
-			$(window).on('scroll resize click',  function(e){
+			$('body').on('click',  function(e){
 				var  var1 = $clone.css('opacity');
 				if(	e.target !== $clone.get(0)
 					//&& $clone.css('opacity') == 1
+					&& $clone.data('$zoomStatus') == '1'
+					&& $clone.data('$zoomOutProgress') == '0') {
+
+					$clone.trigger('click');
+				}
+			});
+
+			$(window).on('click scroll resize',  function(e){
+				var  var1 = $clone.css('opacity');
+				if(	e.target !== $clone.get(0)
+						//&& $clone.css('opacity') == 1
 					&& $clone.data('$zoomStatus') == '1'
 					&& $clone.data('$zoomOutProgress') == '0') {
 

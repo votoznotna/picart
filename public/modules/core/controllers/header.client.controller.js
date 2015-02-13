@@ -31,6 +31,7 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 			$rootScope.playerActive = value;
 			var action = value ? 'startPlayer' : 'stopPlayer';
 			$rootScope.$broadcast(action);
+			angular.element('body').trigger('click');
 		}
 
 		$rootScope.$on('pressStopButton', function(){

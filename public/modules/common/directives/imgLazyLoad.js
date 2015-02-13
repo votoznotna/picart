@@ -238,6 +238,14 @@ angular.module('common').directive(
                 else  {
                     var $imgTop = jQuery(elem).closest('.img-top');
                     $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+/*                    jQuery(elem).tooltip(
+                        {
+                            position: {
+                                my: "left top",
+                                at: "right+5 top-5"
+                            }
+                        }
+                    );*/
                 }
 
             };
@@ -271,15 +279,17 @@ angular.module('common').directive(
                 }
             );
 
-/*            if (!$element.attr('player')) {
-
-
-            }*/
-
             var $imgTop = $element.closest(".img-top");
             $imgTop.find('.img-spin').css('display', 'none');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
+/*            jQuery(element).tooltip(
+                {
+                    position: {
+                        my: "left top",
+                        at: "right+5 top-5"
+                    }
+                });*/
             //$rootScope.loadedSlides.push($element.attr('src').toLowerCase())
         };
 

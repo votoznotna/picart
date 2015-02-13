@@ -342,18 +342,15 @@ angular.module('common').directive(
             function renderSource() {
                 var elem = element[0];
                 elem.src = source;
-                if(elem.complete || elem.width + elem.height > 0) {
-                    var $imgTop = jQuery(elem).closest('.img-top');
-                    $imgTop.find('.img-box-player').css({ opacity: 1.0 });
-/*                    $imgTop.find('.img-box-player').animate({ opacity: 1.0 }, 3000,
-                        function() {
-
-                        });*/
-                }
-                else {
+                if(!elem.complete || !elem.width || !elem.height) {
                     jQuery(elem).closest(".img-top").find('.img-spin').css('display', 'block');
                 }
-            }
+                else  {
+                    var $imgTop = jQuery(elem).closest('.img-top');
+                    $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+                }
+
+            };
 
             // Return the public API.
             return({

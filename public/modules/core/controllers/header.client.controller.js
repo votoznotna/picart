@@ -26,5 +26,16 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 		$scope.clearSearch = function(){
 			$scope.query = '';
 		}
+
+		$scope.playGo = function(value){
+			$rootScope.playerActive = value;
+			var action = value ? 'startPlayer' : 'stopPlayer';
+			$rootScope.$broadcast(action);
+		}
+
+		$rootScope.$on('pressStopButton', function(){
+			$rootScope.playerActive = false;
+		});
+
 	}
 ]);

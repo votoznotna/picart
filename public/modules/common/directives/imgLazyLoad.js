@@ -8,7 +8,7 @@
 
 angular.module('common').directive(
     "imgLazyLoad",
-    function( $window, $document ) {
+    function( $window, $document, $rootScope ) {
 
         var lazyLoader = (function() {
 
@@ -230,8 +230,19 @@ angular.module('common').directive(
             }
 
             function renderSource() {
-                element[ 0 ].src = source;
-                jQuery(element).closest(".img-top").find('.img-spin').css('display', 'block');
+                var elem = element[0];
+                elem.src = source;
+                if(elem.complete || elem.width + elem.height > 0) {
+                    var $imgTop = jQuery(elem).closest('.img-top');
+                    $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+/*                    $imgTop.find('.img-box-player').animate({ opacity: 1.0 }, 3000,
+                        function() {
+
+                        });*/
+                }
+                else {
+                    jQuery(elem).closest(".img-top").find('.img-spin').css('display', 'block');
+                }
             }
 
             // Return the public API.
@@ -242,16 +253,19 @@ angular.module('common').directive(
             });
         };
 
-        function imgOnLoad(event){
-            var magnifyby = 3.5;
+        function imgOnLoad(event) {
+
             var element = event.target;
+            var $element = jQuery(element);
+
+            var magnifyby = 3.5;
             var natHeight = element.naturalHeight;
             var natWidth = element.naturalWidth;
             var thumbHeight = natHeight / magnifyby;
             var thumbWidth = natWidth / magnifyby;
             var thumbdimensions = [thumbWidth, thumbHeight];
 
-            jQuery(element).imageMagnify(
+            $element.imageMagnify(
                 {
                     vIndent: 34,
                     heightPad: -17,
@@ -260,19 +274,27 @@ angular.module('common').directive(
                 }
             );
 
-            jQuery(element).closest(".img-top").find('.img-spin').css('display', 'none');
-            jQuery(element).closest(".img-top").find('.img-box').css({'opacity': 1});
+/*            if (!$element.attr('player')) {
+
+
+            }*/
+
+            var $imgTop = $element.closest(".img-top");
+            $imgTop.find('.img-spin').css('display', 'none');
+            $imgTop.find('.img-box').css({'opacity': 1});
+            $imgTop.find('.img-box-player').css({'opacity': 1});
+            //$rootScope.loadedSlides.push($element.attr('src').toLowerCase())
         };
 
-        function link( $scope, element, attributes ) {
+        function link( $scope, element, attrs ) {
 
-            var isPlayer = attributes["player"] ? true : false;
-            var slideNumber = attributes["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
+            var isPlayer = attrs["player"] ? true : false;
+            var slideNumber = attrs["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
 
             var lazyImage = new LazyImage( element, isPlayer );
             element.get(0).addEventListener("load", imgOnLoad);
 
-            attributes.$observe(
+            attrs.$observe(
                 "imgLazyLoad",
                 function( newSource ) {
                     lazyImage.setSource( newSource );

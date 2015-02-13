@@ -4,18 +4,25 @@
 'use strict';
 
 angular.module('exhibition').controller('ExhibitionController',
-    ['$rootScope','$scope', '$modal', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
-        function($rootScope, $scope, $modal, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+    ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
+        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
+        function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+
+            var timer = null;
 
             $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
 
+            $rootScope.playerBar = $state.current.name.toLowerCase() === 'player' ? true : false;
+
             $rootScope.urlRoot = $window.urlRoot;
+
+            //$rootScope.loadedSlides = [];
 
             $scope.master = {};
 
             $scope.recaptcha = null;
 
-            $scope.playerActive = false;
+            $rootScope.playerActive = false;
 
             $scope.slideIndex = 0;
 
@@ -120,7 +127,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.exhibition = Exhibition.query();
 
                 $scope.exhibition.$promise.then(function(data) {
-                    $scope.slidesLength = data ? data.length : 0;
+                    $scope.slidesLength = $filter('picRequired')(data).length;
                 });
             };
 
@@ -225,11 +232,32 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
             };
 
-            $scope.runPlayer = function(){
-                $scope.playerActive = !$scope.playerActive;
-                var imgPlay = angular.element(document.querySelector('#img-play'));
-                var rotator = angular.element(document.querySelector('#rotator'));
+            function nextShot(){
+                $scope.slideIndex = ($scope.slideIndex == $scope.slidesLength - 1) ? 0 : $scope.slideIndex + 1;
+                timer = $timeout(nextShot, 3000);
+            };
 
-            }
+            $scope.$on('startPlayer', function(){
+                if($rootScope.playerActive) {
+                    nextShot();
+                }
+            });
+
+            $scope.playGo = function(){
+                $timeout.cancel( timer );
+                $rootScope.$emit('pressStopButton');
+            };
+
+            $scope.$on('stopPlayer', function(){
+                $timeout.cancel( timer );
+            });
+
+
+            $scope.$on(
+                '$destroy',
+                function( event ) {
+                    $timeout.cancel( timer );
+                }
+            );
         }
     ]);

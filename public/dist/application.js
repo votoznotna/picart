@@ -118,7 +118,7 @@ angular.module('common').directive('fileRequired',function(){
 
 angular.module('common').directive(
     "imgLazyLoad",
-    ["$window", "$document", function( $window, $document ) {
+    ["$window", "$document", "$rootScope", function( $window, $document, $rootScope ) {
 
         var lazyLoader = (function() {
 
@@ -340,8 +340,19 @@ angular.module('common').directive(
             }
 
             function renderSource() {
-                element[ 0 ].src = source;
-                jQuery(element).closest(".img-top").find('.img-spin').css('display', 'block');
+                var elem = element[0];
+                elem.src = source;
+                if(elem.complete || elem.width + elem.height > 0) {
+                    var $imgTop = jQuery(elem).closest('.img-top');
+                    $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+/*                    $imgTop.find('.img-box-player').animate({ opacity: 1.0 }, 3000,
+                        function() {
+
+                        });*/
+                }
+                else {
+                    jQuery(elem).closest(".img-top").find('.img-spin').css('display', 'block');
+                }
             }
 
             // Return the public API.
@@ -352,16 +363,19 @@ angular.module('common').directive(
             });
         };
 
-        function imgOnLoad(event){
-            var magnifyby = 3.5;
+        function imgOnLoad(event) {
+
             var element = event.target;
+            var $element = jQuery(element);
+
+            var magnifyby = 3.5;
             var natHeight = element.naturalHeight;
             var natWidth = element.naturalWidth;
             var thumbHeight = natHeight / magnifyby;
             var thumbWidth = natWidth / magnifyby;
             var thumbdimensions = [thumbWidth, thumbHeight];
 
-            jQuery(element).imageMagnify(
+            $element.imageMagnify(
                 {
                     vIndent: 34,
                     heightPad: -17,
@@ -370,19 +384,27 @@ angular.module('common').directive(
                 }
             );
 
-            jQuery(element).closest(".img-top").find('.img-spin').css('display', 'none');
-            jQuery(element).closest(".img-top").find('.img-box').css({'opacity': 1});
+/*            if (!$element.attr('player')) {
+
+
+            }*/
+
+            var $imgTop = $element.closest(".img-top");
+            $imgTop.find('.img-spin').css('display', 'none');
+            $imgTop.find('.img-box').css({'opacity': 1});
+            $imgTop.find('.img-box-player').css({'opacity': 1});
+            //$rootScope.loadedSlides.push($element.attr('src').toLowerCase())
         };
 
-        function link( $scope, element, attributes ) {
+        function link( $scope, element, attrs ) {
 
-            var isPlayer = attributes["player"] ? true : false;
-            var slideNumber = attributes["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
+            var isPlayer = attrs["player"] ? true : false;
+            var slideNumber = attrs["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
 
             var lazyImage = new LazyImage( element, isPlayer );
             element.get(0).addEventListener("load", imgOnLoad);
 
-            attributes.$observe(
+            attrs.$observe(
                 "imgLazyLoad",
                 function( newSource ) {
                     lazyImage.setSource( newSource );
@@ -798,6 +820,17 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 		$scope.clearSearch = function(){
 			$scope.query = '';
 		}
+
+		$scope.playGo = function(value){
+			$rootScope.playerActive = value;
+			var action = value ? 'startPlayer' : 'stopPlayer';
+			$rootScope.$broadcast(action);
+		}
+
+		$rootScope.$on('pressStopButton', function(){
+			$rootScope.playerActive = false;
+		});
+
 	}
 ]);
 
@@ -988,7 +1021,7 @@ angular.module('exhibition').run(['Menus',
     function(Menus) {
         // Set top bar menu items
         Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', null, null, true);
-        //Menus.addMenuItem('topbar', 'Player', 'player', null, null, true);
+        Menus.addMenuItem('topbar', 'Player', 'player', null, null, true);
         Menus.addMenuItem('topbar', 'New Exhibit', 'exhibition/create', null, null, false);
     }
 ]);
@@ -1052,18 +1085,25 @@ angular.module('exhibition').controller('RemoveExhibitionConfirmationController'
 'use strict';
 
 angular.module('exhibition').controller('ExhibitionController',
-    ['$rootScope','$scope', '$modal', '$document', '$stateParams', '$state','$http', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
-        function($rootScope, $scope, $modal, $document, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+    ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
+        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
+        function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+
+            var timer = null;
 
             $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
 
+            $rootScope.playerBar = $state.current.name.toLowerCase() === 'player' ? true : false;
+
             $rootScope.urlRoot = $window.urlRoot;
+
+            //$rootScope.loadedSlides = [];
 
             $scope.master = {};
 
             $scope.recaptcha = null;
 
-            $scope.playerActive = false;
+            $rootScope.playerActive = false;
 
             $scope.slideIndex = 0;
 
@@ -1168,7 +1208,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.exhibition = Exhibition.query();
 
                 $scope.exhibition.$promise.then(function(data) {
-                    $scope.slidesLength = data ? data.length : 0;
+                    $scope.slidesLength = $filter('picRequired')(data).length;
                 });
             };
 
@@ -1273,12 +1313,33 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
             };
 
-            $scope.runPlayer = function(){
-                $scope.playerActive = !$scope.playerActive;
-                var imgPlay = angular.element(document.querySelector('#img-play'));
-                var rotator = angular.element(document.querySelector('#rotator'));
+            function nextShot(){
+                $scope.slideIndex = ($scope.slideIndex == $scope.slidesLength - 1) ? 0 : $scope.slideIndex + 1;
+                timer = $timeout(nextShot, 3000);
+            };
 
-            }
+            $scope.$on('startPlayer', function(){
+                if($rootScope.playerActive) {
+                    nextShot();
+                }
+            });
+
+            $scope.playGo = function(){
+                $timeout.cancel( timer );
+                $rootScope.$emit('pressStopButton');
+            };
+
+            $scope.$on('stopPlayer', function(){
+                $timeout.cancel( timer );
+            });
+
+
+            $scope.$on(
+                '$destroy',
+                function( event ) {
+                    $timeout.cancel( timer );
+                }
+            );
         }
     ]);
 

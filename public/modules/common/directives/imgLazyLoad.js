@@ -295,10 +295,9 @@ angular.module('common').directive(
 
         function link( $scope, element, attrs ) {
 
-            var isPlayer = attrs["player"] ? true : false;
             var slideNumber = attrs["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
 
-            var lazyImage = new LazyImage( element, isPlayer );
+            var lazyImage = new LazyImage( element );
             element.get(0).addEventListener("load", imgOnLoad);
 
             attrs.$observe(

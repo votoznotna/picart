@@ -35,10 +35,16 @@
 			<button type="submit" ng-click="searchExhibits()" class="btn btn-primary">Go</button>
 		</form>
 
-		<div ng-show="playerBar" class="navbar-form navbar-left" style="margin-left: 20px" >
-			<button ng-show="!playerActive" type="button" ng-click="playGo(true)" class="btn btn-primary">Start</button>
-
-			<button ng-show="playerActive" type="button" ng-click="playGo(false)" class="btn btn-primary">Stop</button>
+		<div ng-show="playerBar" class="navbar-form navbar-left" id="playerBar" style="margin-left: 20px" >
+			<span>
+				<button type="button" ng-click="playPrev()" class="btn btn-primary">&#9664;</button>
+				<button ng-show="!playerActive" type="button" ng-click="playGo(true)" class="btn btn-primary">Start</button>
+				<button ng-show="playerActive" type="button" ng-click="playGo(false)" class="btn btn-primary">Stop</button>
+				<button type="button" ng-click="playNext()" class="btn btn-primary">&#9654;</button>
+			</span>
+			<span id="text">
+				<span ng-bind="slideIndex + 1"></span> of <span ng-bind="slidesLength"></span>
+			</span>
 		</div>
 
 		<ul class="nav navbar-nav navbar-right" data-ng-hide="authentication.user">

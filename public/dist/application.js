@@ -406,10 +406,9 @@ angular.module('common').directive(
 
         function link( $scope, element, attrs ) {
 
-            var isPlayer = attrs["player"] ? true : false;
             var slideNumber = attrs["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
 
-            var lazyImage = new LazyImage( element, isPlayer );
+            var lazyImage = new LazyImage( element );
             element.get(0).addEventListener("load", imgOnLoad);
 
             attrs.$observe(
@@ -837,6 +836,18 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 			angular.element('body').trigger('click');
 		}
 
+		$scope.playPrev = function(){
+			$rootScope.playerActive = false;
+			$rootScope.$broadcast('prevShot');
+			angular.element('body').trigger('click');
+		}
+
+		$scope.playNext = function(){
+			$rootScope.playerActive = false;
+			$rootScope.$broadcast('nextShot');
+			angular.element('body').trigger('click');
+		}
+
 		$rootScope.$on('pressStopButton', function(){
 			$rootScope.playerActive = false;
 		});
@@ -1117,9 +1128,9 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $rootScope.playerActive = false;
 
-            $scope.slideIndex = 0;
+            $rootScope.slideIndex = 0;
 
-            $scope.slidesLength = 0;
+            $rootScope.slidesLength = 0;
 
             $scope.exhibit = angular.copy($scope.master);
 
@@ -1220,7 +1231,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.exhibition = Exhibition.query();
 
                 $scope.exhibition.$promise.then(function(data) {
-                    $scope.slidesLength = $filter('picRequired')(data).length;
+                    $rootScope.slidesLength = $filter('picRequired')(data).length;
                 });
             };
 
@@ -1328,8 +1339,16 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
             };
 
+            function incShot(){
+                $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
+            }
+
+            function decShot(){
+                $rootScope.slideIndex = ($rootScope.slideIndex == 0) ? $rootScope.slidesLength - 1 : $rootScope.slideIndex - 1;
+            }
+
             function nextShot(){
-                $scope.slideIndex = ($scope.slideIndex == $scope.slidesLength - 1) ? 0 : $scope.slideIndex + 1;
+                $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
                 timer = $timeout(nextShot, 5000);
             };
 
@@ -1339,12 +1358,22 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             });
 
-            $scope.playGo = function(){
+            $scope.stopPlay = function(){
                 $timeout.cancel( timer );
                 $rootScope.$emit('pressStopButton');
             };
 
             $scope.$on('stopPlayer', function(){
+                $timeout.cancel( timer );
+            });
+
+            $scope.$on('prevShot', function(){
+                decShot();
+                $timeout.cancel( timer );
+            });
+
+            $scope.$on('nextShot', function(){
+                incShot();
                 $timeout.cancel( timer );
             });
 

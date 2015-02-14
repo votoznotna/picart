@@ -186,3 +186,9 @@
   cursor: pointer;
   opacity: 1;
 }
+#playerBar {
+  color: #fff;
+}
+#playerBar span#text {
+  margin-left: 10px;
+}

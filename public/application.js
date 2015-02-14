@@ -10,12 +10,12 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			$locationProvider.hashPrefix('!');
 		}
 	])
-/*	.config(function(grecaptchaProvider) {
+	.config(function(grecaptchaProvider) {
 		grecaptchaProvider.setParameters({
 			sitekey : window.recaptchaSiteKey,
 			theme: 'light'
 		})
-	})*/
+	})
 	.run(function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
 	})

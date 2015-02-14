@@ -19,16 +19,16 @@ module.exports = function(app) {
         .get(exhibition.list);
 
     app.route('/upload')
-        //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
-        .post(users.requiresLogin, multipartMiddleware, exhibition.save);
+        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
+       // .post(users.requiresLogin, multipartMiddleware, exhibition.save);
     // get the image of a particular exhibit
     app.route('/pic/:id/:name')
         //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
         .get(exhibition.pic);
 
     app.route('/delete')
-        //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
-        .post(users.requiresLogin, multipartMiddleware, exhibition.delete);
+        .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
+        //.post(users.requiresLogin, multipartMiddleware, exhibition.delete);
 
     app.route('/exhibition/:exhibitId')
         .get(exhibition.read)

@@ -28,27 +28,19 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 		}
 
 		$scope.playGo = function(value){
-			$rootScope.playerActive = value;
 			var action = value ? 'startPlayer' : 'stopPlayer';
 			$rootScope.$broadcast(action);
 			angular.element('body').trigger('click');
 		}
 
 		$scope.playPrev = function(){
-			$rootScope.playerActive = false;
 			$rootScope.$broadcast('prevShot');
 			angular.element('body').trigger('click');
 		}
 
 		$scope.playNext = function(){
-			$rootScope.playerActive = false;
 			$rootScope.$broadcast('nextShot');
 			angular.element('body').trigger('click');
 		}
-
-		$rootScope.$on('pressStopButton', function(){
-			$rootScope.playerActive = false;
-		});
-
 	}
 ]);

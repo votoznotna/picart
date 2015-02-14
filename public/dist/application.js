@@ -40,6 +40,7 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			theme: 'light'
 		})
 	}])
+	.value('shotDelay', 6000)
 	.run(["mongolab", function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
 	}])
@@ -825,28 +826,20 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 		}
 
 		$scope.playGo = function(value){
-			$rootScope.playerActive = value;
 			var action = value ? 'startPlayer' : 'stopPlayer';
 			$rootScope.$broadcast(action);
 			angular.element('body').trigger('click');
 		}
 
 		$scope.playPrev = function(){
-			$rootScope.playerActive = false;
 			$rootScope.$broadcast('prevShot');
 			angular.element('body').trigger('click');
 		}
 
 		$scope.playNext = function(){
-			$rootScope.playerActive = false;
 			$rootScope.$broadcast('nextShot');
 			angular.element('body').trigger('click');
 		}
-
-		$rootScope.$on('pressStopButton', function(){
-			$rootScope.playerActive = false;
-		});
-
 	}
 ]);
 
@@ -1104,10 +1097,11 @@ angular.module('exhibition').controller('RemoveExhibitionConfirmationController'
 
 angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
-        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events',
-        function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events) {
+        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
+                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay) {
 
-            var timer = null;
+            var timer = null, timerNext = null;
 
             $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
 
@@ -1334,48 +1328,75 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
             };
 
+            function enableShot(){
+                jQuery(".rotator").eq($rootScope.slideIndex).css({opacity: 1});
+            }
+
             function incShot(){
                 $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
+                enableShot();
             }
 
             function decShot(){
                 $rootScope.slideIndex = ($rootScope.slideIndex == 0) ? $rootScope.slidesLength - 1 : $rootScope.slideIndex - 1;
+                enableShot();
+            }
+
+            function nextShotProc(){
+                $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
+                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 1}, 200, function () {
+                    timer = $timeout(nextShot, shotDelay);
+                });
             }
 
             function nextShot(){
-                $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
-                timer = $timeout(nextShot, 5000);
-            };
+/*                 $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
+                 timer = $timeout(nextShot, shotDelay);*/
+                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 200,
+                    function() {
+                        timerNext = $timeout(nextShotProc, 1);
+                    }
+                );
+            }
+
+
 
             $scope.$on('startPlayer', function(){
-                if($rootScope.playerActive) {
-                    timer = $timeout(nextShot, 5000);
-                }
+                $rootScope.playerActive = true;
+                timer = $timeout(nextShot, shotDelay);
             });
 
             $scope.stopPlay = function(){
-                $timeout.cancel( timer );
-                $rootScope.$emit('pressStopButton');
+                removeTimers();
+                $rootScope.playerActive = false;
             };
 
             $scope.$on('stopPlayer', function(){
-                $timeout.cancel( timer );
+                $rootScope.playerActive = false;
+                removeTimers();
             });
 
             $scope.$on('prevShot', function(){
+                $rootScope.playerActive = false;
                 decShot();
-                $timeout.cancel( timer );
+                removeTimers();
             });
 
             $scope.$on('nextShot', function(){
+                $rootScope.playerActive = false;
                 incShot();
-                $timeout.cancel( timer );
+                removeTimers();
             });
+
+            function removeTimers(){
+                $timeout.cancel( timer );
+                $timeout.cancel( timerNext );
+            }
 
             $scope.$on(
                 '$destroy',
                 function( event ) {
-                    $timeout.cancel( timer );
+                    removeTimers();
                 }
             );
         }

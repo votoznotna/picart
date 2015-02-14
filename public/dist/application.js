@@ -296,7 +296,7 @@ angular.module('common').directive(
 
             function isVisible( topFoldOffset, bottomFoldOffset ) {
                 if ( ! element.is( ":visible" ) ) {
-                    return( false );
+                    return false;
                 }
                 if ( height === null ) {
                     height = element.height();
@@ -304,10 +304,6 @@ angular.module('common').directive(
                 var top = element.offset().top;
                 var bottom = ( top + height );
 
-                // Return true if the element is:
-                // 1. The top offset is in view.
-                // 2. The bottom offset is in view.
-                // 3. The element is overlapping the viewport.
                 return(
                 (
                 ( top <= bottomFoldOffset ) &&
@@ -349,14 +345,6 @@ angular.module('common').directive(
                 else  {
                     var $imgTop = jQuery(elem).closest('.img-top');
                     $imgTop.find('.img-box-player').css({ opacity: 1.0 });
-/*                    jQuery(elem).tooltip(
-                        {
-                            position: {
-                                my: "left top",
-                                at: "right+5 top-5"
-                            }
-                        }
-                    );*/
                 }
 
             };
@@ -407,15 +395,22 @@ angular.module('common').directive(
         function link( $scope, element, attrs ) {
 
             var slideNumber = attrs["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
+            var isPlayer = attrs["player"] ? parseInt(attrs["player"]) : false;
 
             var lazyImage = new LazyImage( element );
+            if(!isPlayer) {
+                lazyLoader.addImage( lazyImage );
+            }
+
             element.get(0).addEventListener("load", imgOnLoad);
 
             attrs.$observe(
                 "imgLazyLoad",
                 function( newSource ) {
                     lazyImage.setSource( newSource );
-                    lazyImage.render();
+                    if(isPlayer)  {
+                        lazyImage.render();
+                    }
                 }
             );
 

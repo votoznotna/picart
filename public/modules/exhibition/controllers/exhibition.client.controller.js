@@ -250,7 +250,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.$on('startPlayer', function(){
                 if($rootScope.playerActive) {
-                    nextShot();
+                    timer = $timeout(nextShot, 5000);
                 }
             });
 

@@ -7,12 +7,12 @@ module.exports = {
 		keywords: 'MongoDB, Express, AngularJS, Node.js'
 	},
 	recaptcha: {
-		siteKey: '6LcoKAETAAAAAKwFYgZv-n6wF1ypYUwT2LTVo2QK',
-		secretKey: '6LcoKAETAAAAAF1dMHwGPQ5s9pmPeRdUQBfcPILn'
+		siteKey: process.env.RECAPTCHA_SITE_KEY,
+		secretKey: process.env.RECAPTCHA_SECRET_KEY
 	},
-	urlRoot:  process.env.URL_ROOT  || '/modules/exhibition/pictures/thumbs/"',
+	urlRoot:  process.env.URL_ROOT  || '/modules/exhibition/pictures/thumbs/',
 	dataRoot: process.env.DATA_ROOT,
-	mongolabApiKey: 'dGQuMot_LYxBs9JYXjU_T56eRiYJQ9L7',
+	mongolabApiKey: process.env.MONGOLAB_API_KEY,
 	picturesRoot: '../../public/modules/exhibition/pictures',
 	port: process.env.PORT || 3000,
 	templateEngine: 'swig',

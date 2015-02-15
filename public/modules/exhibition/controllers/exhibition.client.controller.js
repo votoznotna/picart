@@ -252,7 +252,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             function nextShotProc(){
                 $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
-                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 1}, 200, function () {
+                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 1}, 300, function () {
                     timer = $timeout(nextShot, shotDelay);
                 });
             }
@@ -260,7 +260,7 @@ angular.module('exhibition').controller('ExhibitionController',
             function nextShot(){
 /*                 $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
                  timer = $timeout(nextShot, shotDelay);*/
-                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 200,
+                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 300,
                     function() {
                         timerNext = $timeout(nextShotProc, 1);
                     }

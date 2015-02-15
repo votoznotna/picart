@@ -55,7 +55,7 @@ exports.save = function(req, res) {
 
             var imageName = image.name;
             var imagePath = image.path;
-            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
+/*            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);*/
             var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
             fs.readFile(imagePath, 'binary', function (err, data) {
@@ -85,7 +85,7 @@ exports.save = function(req, res) {
                             srcData: data,
                             dstPath: picThumbs,
                             quality: 1,
-                            width: 1000
+                            width: config.thumbWidth
                         }, function (err, stdout, stderr) {
 
                             if (stderr) {
@@ -193,7 +193,7 @@ exports.save = function(req, res) {
                                     srcData: data,
                                     dstPath: picThumbs,
                                     quality: 1,
-                                    width: 1000
+                                    width: config.thumbWidth
                                 }, function (err, stdout, stderr) {
 
                                     if (stderr) {

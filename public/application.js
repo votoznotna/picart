@@ -16,7 +16,7 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			theme: 'light'
 		})
 	})
-	.value('shotDelay', 5000)
+	.value('shotDelay', 8000)
 	.run(function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
 	})

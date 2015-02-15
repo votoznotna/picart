@@ -1,28 +1,25 @@
-<!--<section data-ng-controller="ExhibitionController" data-ng-init="find()">-->
 <section data-ng-controller="ExhibitionController" data-ng-init="find()">
 
     <div class="welcome text-center">
                 <div class="outer">
-                    <div class="middle">
+                    <div class="middle  ">
                         <div class="inner">
 
-        <!--<div data-ng-repeat="exhibit in exhibition | filter : exhibitQuery" on-finish-render-filters style="font-weight:bold" >-->
-                            <!--ng-class="{current: $index==slideIndex, previous: $index!=slideIndex}"-->
           <div class="rotator" ng-class="{inactiveSlides: playerActive}" data-ng-repeat="exhibit in exhibition | picRequired" style="font-weight:bold" >
-            <div ng-if="$index==slideIndex" ng-class="{current: $index==slideIndex, previous: $index!=slideIndex}" class="col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6 img-top">
-<!--                <div id="img-play" class="active-player-button" ng-if="!playerActive" ng-click="runPlayer(true)">
-                    <img img-responsive src="/modules/core/img/player/video_box.png">
-                </div>-->
+
+ <!--           <div ng-if="$index==slideIndex" ng-class="{current: $index==slideIndex, previous: $index!=slideIndex}" class="col-sm-offset-3 col-sm-6 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6  img-top">-->
+              <div ng-if="$index==slideIndex" ng-class="{current: $index==slideIndex, previous: $index!=slideIndex}" class="col-sm-offset-2 col-sm-8 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6 img-top">
                 <div class="img-spin img-spin-player" style="display: none">
                     <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                 </div>
                 <div class="img-box-player">
-
                     <div  class="show-title" >
                         <div ng-show="authentication.user._id == exhibit.user._id"  class="text-font"><a  ui-sref="editExhibit({exhibitId: exhibit._id})" >{{exhibit.title}}</a></div>
                         <div class="text-font" ng-show="authentication.user._id != exhibit.user._id" ng-bind="exhibit.title"></div>
                     </div>
-
+<!--
+                    <img ng-show='$index%2==1' class="show-img img-responsive" ng-click="togglePlay()" slide-number="$index" player="true" img-lazy-load="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">
+-->
                     <img class="magnify show-img img-responsive" ng-click="stopPlay()" slide-number="$index" player="true" img-lazy-load="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">
                     <!--<img img-loaded class="magnify show-img img-responsive" img-lazy-load="{{'/pic/' + exhibit._id + '/' + exhibit.pic.name}}" title="{{exhibit.title + (exhibit.content ? '.\n' + exhibit.content : '')}}">-->
                     <div class="show-content ">

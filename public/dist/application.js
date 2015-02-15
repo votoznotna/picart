@@ -40,7 +40,7 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 			theme: 'light'
 		})
 	}])
-	.value('shotDelay', 5000)
+	.value('shotDelay', 8000)
 	.run(["mongolab", function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
 	}])
@@ -1360,15 +1360,27 @@ angular.module('exhibition').controller('ExhibitionController',
             }
 
 
-
-            $scope.$on('startPlayer', function(){
+            $scope.startPlay = function(){
                 $rootScope.playerActive = true;
                 timer = $timeout(nextShot, shotDelay);
+            }
+
+            $scope.$on('startPlayer', function(){
+                $scope.startPlay();
             });
 
             $scope.stopPlay = function(){
                 removeTimers();
                 $rootScope.playerActive = false;
+            };
+
+            $scope.togglePlay = function(){
+                if($rootScope.playerActive) {
+                    $scope.stopPlay();
+                }
+                else{
+                    $scope.startPlay();
+                }
             };
 
             $scope.$on('stopPlayer', function(){

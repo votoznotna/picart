@@ -113,7 +113,7 @@ exports.save = function(req, res) {
                                                     name: image.name,
                                                     size: picData.length,
                                                     mime: image.type,
-                                                    data: picData//.toString('base64')
+                                                    data: picData //.toString('base64')
                                                 }
                                             }, function (err, exhibit) {
                                                 if (err) {
@@ -216,7 +216,7 @@ exports.save = function(req, res) {
                                                             name: image.name,
                                                             size: picData.length,
                                                             mime: image.type,
-                                                            data: picData//.toString('base64')
+                                                            data: picData //.toString('base64')
                                                         }
                                                     }, function (err, exhibit) {
                                                         if (err || !exhibit) {
@@ -276,6 +276,7 @@ exports.pic = function(req, res) {
             });
         res.contentType(exhibit.pic.mime);
         res.end(exhibit.pic.data, "binary");
+        //res.end(new Buffer(exhibit.pic.data, 'base64'), "binary");
     });
 };
 

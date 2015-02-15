@@ -41,6 +41,12 @@ var ExhibitSchema = new Schema({
          mime: { type: String, default: ''},
          data: { type: Buffer, default: null}
      },
+/*    pic: {
+        name: { type: String, default: '', trim: true },
+        size: { type: Number, default: 0 },
+        mime: { type: String, default: ''},
+        data: { type: String, default: ''}
+    },*/
     content: {
         type: String,
         default: '',
@@ -51,6 +57,8 @@ var ExhibitSchema = new Schema({
         ref: 'User'
     }
 });
+
+ExhibitSchema.index({ created: -1 }, { unique: true });
 
 mongoose.model('Exhibit', ExhibitSchema);
 

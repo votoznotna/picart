@@ -345,6 +345,7 @@ exports.delete = function(req, res) {
 /**
  * List of Exhibit
  */
+
 exports.list = function(req, res) {
     Exhibit.find().select('_id title title_searchable content pic.name pic.size user').sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
         if (err) {

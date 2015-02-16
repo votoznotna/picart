@@ -46,10 +46,13 @@ module.exports = function(db) {
 	app.locals.cssFiles = config.getCSSAssets();
 
 	// Passing the request url to environment locals
+
 	app.use(function(req, res, next) {
 		res.locals.url = req.protocol + '://' + req.headers.host + req.url;
 		next();
 	});
+
+	require('./routes.js')(app);
 
 	// Should be placed before express.static
 	app.use(compress({

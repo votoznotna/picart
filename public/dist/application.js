@@ -842,6 +842,10 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 			$rootScope.$broadcast('nextShot');
 			angular.element('body').trigger('click');
 		}
+
+		$scope.signout = function(){
+			window.location.href = "/auth/signout";
+		}
 	}
 ]);
 
@@ -1757,6 +1761,7 @@ angular.module('users').factory('Users', ['$resource',
 		});
 	}
 ]);
+
 /* jQuery Image Magnify script v1.1
  * This notice must stay intact for usage
  * Author: Dynamic Drive at http://www.dynamicdrive.com/

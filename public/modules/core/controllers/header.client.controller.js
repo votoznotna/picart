@@ -42,5 +42,9 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 			$rootScope.$broadcast('nextShot');
 			angular.element('body').trigger('click');
 		}
+
+		$scope.signout = function(){
+			window.location.href = "/auth/signout";
+		}
 	}
 ]);

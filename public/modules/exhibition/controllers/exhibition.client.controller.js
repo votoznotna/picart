@@ -6,8 +6,10 @@
 angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
         '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay) {
+                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 deviceDetector) {
 
             var timer = null, timerNext = null;
 
@@ -17,7 +19,9 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $rootScope.urlRoot = $window.urlRoot;
 
-            //$rootScope.loadedSlides = [];
+            $scope.oddBrowser = function(){
+               return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
+            }
 
             $scope.master = {};
 

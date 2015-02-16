@@ -139,6 +139,9 @@
 .img-box-player {
   opacity: 0;
 }
+.img-box-player-alt {
+  padding-top: 50px;
+}
 .img-box {
   -webkit-transition: 1s linear all;
   -moz-transition: 1s linear all;
@@ -153,6 +156,13 @@
 }
 .img-spin-player {
   position: absolute;
+  top: 50%;
+  margin-top: -64px;
+}
+.img-spin-player-alt {
+  position: absolute;
+  left: 50%;
+  margin-left: -64px;
   top: 50%;
   margin-top: -64px;
 }
@@ -184,4 +194,7 @@
 }
 #playerBar span#text {
   margin-left: 10px;
+}
+.oddBrowserMarginTop {
+  margin-top: 100px;
 }

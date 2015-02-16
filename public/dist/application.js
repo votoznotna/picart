@@ -4,7 +4,8 @@
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
 	var applicationModuleName = 'picart';
-	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'grecaptcha'];
+	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',
+		'ui.router', 'ui.bootstrap', 'ui.utils', 'ng.deviceDetector', 'grecaptcha'];
 
 	// Add a new vertical module
 	var registerModule = function(moduleName, dependencies) {
@@ -1098,8 +1099,10 @@ angular.module('exhibition').controller('RemoveExhibitionConfirmationController'
 angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
         '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay) {
+                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 deviceDetector) {
 
             var timer = null, timerNext = null;
 
@@ -1109,7 +1112,9 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $rootScope.urlRoot = $window.urlRoot;
 
-            //$rootScope.loadedSlides = [];
+            $scope.oddBrowser = function(){
+               return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
+            }
 
             $scope.master = {};
 

@@ -296,21 +296,28 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
+/*            $rootScope.$on('imgLoaded', function(){
+                if($rootScope.playerActive) {
+                    removeTimers();
+                    timer = $timeout(nextShot, shotDelay);
+                }
+            });*/
+
             $scope.$on('stopPlayer', function(){
                 $rootScope.playerActive = false;
                 removeTimers();
             });
 
             $scope.$on('prevShot', function(){
+                removeTimers();
                 $rootScope.playerActive = false;
                 decShot();
-                removeTimers();
             });
 
             $scope.$on('nextShot', function(){
+                removeTimers();
                 $rootScope.playerActive = false;
                 incShot();
-                removeTimers();
             });
 
             function removeTimers(){

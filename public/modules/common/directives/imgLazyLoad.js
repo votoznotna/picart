@@ -233,9 +233,9 @@ angular.module('common').directive(
                 }
                 else  {
                     var $imgTop = jQuery(elem).closest('.img-top');
-                    $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+                    $imgTop.find('.img-box-player').css({ opacity: 1 });
+                    //$rootScope.$emit('imgLoaded');
                 }
-
             };
 
             // Return the public API.
@@ -271,6 +271,7 @@ angular.module('common').directive(
             $imgTop.find('.img-spin').css('display', 'none');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
+            //$rootScope.$emit('imgLoaded');
 /*            jQuery(element).tooltip(
                 {
                     position: {

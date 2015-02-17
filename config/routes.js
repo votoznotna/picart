@@ -27,4 +27,6 @@ module.exports = function(app) {
     app.get('/exhibition/create', getUrl);
     app.get('/settings/profile', getUrl);
     app.get('/settings/password', getUrl);
+    app.get('/exhibition/:exhibitId/edit', getUrl);
+    app.get('/exhibition/:exhibitId', getUrl);
 }

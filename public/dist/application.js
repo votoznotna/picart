@@ -347,9 +347,9 @@ angular.module('common').directive(
                 }
                 else  {
                     var $imgTop = jQuery(elem).closest('.img-top');
-                    $imgTop.find('.img-box-player').css({ opacity: 1.0 });
+                    $imgTop.find('.img-box-player').css({ opacity: 1 });
+                    //$rootScope.$emit('imgLoaded');
                 }
-
             };
 
             // Return the public API.
@@ -385,6 +385,7 @@ angular.module('common').directive(
             $imgTop.find('.img-spin').css('display', 'none');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
+            //$rootScope.$emit('imgLoaded');
 /*            jQuery(element).tooltip(
                 {
                     position: {
@@ -1363,8 +1364,6 @@ angular.module('exhibition').controller('ExhibitionController',
             }
 
             function nextShot(){
-/*                 $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
-                 timer = $timeout(nextShot, shotDelay);*/
                 jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 300,
                     function() {
                         timerNext = $timeout(nextShotProc, 1);
@@ -1396,21 +1395,28 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
+/*            $rootScope.$on('imgLoaded', function(){
+                if($rootScope.playerActive) {
+                    removeTimers();
+                    timer = $timeout(nextShot, shotDelay);
+                }
+            });*/
+
             $scope.$on('stopPlayer', function(){
                 $rootScope.playerActive = false;
                 removeTimers();
             });
 
             $scope.$on('prevShot', function(){
+                removeTimers();
                 $rootScope.playerActive = false;
                 decShot();
-                removeTimers();
             });
 
             $scope.$on('nextShot', function(){
+                removeTimers();
                 $rootScope.playerActive = false;
                 incShot();
-                removeTimers();
             });
 
             function removeTimers(){

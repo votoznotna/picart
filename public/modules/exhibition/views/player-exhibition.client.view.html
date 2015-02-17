@@ -7,7 +7,7 @@
                         <div class="rotator" ng-class="{inactiveSlides: playerActive}" data-ng-repeat="exhibit in exhibition | picRequired" style="font-weight:bold" >
 
                   <div ng-if="$index==slideIndex" ng-class="{current: $index==slideIndex, previous: $index!=slideIndex}" class="col-sm-offset-2 col-sm-8 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6 img-top">
-                      <div class="img-spin img-spin-player" style="display: none">
+                      <div class="img-spin img-spin-player">
                         <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                       </div>
                       <div class="img-box-player">

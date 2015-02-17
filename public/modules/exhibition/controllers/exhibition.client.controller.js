@@ -133,6 +133,9 @@ angular.module('exhibition').controller('ExhibitionController',
 
                 $scope.exhibition.$promise.then(function(data) {
                     $rootScope.slidesLength = $filter('picRequired')(data).length;
+                    if($rootScope.playerBar) {
+                        $scope.startPlay();
+                    }
                 });
             };
 

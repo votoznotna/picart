@@ -265,8 +265,6 @@ angular.module('exhibition').controller('ExhibitionController',
             }
 
             function nextShot(){
-/*                 $rootScope.slideIndex = ($rootScope.slideIndex == $rootScope.slidesLength - 1) ? 0 : $rootScope.slideIndex + 1;
-                 timer = $timeout(nextShot, shotDelay);*/
                 jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 300,
                     function() {
                         timerNext = $timeout(nextShotProc, 1);

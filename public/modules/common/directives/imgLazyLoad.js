@@ -291,7 +291,7 @@ angular.module('common').directive(
         function link( $scope, element, attrs ) {
 
             var slideNumber = attrs["slideNumber"] ? parseInt(attrs["slideNumber"]) : 0;
-            var isPlayer = attrs["player"] ? parseInt(attrs["player"]) : false;
+            var isPlayer = attrs["player"] ? JSON.parse(attrs["player"]) : false;
 
             var lazyImage = new LazyImage( element );
             if(!isPlayer) {

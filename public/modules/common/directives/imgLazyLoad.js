@@ -225,7 +225,8 @@ angular.module('common').directive(
                 }
             }
 
-            function renderSource() {
+            function renderSource(){
+
                 var elem = element[0];
                 elem.src = source;
                 if(!elem.complete || !elem.naturalWidth || !elem.naturalHeight) {
@@ -236,6 +237,10 @@ angular.module('common').directive(
                     $imgTop.find('.img-box-player').css({ opacity: 1 });
                     //$rootScope.$emit('imgLoaded');
                 }
+            }
+
+            function renderSourceTimeOut() {
+                setTimeout(function(){renderSource()}, 1);
             };
 
             // Return the public API.
@@ -245,6 +250,7 @@ angular.module('common').directive(
                 setSource: setSource
             });
         };
+
 
         function imgOnLoad(event) {
 

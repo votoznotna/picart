@@ -163,6 +163,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.formErrors = null;
                 $scope.exhibitForm.$setPristine();
                 $scope.exhibitForm.$setUntouched();
+                if($scope.exhibit.pic.name)
                 jQuery('#uploadNewFile').val($scope.exhibit.pic.name);
             };
 
@@ -205,20 +206,26 @@ angular.module('exhibition').controller('ExhibitionController',
             if(document.getElementById('picture')) {
                 document.getElementById('picture').onchange = function () {
                     document.getElementById('uploadFile').value = GetFilename(this.value);
-                    //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+                    messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
 
             if(document.getElementById('newPicture')) {
                 document.getElementById('newPicture').onchange = function () {
                     document.getElementById('uploadNewFile').value = GetFilename(this.value);
-                    //messaging.publish(events.message._SERVER_REQUEST_STARTED_);
+                    messaging.publish(events.message._SERVER_REQUEST_STARTED_);
                 };
             }
+
+            $scope.$on('serverRequestEnded', function(){
+                $scope.endUpload();
+            });
 
             $scope.endUpload = function () {
                 messaging.publish(events.message._SERVER_REQUEST_ENDED_);
             };
+
+
 
             $scope.deleteConfirmation = function () {
 
@@ -267,7 +274,7 @@ angular.module('exhibition').controller('ExhibitionController',
             function nextShot(){
                 jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 300,
                     function() {
-                        timerNext = $timeout(nextShotProc, 1);
+                        timerNext = $timeout(nextShotProc, 0);
                     }
                 );
             }

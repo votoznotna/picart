@@ -1,3 +1,6 @@
+/**
+ * Created by User on 2/18/2015.
+ */
 angular.module('imageupload', ['common'])
     .directive('image', function($q, messaging, events) {
         'use strict'
@@ -139,3 +142,4 @@ angular.module('imageupload', ['common'])
             }
         };
     });
+

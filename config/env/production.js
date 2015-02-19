@@ -20,8 +20,8 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.min.js',
 				'public/lib/angular-ui-utils/ui-utils.min.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
-/*				'public/lib/jquery-ui/jquery-ui.min.js'*/
-				'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
+				//'public/lib/jquery-ui/jquery-ui.min.js'
+				//'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
 				'public/lib/ng-device-detector/ng-device-detector.min.js',
 				'public/lib/angular-grecaptcha/grecaptcha-min.js'
 			]

@@ -55,7 +55,7 @@ exports.save = function(req, res) {
 
             var imageName = image.name;
             var imagePath = image.path;
-            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);
+/*            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);*/
             var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
             fs.readFile(imagePath, 'binary', function (err, data) {
@@ -85,7 +85,7 @@ exports.save = function(req, res) {
                             srcData: data,
                             dstPath: picThumbs,
                             quality: 1,
-                            width: 1000
+                            width: config.thumbWidth
                         }, function (err, stdout, stderr) {
 
                             if (stderr) {
@@ -113,7 +113,7 @@ exports.save = function(req, res) {
                                                     name: image.name,
                                                     size: picData.length,
                                                     mime: image.type,
-                                                    data: picData//.toString('base64')
+                                                    data: picData //.toString('base64')
                                                 }
                                             }, function (err, exhibit) {
                                                 if (err) {
@@ -193,7 +193,7 @@ exports.save = function(req, res) {
                                     srcData: data,
                                     dstPath: picThumbs,
                                     quality: 1,
-                                    width: 1000
+                                    width: config.thumbWidth
                                 }, function (err, stdout, stderr) {
 
                                     if (stderr) {
@@ -216,7 +216,7 @@ exports.save = function(req, res) {
                                                             name: image.name,
                                                             size: picData.length,
                                                             mime: image.type,
-                                                            data: picData//.toString('base64')
+                                                            data: picData //.toString('base64')
                                                         }
                                                     }, function (err, exhibit) {
                                                         if (err || !exhibit) {
@@ -276,6 +276,7 @@ exports.pic = function(req, res) {
             });
         res.contentType(exhibit.pic.mime);
         res.end(exhibit.pic.data, "binary");
+        //res.end(new Buffer(exhibit.pic.data, 'base64'), "binary");
     });
 };
 
@@ -344,6 +345,7 @@ exports.delete = function(req, res) {
 /**
  * List of Exhibit
  */
+
 exports.list = function(req, res) {
     Exhibit.find().select('_id title title_searchable content pic.name pic.size user').sort('-created').populate('user', 'displayName').exec(function(err, exhibition) {
         if (err) {

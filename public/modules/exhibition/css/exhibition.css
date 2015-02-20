@@ -154,7 +154,7 @@
   height: 100%;
 }
 .img-spin-player {
-  position: absolute;
+/*position absolute*/
   top: 50%;
   margin-top: -64px;
 }

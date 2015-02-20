@@ -229,13 +229,14 @@ angular.module('common').directive(
 
                 var elem = element[0];
                 elem.src = source;
+                var $imgTop = jQuery(elem).closest(".img-top");
                 if(!elem.complete || !elem.naturalWidth || !elem.naturalHeight) {
-                    jQuery(elem).closest(".img-top").find('.img-spin').css('display', 'block');
+                    $imgTop.find('.rotator').css('display', 'none');
+                    $imgTop.find('.img-spin').css('display', 'block');
+                    $rootScope.$broadcast('imgStartedLoading');
                 }
                 else  {
-                    var $imgTop = jQuery(elem).closest('.img-top');
                     $imgTop.find('.img-box-player').css({ opacity: 1 });
-                    //$rootScope.$emit('imgLoaded');
                 }
             }
 
@@ -275,9 +276,10 @@ angular.module('common').directive(
 
             var $imgTop = $element.closest(".img-top");
             $imgTop.find('.img-spin').css('display', 'none');
+            $imgTop.find('.rotator').css('display', 'block');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
-            //$rootScope.$emit('imgLoaded');
+            //$rootScope.$broadcast('imgEndedLoading');
 /*            jQuery(element).tooltip(
                 {
                     position: {

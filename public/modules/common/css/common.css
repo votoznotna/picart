@@ -131,6 +131,12 @@ body {
 .opacity1 {
   opacity: 1;
 }
-.show {
+.hide {
+  display: none;
+}
+.block {
   display: block;
+}
+.absolute {
+  position: absolute;
 }

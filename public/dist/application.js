@@ -343,13 +343,14 @@ angular.module('common').directive(
 
                 var elem = element[0];
                 elem.src = source;
+                var $imgTop = jQuery(elem).closest(".img-top");
                 if(!elem.complete || !elem.naturalWidth || !elem.naturalHeight) {
-                    jQuery(elem).closest(".img-top").find('.img-spin').css('display', 'block');
+                    $imgTop.find('.rotator').css('display', 'none');
+                    $imgTop.find('.img-spin').css('display', 'block');
+                    $rootScope.$broadcast('imgStartedLoading');
                 }
                 else  {
-                    var $imgTop = jQuery(elem).closest('.img-top');
                     $imgTop.find('.img-box-player').css({ opacity: 1 });
-                    //$rootScope.$emit('imgLoaded');
                 }
             }
 
@@ -389,9 +390,10 @@ angular.module('common').directive(
 
             var $imgTop = $element.closest(".img-top");
             $imgTop.find('.img-spin').css('display', 'none');
+            $imgTop.find('.rotator').css('display', 'block');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
-            //$rootScope.$emit('imgLoaded');
+            //$rootScope.$broadcast('imgEndedLoading');
 /*            jQuery(element).tooltip(
                 {
                     position: {
@@ -1104,11 +1106,14 @@ angular.module('exhibition').controller('RemoveExhibitionConfirmationController'
 }]);
 
 /**
+ * Created by User on 2/20/2015.
+ */
+/**
  * Created by User on 2/1/2015.
  */
 'use strict';
 
-angular.module('exhibition').controller('ExhibitionController',
+angular.module('exhibition').controller('ExhibitController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
         '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
         'deviceDetector',
@@ -1116,27 +1121,16 @@ angular.module('exhibition').controller('ExhibitionController',
                  $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
                  deviceDetector) {
 
-            var timer = null, timerNext = null;
-
-            $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
-
-            $rootScope.playerBar = $state.current.name.toLowerCase() === 'player' ? true : false;
 
             $rootScope.urlRoot = $window.urlRoot;
 
             $scope.oddBrowser = function(){
-               return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
+                return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
             }
 
             $scope.master = {};
 
             $scope.recaptcha = null;
-
-            $rootScope.playerActive = false;
-
-            $rootScope.slideIndex = 0;
-
-            $rootScope.slidesLength = 0;
 
             $scope.exhibit = angular.copy($scope.master);
 
@@ -1170,20 +1164,16 @@ angular.module('exhibition').controller('ExhibitionController',
                     headers: { 'Content-Type': undefined },
                     transformRequest: angular.identity
                 }).then(
-                function(result) {
-                    $state.go('exhibition');
-                },
-                function(result) {
-                    $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data.message ? (result.data.message ? result.data.message : result.statusText) : 'Unknown error';
-                }).finally(function(){
-                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
-                });
+                    function(result) {
+                        $state.go('exhibition');
+                    },
+                    function(result) {
+                        $scope.hasFormError = true;
+                        $scope.formErrors = result && result.data.message ? (result.data.message ? result.data.message : result.statusText) : 'Unknown error';
+                    }).finally(function(){
+                        messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                    });
 
-            };
-
-            $scope.getPic = function(pic){
-                    return 'data:' + pic.mime + ';base64,' + btoa(pic.data);
             };
 
 
@@ -1216,32 +1206,21 @@ angular.module('exhibition').controller('ExhibitionController',
                     headers: { 'Content-Type': undefined },
                     transformRequest: angular.identity
                 }).then(
-                function(result) {
-                    for (var ind in $scope.exhibition) {
-                        if ($scope.exhibition[ind] === $scope.exhibit) {
-                            $scope.exhibition.splice(ind, 1);
+                    function(result) {
+                        for (var ind in $scope.exhibition) {
+                            if ($scope.exhibition[ind] === $scope.exhibit) {
+                                $scope.exhibition.splice(ind, 1);
+                            }
                         }
-                    }
-                    $state.go('exhibition');
-                },
-                function(result) {
-                    $scope.hasFormError = true;
-                    $scope.formErrors = result && result.data.message ? (result.data.message ? result.data.message : result.statusText) : 'Unknown error';
-                }).finally(function(){
-                    messaging.publish(events.message._SERVER_REQUEST_ENDED_);
-                });
+                        $state.go('exhibition');
+                    },
+                    function(result) {
+                        $scope.hasFormError = true;
+                        $scope.formErrors = result && result.data.message ? (result.data.message ? result.data.message : result.statusText) : 'Unknown error';
+                    }).finally(function(){
+                        messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+                    });
 
-            };
-
-            $scope.find = function() {
-                $scope.exhibition = Exhibition.query();
-
-                $scope.exhibition.$promise.then(function(data) {
-                    $rootScope.slidesLength = $filter('picRequired')(data).length;
-                    if($rootScope.playerBar) {
-                        $scope.startPlay();
-                    }
-                });
             };
 
             $scope.findOne = function() {
@@ -1261,7 +1240,7 @@ angular.module('exhibition').controller('ExhibitionController',
             };
 
             $scope.resetForm = function (isUpdate) {
-                                $scope.$broadcast('hide-errors-event');
+                $scope.$broadcast('hide-errors-event');
                 $scope.clearPicture(isUpdate);
                 $scope.exhibit = angular.copy($scope.master);
                 $scope.hasFormError = false;
@@ -1269,7 +1248,7 @@ angular.module('exhibition').controller('ExhibitionController',
                 $scope.exhibitForm.$setPristine();
                 $scope.exhibitForm.$setUntouched();
                 if($scope.exhibit.pic.name)
-                jQuery('#uploadNewFile').val($scope.exhibit.pic.name);
+                    jQuery('#uploadNewFile').val($scope.exhibit.pic.name);
             };
 
             $scope.clearPicture = function(isUpdate) {
@@ -1285,13 +1264,6 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*            $scope.$on('ngRepeatFinished', function (ngRepeatFinishedEvent) {
-
-                jQuery(function() {
-                    jQuery( "[title]" ).tooltip();
-                });
-
-            });*/
 
             function GetFilename(url)
             {
@@ -1355,6 +1327,62 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
             };
 
+        }
+    ]);
+
+
+/**
+ * Created by User on 2/1/2015.
+ */
+'use strict';
+
+angular.module('exhibition').controller('ExhibitionController',
+    ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
+        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        'deviceDetector',
+        function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
+                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 deviceDetector) {
+
+            var timer = null, timerNext = null;
+
+            $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
+
+            $rootScope.playerBar = $state.current.name.toLowerCase() === 'player' ? true : false;
+
+            $rootScope.urlRoot = $window.urlRoot;
+
+            $scope.oddBrowser = function(){
+               return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
+            }
+
+            $rootScope.playerActive = false;
+
+            $rootScope.slideIndex = 0;
+
+            $rootScope.slidesLength = 0;
+
+            $scope.authentication = Authentication;
+
+            $scope.find = function() {
+                $scope.exhibition = Exhibition.query();
+
+                $scope.exhibition.$promise.then(function(data) {
+                    $rootScope.slidesLength = $filter('picRequired')(data).length;
+                    if($rootScope.playerBar) {
+                        $scope.startPlay();
+                    }
+                });
+            };
+
+            $scope.$on('serverRequestEnded', function(){
+                $scope.endUpload();
+            });
+
+            $scope.endUpload = function () {
+                messaging.publish(events.message._SERVER_REQUEST_ENDED_);
+            };
+
             function enableShot(){
                 jQuery(".rotator").eq($rootScope.slideIndex).css({opacity: 1});
             }
@@ -1384,7 +1412,6 @@ angular.module('exhibition').controller('ExhibitionController',
                 );
             }
 
-
             $scope.startPlay = function(){
                 $rootScope.playerActive = true;
                 timer = $timeout(nextShot, shotDelay);
@@ -1408,7 +1435,13 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*            $rootScope.$on('imgLoaded', function(){
+/*            $scope.$on('imgStartedLoading', function(){
+                if($rootScope.playerActive) {
+                    removeTimers();
+                }
+            });
+
+            $scope.$on('imgEndedLoading', function(){
                 if($rootScope.playerActive) {
                     removeTimers();
                     timer = $timeout(nextShot, shotDelay);

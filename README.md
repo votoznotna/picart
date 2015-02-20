@@ -1,7 +1,7 @@
 Demo:
 ====
 https://albo.herokuapp.com.
-To publish own Exhibits in Text + Photo bunch, just sign up/in and go ahead.
+To publish own Exhibits in Text + Photo bunch, just sign up/in and go managing own inputs.
 System allows to edit + delete just own Exhibits.
 
 

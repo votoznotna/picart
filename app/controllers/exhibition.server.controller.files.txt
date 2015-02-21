@@ -85,7 +85,7 @@ exports.save = function(req, res) {
                             srcData: data,
                             dstPath: picThumbs,
                             quality: 1,
-                            width: config.thumbWidth
+                            width: config.picMaxWidth
                         }, function (err, stdout, stderr) {
 
                             if (stderr) {
@@ -193,7 +193,7 @@ exports.save = function(req, res) {
                                     srcData: data,
                                     dstPath: picThumbs,
                                     quality: 1,
-                                    width: config.thumbWidth
+                                    width: config.picMaxWidth
                                 }, function (err, stdout, stderr) {
 
                                     if (stderr) {

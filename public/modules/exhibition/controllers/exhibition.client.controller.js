@@ -19,6 +19,10 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $rootScope.urlRoot = $window.urlRoot;
 
+            $scope.timeoutDelay = false;
+
+            $scope.imageWasNotInCache = false;
+
             $scope.oddBrowser = function(){
                return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
             }
@@ -71,12 +75,22 @@ angular.module('exhibition').controller('ExhibitionController',
                 });
             }
 
-            function nextShot(){
-                jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 300,
-                    function() {
-                        timerNext = $timeout(nextShotProc, 0);
-                    }
-                );
+            function nextShot() {
+                if ($scope.timeoutDelay) {
+                    timer = $timeout(nextShot, shotDelay);
+
+                }
+                else if($scope.imageWasNotInCache){
+                    $scope.imageWasNotInCache = false;
+                    timer = $timeout(nextShot, shotDelay / 3);
+                }
+                else {
+                    jQuery(".rotator").eq($rootScope.slideIndex).animate({opacity: 0}, 300,
+                        function () {
+                            timerNext = $timeout(nextShotProc, 0);
+                        }
+                    );
+                }
             }
 
             $scope.startPlay = function(){
@@ -102,18 +116,22 @@ angular.module('exhibition').controller('ExhibitionController',
                 }
             };
 
-/*            $scope.$on('imgStartedLoading', function(){
+            $scope.$on('imgStartedLoading', function(){
                 if($rootScope.playerActive) {
-                    removeTimers();
+                    //removeTimers();
+                    $scope.imageWasNotInCache = true;
+                    $scope.timeoutDelay = true;
+                    //timer = $timeout(nextShot, shotDelay);
                 }
             });
 
             $scope.$on('imgEndedLoading', function(){
                 if($rootScope.playerActive) {
-                    removeTimers();
-                    timer = $timeout(nextShot, shotDelay);
+                    $scope.timeoutDelay = false;
+                    //removeTimers();
+                    //timer = $timeout(nextShot, shotDelay);
                 }
-            });*/
+            });
 
             $scope.$on('stopPlayer', function(){
                 $rootScope.playerActive = false;
@@ -133,6 +151,8 @@ angular.module('exhibition').controller('ExhibitionController',
             });
 
             function removeTimers(){
+                $scope.imageWasNotInCache = false;
+                $scope.timeoutDelay = false;
                 $timeout.cancel( timer );
                 $timeout.cancel( timerNext );
             }

@@ -279,7 +279,7 @@ angular.module('common').directive(
             $imgTop.find('.rotator').css('display', 'block');
             $imgTop.find('.img-box').css({'opacity': 1});
             $imgTop.find('.img-box-player').css({'opacity': 1});
-            //$rootScope.$broadcast('imgEndedLoading');
+            $rootScope.$broadcast('imgEndedLoading');
 /*            jQuery(element).tooltip(
                 {
                     position: {

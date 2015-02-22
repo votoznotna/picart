@@ -243,15 +243,11 @@ angular.module('common').directive(
 
             function clearRenderTimer() {
                 clearTimeout( renderTimer );
-                console.log('clearRenderTimer.');
                 renderTimer = null;
             }
 
             function startRenderTimer() {
-
                 renderTimer = setTimeout( checkImages, renderDelay );
-                console.log('startRenderTimer.');
-
             }
 
             function startWatchingWindow() {
@@ -298,13 +294,15 @@ angular.module('common').directive(
             var height = null;
 
             function isVisible( topFoldOffset, bottomFoldOffset ) {
-                if ( ! element.is( ":visible" ) ) {
+                var topElem =  element.closest('.img-top');
+                var testedElem = topElem.length ? topElem : element;
+                if ( ! testedElem.is( ":visible" ) ) {
                     return false;
                 }
                 if ( height === null ) {
-                    height = element.height();
+                    height = testedElem.height();
                 }
-                var top = element.offset().top;
+                var top = testedElem.offset().top;
                 var bottom = ( top + height );
 
                 return(
@@ -371,6 +369,7 @@ angular.module('common').directive(
 
             var element = event.target;
             var $element = jQuery(element);
+            var isExpress = $element.attr('src').toLowerCase().indexOf('mpic') >= 0 ? true : false;
 
             var magnifyby = 3.5;
             var natHeight = element.naturalHeight;
@@ -379,21 +378,38 @@ angular.module('common').directive(
             var thumbWidth = natWidth / magnifyby;
             var thumbdimensions = [thumbWidth, thumbHeight];
 
-            $element.imageMagnify(
-                {
-                    vIndent: 34,
-                    heightPad: -17,
-                    magnifyby: magnifyby,
-                    thumbdimensions: thumbdimensions
-                }
-            );
+            if(!isExpress){
+                $element.imageMagnify(
+                    {
+                        vIndent: 34,
+                        heightPad: -17,
+                        magnifyby: magnifyby,
+                        thumbdimensions: thumbdimensions
+                    }
+                );
+            }
 
             var $imgTop = $element.closest(".img-top");
             $imgTop.find('.img-spin').css('display', 'none');
-            $imgTop.find('.rotator').css('display', 'block');
+
+            $imgTop.find('.img-box').css({'display': 'block'})
             $imgTop.find('.img-box').css({'opacity': 1});
-            $imgTop.find('.img-box-player').css({'opacity': 1});
-            $rootScope.$broadcast('imgEndedLoading');
+            var isPlayer =  $imgTop.find('.img-box-player').length > 0 ? true : false;
+            if(isPlayer)
+            {
+                $imgTop.find('.rotator').css('display', 'block');
+                $imgTop.find('.img-box-player').css({'opacity': 1});
+                $rootScope.$broadcast('imgEndedLoading');
+            }
+            else{
+                var src = $element.attr('src');
+                if(src.indexOf('mpic') >= 0) return;
+                $element.trigger('click');
+            }
+
+
+            //$imgTop.addClass('maxImgLoaded');
+
 /*            jQuery(element).tooltip(
                 {
                     position: {
@@ -425,6 +441,27 @@ angular.module('common').directive(
                     }
                 }
             );
+
+            element.bind('click',function(event){
+                if(isPlayer) return;
+                var element = event.target;
+                var $element = jQuery(element);
+                var src = $element.attr('src');
+                if(src.indexOf('mpic') == -1) return;
+                var src  = src.replace('mpic', 'pic');
+                var $imgTop = $element.closest(".img-top");
+                $imgTop.find('.img-box').css({'display': 'none'})
+                lazyImage.setSource( src );
+            });
+
+
+            $scope.$on(
+                "minPicClick",
+                function(event, args) {
+                    console.log(args);
+
+                }
+            )
 
             $scope.$on(
                 "$destroy",
@@ -1047,6 +1084,9 @@ angular.module('exhibition').run(['Menus',
     function(Menus) {
         // Set top bar menu items
         Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', null, null, true);
+        //Menus.addMenuItem('topbar', 'Exhibition', 'exhibition', 'dropdown', null, true);
+        //Menus.addSubMenuItem('topbar', 'exhibition', 'Minimal Load', 'exhibition/express', null, true);
+        //Menus.addSubMenuItem('topbar', 'exhibition', 'Full Load', 'exhibition', null, true);
         Menus.addMenuItem('topbar', 'Player', 'player', null, null, true);
         Menus.addMenuItem('topbar', 'New Exhibit', 'exhibition/create', null, null, false);
     }
@@ -1064,6 +1104,10 @@ angular.module('exhibition').config(['$stateProvider',
         $stateProvider.
             state('exhibition', {
                 url: '/exhibition',
+                templateUrl: 'modules/exhibition/views/list-exhibition.client.view.html'
+            }).
+            state('exhibitionExpress', {
+                url: '/exhibition/express',
                 templateUrl: 'modules/exhibition/views/list-exhibition.client.view.html'
             }).
             state('player', {
@@ -1346,7 +1390,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             var timer = null, timerNext = null;
 
-            $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
+            $rootScope.searchBar = ($state.current.name.toLowerCase() === 'exhibition') ? true : false;
 
             $rootScope.playerBar = $state.current.name.toLowerCase() === 'player' ? true : false;
 
@@ -1378,6 +1422,12 @@ angular.module('exhibition').controller('ExhibitionController',
                     }
                 });
             };
+
+            $scope.imgCached = function(url) {
+                var test = document.createElement("img");
+                test.src = url;
+                return test.complete && test.naturalWidth && test.naturalWidth;
+            }
 
             $scope.$on('serverRequestEnded', function(){
                 $scope.endUpload();
@@ -1451,18 +1501,14 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.$on('imgStartedLoading', function(){
                 if($rootScope.playerActive) {
-                    //removeTimers();
                     $scope.imageWasNotInCache = true;
                     $scope.timeoutDelay = true;
-                    //timer = $timeout(nextShot, shotDelay);
                 }
             });
 
             $scope.$on('imgEndedLoading', function(){
                 if($rootScope.playerActive) {
                     $scope.timeoutDelay = false;
-                    //removeTimers();
-                    //timer = $timeout(nextShot, shotDelay);
                 }
             });
 

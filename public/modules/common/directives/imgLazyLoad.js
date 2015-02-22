@@ -129,15 +129,11 @@ angular.module('common').directive(
 
             function clearRenderTimer() {
                 clearTimeout( renderTimer );
-                console.log('clearRenderTimer.');
                 renderTimer = null;
             }
 
             function startRenderTimer() {
-
                 renderTimer = setTimeout( checkImages, renderDelay );
-                console.log('startRenderTimer.');
-
             }
 
             function startWatchingWindow() {
@@ -184,13 +180,15 @@ angular.module('common').directive(
             var height = null;
 
             function isVisible( topFoldOffset, bottomFoldOffset ) {
-                if ( ! element.is( ":visible" ) ) {
+                var topElem =  element.closest('.img-top');
+                var testedElem = topElem.length ? topElem : element;
+                if ( ! testedElem.is( ":visible" ) ) {
                     return false;
                 }
                 if ( height === null ) {
-                    height = element.height();
+                    height = testedElem.height();
                 }
-                var top = element.offset().top;
+                var top = testedElem.offset().top;
                 var bottom = ( top + height );
 
                 return(
@@ -257,6 +255,7 @@ angular.module('common').directive(
 
             var element = event.target;
             var $element = jQuery(element);
+            var isExpress = $element.attr('src').toLowerCase().indexOf('mpic') >= 0 ? true : false;
 
             var magnifyby = 3.5;
             var natHeight = element.naturalHeight;
@@ -265,21 +264,38 @@ angular.module('common').directive(
             var thumbWidth = natWidth / magnifyby;
             var thumbdimensions = [thumbWidth, thumbHeight];
 
-            $element.imageMagnify(
-                {
-                    vIndent: 34,
-                    heightPad: -17,
-                    magnifyby: magnifyby,
-                    thumbdimensions: thumbdimensions
-                }
-            );
+            if(!isExpress){
+                $element.imageMagnify(
+                    {
+                        vIndent: 34,
+                        heightPad: -17,
+                        magnifyby: magnifyby,
+                        thumbdimensions: thumbdimensions
+                    }
+                );
+            }
 
             var $imgTop = $element.closest(".img-top");
             $imgTop.find('.img-spin').css('display', 'none');
-            $imgTop.find('.rotator').css('display', 'block');
+
+            $imgTop.find('.img-box').css({'display': 'block'})
             $imgTop.find('.img-box').css({'opacity': 1});
-            $imgTop.find('.img-box-player').css({'opacity': 1});
-            $rootScope.$broadcast('imgEndedLoading');
+            var isPlayer =  $imgTop.find('.img-box-player').length > 0 ? true : false;
+            if(isPlayer)
+            {
+                $imgTop.find('.rotator').css('display', 'block');
+                $imgTop.find('.img-box-player').css({'opacity': 1});
+                $rootScope.$broadcast('imgEndedLoading');
+            }
+            else{
+                var src = $element.attr('src');
+                if(src.indexOf('mpic') >= 0) return;
+                $element.trigger('click');
+            }
+
+
+            //$imgTop.addClass('maxImgLoaded');
+
 /*            jQuery(element).tooltip(
                 {
                     position: {
@@ -311,6 +327,27 @@ angular.module('common').directive(
                     }
                 }
             );
+
+            element.bind('click',function(event){
+                if(isPlayer) return;
+                var element = event.target;
+                var $element = jQuery(element);
+                var src = $element.attr('src');
+                if(src.indexOf('mpic') == -1) return;
+                var src  = src.replace('mpic', 'pic');
+                var $imgTop = $element.closest(".img-top");
+                $imgTop.find('.img-box').css({'display': 'none'})
+                lazyImage.setSource( src );
+            });
+
+
+            $scope.$on(
+                "minPicClick",
+                function(event, args) {
+                    console.log(args);
+
+                }
+            )
 
             $scope.$on(
                 "$destroy",

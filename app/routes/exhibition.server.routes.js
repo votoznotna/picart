@@ -18,17 +18,21 @@ module.exports = function(app) {
     app.route('/exhibition')
         .get(exhibition.list);
 
+    //app.route('/exhibition/express')
+    //    .get(exhibition.list);
+
     app.route('/upload')
         .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
-       // .post(users.requiresLogin, multipartMiddleware, exhibition.save);
+
     // get the image of a particular exhibit
     app.route('/pic/:id/:name')
-        //.post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.save);
         .get(exhibition.pic);
+
+    app.route('/mpic/:id/:name')
+        .get(exhibition.mpic);
 
     app.route('/delete')
         .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
-        //.post(users.requiresLogin, multipartMiddleware, exhibition.delete);
 
     app.route('/exhibition/:exhibitId')
         .get(exhibition.read)

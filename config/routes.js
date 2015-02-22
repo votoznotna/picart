@@ -21,6 +21,7 @@ var getUrl = function(req, res, next) {
 module.exports = function(app) {
 
     app.get('/exhibition', getUrl);
+    //app.get('/exhibition/express', getUrl);
     app.get('/player', getUrl);
     app.get('/signin', getUrl);
     app.get('/signup', getUrl);

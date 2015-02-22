@@ -199,3 +199,12 @@
 .oddBrowserMarginTop {
   margin-top: 100px;
 }
+.maxExhibitWidth {
+  max-width: 300px;
+}
+.img-top {
+  margin: auto;
+}
+a.dropdown-toggle {
+  cursor: pointer;
+}

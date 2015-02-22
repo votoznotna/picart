@@ -55,92 +55,125 @@ exports.save = function(req, res) {
 
             var imageName = image.name;
             var imagePath = image.path;
-/*            var picFullSize = path.join(dataRoot, config.picturesRoot + '/fullsize', imageName);*/
-            var picThumbs = path.join(dataRoot, config.picturesRoot + '/thumbs', imageName);
 
-            fs.readFile(imagePath, 'binary', function (err, data) {
+            fs.readFile(imagePath, 'binary', function (err, bdata) {
 
-                //var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
-                var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
-                //var picFullSize = path.join(picFullSizePath, imageName);
-                var picThumbs = path.join(picThumbsPath, imageName);
+                var picMaxPath = path.join(dataRoot, config.picturesRoot + '/max/' + exhibit._id);
+                var picMinPath = path.join(dataRoot, config.picturesRoot + '/min/' + exhibit._id);
+                var picMax = path.join(picMaxPath, imageName);
+                var picMin = path.join(picMinPath, imageName);
+                var maxPicData = null, minPicData = null;
 
-                /*                mkdirp(picFullSizePath, function (err) {
-                 if (err) {
-                 return res.status(400).send({
-                 message: errorHandler.getErrorMessage(err)
-                 });
-                 }
-                 else {*/
-                mkdirp(picThumbsPath, function (err) {
+                mkdirp(picMaxPath, function (err) {
                     if (err) {
                         return res.status(400).send({
                             message: errorHandler.getErrorMessage(err)
                         });
                     }
                     else {
-                        //fs.writeFile(picFullSize, data, function (err) {
-                        /// write file to uploads/thumbs folder
-                        im.resize({
-                            srcData: data,
-                            dstPath: picThumbs,
-                            quality: 1,
-                            width: config.picMaxWidth
-                        }, function (err, stdout, stderr) {
-
-                            if (stderr) {
+                        mkdirp(picMinPath, function (err) {
+                            if (err) {
                                 return res.status(400).send({
                                     message: errorHandler.getErrorMessage(err)
                                 });
                             }
-                            else {
+                            else{
+                                /// write file to uploads/thumbs folder
+                                im.resize({
+                                    srcData: bdata,
+                                    dstPath: picMax,
+                                    quality: 1,
+                                    width: config.picMaxWidth
+                                }, function (err, stdout, stderr) {
 
-                                fs.readFile(picThumbs, function(err, data) {
-                                    if (err) {
+                                    if (stderr) {
                                         return res.status(400).send({
                                             message: errorHandler.getErrorMessage(err)
                                         });
                                     }
-                                    else{
-                                        var picData = new Buffer(data);
-                                        Exhibit.findByIdAndUpdate(exhibit._id,
-                                            {
-                                                title: exhibit.title,
-                                                title_searchable: exhibit.title_searchable,
-                                                content: exhibit.content,
-                                                pic:
-                                                {
-                                                    name: image.name,
-                                                    size: picData.length,
-                                                    mime: image.type,
-                                                    data: picData //.toString('base64')
-                                                }
-                                            }, function (err, exhibit) {
-                                                if (err) {
-                                                    return res.status(400).send({
-                                                        message: errorHandler.getErrorMessage(err)
-                                                    });
-                                                }
-                                                else {
-                                                    rimraf(picThumbsPath, function (er) {
-                                                        if (er) {
-                                                            console.log(er);
+                                    else {
+
+                                        fs.readFile(picMax, function (err, data) {
+                                            if (err) {
+                                                return res.status(400).send({
+                                                    message: errorHandler.getErrorMessage(err)
+                                                });
+                                            }
+                                            else {
+                                                maxPicData = new Buffer(data);
+
+                                                im.resize({
+                                                        srcData: bdata,
+                                                        dstPath: picMin,
+                                                        quality: 1,
+                                                        width: config.picMinWidth
+                                                    },
+                                                    function (err, stdout, stderr) {
+
+                                                        if (stderr) {
+                                                            return res.status(400).send({
+                                                                message: errorHandler.getErrorMessage(err)
+                                                            });
                                                         }
-                                                    });
-                                                    res.json(exhibit);
-                                                }
+                                                        else {
 
-                                            });
+                                                            fs.readFile(picMin, function (err, data) {
+                                                                if (err) {
+                                                                    return res.status(400).send({
+                                                                        message: errorHandler.getErrorMessage(err)
+                                                                    });
+                                                                }
+                                                                else {
+                                                                    minPicData = new Buffer(data);
+
+                                                                    Exhibit.findByIdAndUpdate(exhibit._id,
+                                                                        {
+                                                                            title: exhibit.title,
+                                                                            title_searchable: exhibit.title_searchable,
+                                                                            content: exhibit.content,
+                                                                            pic: {
+                                                                                name: image.name,
+                                                                                size: maxPicData.length,
+                                                                                msize: minPicData.length,
+                                                                                mime: image.type,
+                                                                                mdata: minPicData,
+                                                                                data: maxPicData //.toString('base64')
+                                                                            }
+                                                                        },
+                                                                        function (err, exhibit) {
+                                                                            if (err) {
+                                                                                return res.status(400).send({
+                                                                                    message: errorHandler.getErrorMessage(err)
+                                                                                });
+                                                                            }
+                                                                            else {
+                                                                                rimraf(picMaxPath, function (er) {
+                                                                                    if (er) {
+                                                                                        console.log(er);
+                                                                                    }
+                                                                                });
+                                                                                rimraf(picMinPath, function (er) {
+                                                                                    if (er) {
+                                                                                        console.log(er);
+                                                                                    }
+                                                                                });
+                                                                                res.json(exhibit);
+                                                                            }
+                                                                        }
+                                                                    );
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                );
+                                            }
+                                        });
                                     }
-
                                 });
                             }
-                        });
-                        //});
+                        })
                     }
-                })
-                /*                    }
-                 });*/
+                });
             });
         }
     }
@@ -161,22 +194,15 @@ exports.save = function(req, res) {
                     });
                 } else {
 
-                    fs.readFile(imagePath, 'binary', function (err, data) {
+                    fs.readFile(imagePath, 'binary', function (err, bdata) {
 
-                        //var picFullSizePath = path.join(dataRoot, config.picturesRoot + '/fullsize/' + exhibit._id);
-                        var picThumbsPath = path.join(dataRoot, config.picturesRoot + '/thumbs/' + exhibit._id);
-                        //var picFullSize = path.join(picFullSizePath, imageName);
-                        var picThumbs = path.join(picThumbsPath, imageName);
+                        var picMaxPath = path.join(dataRoot, config.picturesRoot + '/max/' + exhibit._id);
+                        var picMinPath = path.join(dataRoot, config.picturesRoot + '/min/' + exhibit._id);
+                        var picMax = path.join(picMaxPath, imageName);
+                        var picMin = path.join(picMinPath, imageName);
+                        var maxPicData = null, minPicData = null;
 
-                        /*                        mkdirp(picFullSizePath, function (err) {
-                         if (err) {
-                         return res.status(400).send({
-                         message: errorHandler.getErrorMessage(err)
-                         })
-                         }
-                         else {*/
-
-                        mkdirp(picThumbsPath, function (err) {
+                        mkdirp(picMaxPath, function (err) {
 
                             if (err) {
                                 return res.status(400).send({
@@ -184,65 +210,99 @@ exports.save = function(req, res) {
                                 });
                             }
                             else {
-
-                                // fs.writeFile(picFullSize, data, function (err) {
-
-                                /// write file to uploads/thumbs folder
-                                im.resize({
-                                    //srcPath: picFullSize,
-                                    srcData: data,
-                                    dstPath: picThumbs,
-                                    quality: 1,
-                                    width: config.picMaxWidth
-                                }, function (err, stdout, stderr) {
-
-                                    if (stderr) {
+                                mkdirp(picMinPath, function (err) {
+                                    if (err) {
                                         return res.status(400).send({
                                             message: errorHandler.getErrorMessage(err)
                                         });
                                     }
-                                    else {
-                                        fs.readFile(picThumbs, function (err, data) {
-                                            if (err) {
+                                    else{
+                                        /// write file to uploads/thumbs folder
+                                        im.resize({
+                                            srcData: bdata,
+                                            dstPath: picMax,
+                                            quality: 1,
+                                            width: config.picMaxWidth
+                                        }, function (err, stdout, stderr) {
+
+                                            if (stderr) {
                                                 return res.status(400).send({
                                                     message: errorHandler.getErrorMessage(err)
                                                 });
                                             }
                                             else {
-                                                var picData = new Buffer(data);
-                                                Exhibit.findByIdAndUpdate(exhibit._id,
-                                                    {
-                                                        pic: {
-                                                            name: image.name,
-                                                            size: picData.length,
-                                                            mime: image.type,
-                                                            data: picData //.toString('base64')
-                                                        }
-                                                    }, function (err, exhibit) {
-                                                        if (err || !exhibit) {
-                                                            return res.status(400).send({
-                                                                message: errorHandler.getErrorMessage(err)
-                                                            });
-                                                        }
-                                                        else {
-                                                            rimraf(picThumbsPath, function (er) {
-                                                                if (er) {
-                                                                    console.log(er)
-                                                                }
-                                                            });
-                                                            res.json(exhibit);
-                                                        }
-                                                    });
+                                                fs.readFile(picMax, function (err, data) {
+                                                    if (err) {
+                                                        return res.status(400).send({
+                                                            message: errorHandler.getErrorMessage(err)
+                                                        });
+                                                    }
+                                                    else {
+                                                        maxPicData = new Buffer(data);
 
+                                                        im.resize(
+                                                            {
+                                                                srcData: bdata,
+                                                                dstPath: picMin,
+                                                                quality: 1,
+                                                                width: config.picMinWidth
+                                                            },
+                                                            function (err, stdout, stderr) {
+
+                                                                if (stderr) {
+                                                                    return res.status(400).send({
+                                                                        message: errorHandler.getErrorMessage(err)
+                                                                    });
+                                                                }
+                                                                else {
+                                                                    minPicData = new Buffer(data);
+
+                                                                    Exhibit.findByIdAndUpdate(exhibit._id,
+                                                                        {
+                                                                            title: exhibit.title,
+                                                                            title_searchable: exhibit.title_searchable,
+                                                                            content: exhibit.content,
+                                                                            pic: {
+                                                                                name: image.name,
+                                                                                size: maxPicData.length,
+                                                                                msize: minPicData.length,
+                                                                                mime: image.type,
+                                                                                mdata: minPicData,
+                                                                                data: maxPicData //.toString('base64')
+                                                                            }
+                                                                        },
+                                                                        function (err, exhibit) {
+                                                                            if (err || !exhibit) {
+                                                                                return res.status(400).send({
+                                                                                    message: errorHandler.getErrorMessage(err)
+                                                                                });
+                                                                            }
+                                                                            else {
+                                                                                rimraf(picMaxPath, function (er) {
+                                                                                    if (er) {
+                                                                                        console.log(er);
+                                                                                    }
+                                                                                });
+                                                                                rimraf(picMinPath, function (er) {
+                                                                                    if (er) {
+                                                                                        console.log(er);
+                                                                                    }
+                                                                                });
+                                                                                res.json(exhibit);
+                                                                            }
+                                                                        }
+                                                                    );
+                                                                }
+                                                            }
+                                                        );
+                                                    }
+                                                });
                                             }
                                         });
                                     }
                                 });
-                                // });
                             }
                         });
-                        /*                            }
-                         });*/
                     });
                 }
             });
@@ -265,21 +325,38 @@ exports.read = function(req, res) {
     res.json(req.exhibit);
 };
 
-exports.pic = function(req, res) {
+var picture = function(req, res, min) {
+
+    var select = 'pic.mime pic.';
+
+    if(min)
+        select +=  'mdata';
+    else
+        select += 'data';
 
     var arr =  req.url.split('/');
     var exhibitId = arr[arr.length - 2];
-    Exhibit.findById(exhibitId).select('pic.mime pic.data').exec(function(err, exhibit) {
+    Exhibit.findById(exhibitId).select(select).exec(function(err, exhibit) {
         if (err || !exhibit)
             return res.status(400).send({
                 message: 'Failed to load picture ' + req.params.exhibitId
             });
         res.contentType(exhibit.pic.mime);
-        res.end(exhibit.pic.data, "binary");
-        //res.end(new Buffer(exhibit.pic.data, 'base64'), "binary");
+        if(min)
+            res.end(exhibit.pic.mdata, "binary");
+        else
+            res.end(exhibit.pic.data, "binary");
     });
+}
+
+
+exports.pic = function(req, res) {
+    picture(req, res);
 };
 
+exports.mpic = function(req, res) {
+    picture(req, res, true);
+};
 
 /**
  * Update a exhibit

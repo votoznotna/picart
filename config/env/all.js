@@ -13,7 +13,7 @@ module.exports = {
 	urlRoot:  process.env.URL_ROOT  || '/modules/exhibition/pictures/thumbs/',
 	dataRoot: process.env.DATA_ROOT,
 	picMaxWidth: 2000,
-	picMinWidth: 400,
+	picMinWidth: 300,
 	mongolabApiKey: process.env.MONGOLAB_API_KEY,
 	picturesRoot: '../../public/modules/exhibition/pictures',
 	port: process.env.PORT || 3000,

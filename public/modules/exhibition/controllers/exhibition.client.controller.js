@@ -13,7 +13,7 @@ angular.module('exhibition').controller('ExhibitionController',
 
             var timer = null, timerNext = null;
 
-            $rootScope.searchBar = $state.current.name.toLowerCase() === 'exhibition' ? true : false;
+            $rootScope.searchBar = ($state.current.name.toLowerCase() === 'exhibition') ? true : false;
 
             $rootScope.playerBar = $state.current.name.toLowerCase() === 'player' ? true : false;
 
@@ -45,6 +45,12 @@ angular.module('exhibition').controller('ExhibitionController',
                     }
                 });
             };
+
+            $scope.imgCached = function(url) {
+                var test = document.createElement("img");
+                test.src = url;
+                return test.complete && test.naturalWidth && test.naturalWidth;
+            }
 
             $scope.$on('serverRequestEnded', function(){
                 $scope.endUpload();
@@ -118,18 +124,14 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.$on('imgStartedLoading', function(){
                 if($rootScope.playerActive) {
-                    //removeTimers();
                     $scope.imageWasNotInCache = true;
                     $scope.timeoutDelay = true;
-                    //timer = $timeout(nextShot, shotDelay);
                 }
             });
 
             $scope.$on('imgEndedLoading', function(){
                 if($rootScope.playerActive) {
                     $scope.timeoutDelay = false;
-                    //removeTimers();
-                    //timer = $timeout(nextShot, shotDelay);
                 }
             });
 

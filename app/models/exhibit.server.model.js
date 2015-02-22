@@ -38,8 +38,10 @@ var ExhibitSchema = new Schema({
     pic: {
          name: { type: String, default: '', trim: true },
          size: { type: Number, default: 0 },
+         msize: { type: Number, default: 0 },
          mime: { type: String, default: ''},
-         data: { type: Buffer, default: null}
+         data: { type: Buffer, default: null},
+         mdata: { type: Buffer, default: null}
      },
 /*    pic: {
         name: { type: String, default: '', trim: true },

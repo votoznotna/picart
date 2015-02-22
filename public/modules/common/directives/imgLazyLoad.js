@@ -238,10 +238,6 @@ angular.module('common').directive(
                 }
             }
 
-            function renderSourceTimeOut() {
-                setTimeout(function(){renderSource()}, 1);
-            };
-
             // Return the public API.
             return({
                 isVisible: isVisible,
@@ -276,11 +272,12 @@ angular.module('common').directive(
             }
 
             var $imgTop = $element.closest(".img-top");
+            if($imgTop.length == 0) return;
             $imgTop.find('.img-spin').css('display', 'none');
 
             $imgTop.find('.img-box').css({'display': 'block'})
             $imgTop.find('.img-box').css({'opacity': 1});
-            var isPlayer =  $imgTop.find('.img-box-player').length > 0 ? true : false;
+            var isPlayer =  $imgTop.find('.img-box-player').length > 0 ||  $imgTop.find('.img-spin-player').length > 0  ? true : false;
             if(isPlayer)
             {
                 $imgTop.find('.rotator').css('display', 'block');
@@ -336,6 +333,7 @@ angular.module('common').directive(
                 if(src.indexOf('mpic') == -1) return;
                 var src  = src.replace('mpic', 'pic');
                 var $imgTop = $element.closest(".img-top");
+                if($imgTop.length == 0) return;
                 $imgTop.find('.img-box').css({'display': 'none'})
                 lazyImage.setSource( src );
             });

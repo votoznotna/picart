@@ -176,6 +176,7 @@ angular.module('common').directive(
         function LazyImage( element ) {
 
             var source = null;
+            var fromMinToMax = false;
             var isRendered = false;
             var height = null;
 
@@ -215,22 +216,28 @@ angular.module('common').directive(
                 renderSource();
             }
 
-            function setSource( newSource ) {
+            function setSource( newSource, fromMinToMax ) {
 
                 source = newSource;
                 if ( isRendered ) {
-                    renderSource();
+                    renderSource(fromMinToMax);
                 }
             }
 
-            function renderSource(){
+            function renderSource(fromMinToMax){
 
                 var elem = element[0];
                 elem.src = source;
                 var $imgTop = jQuery(elem).closest(".img-top");
+                if($imgTop.length == 0) return;
                 if(!elem.complete || !elem.naturalWidth || !elem.naturalHeight) {
                     $imgTop.find('.rotator').css('display', 'none');
-                    $imgTop.find('.img-spin').css('display', 'block');
+                    if(fromMinToMax) {
+                        $imgTop.find('.img-max-spin').css('display', 'block');
+                    }
+                    else {
+                        $imgTop.find('.img-spin').css('display', 'block');
+                    }
                     $rootScope.$broadcast('imgStartedLoading');
                 }
                 else  {
@@ -274,6 +281,7 @@ angular.module('common').directive(
             var $imgTop = $element.closest(".img-top");
             if($imgTop.length == 0) return;
             $imgTop.find('.img-spin').css('display', 'none');
+            $imgTop.find('.img-max-spin').css('display', 'none');
 
             $imgTop.find('.img-box').css({'display': 'block'})
             $imgTop.find('.img-box').css({'opacity': 1});
@@ -335,7 +343,7 @@ angular.module('common').directive(
                 var $imgTop = $element.closest(".img-top");
                 if($imgTop.length == 0) return;
                 $imgTop.find('.img-box').css({'display': 'none'})
-                lazyImage.setSource( src );
+                lazyImage.setSource( src, true );
             });
 
 

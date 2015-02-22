@@ -255,43 +255,52 @@ exports.save = function(req, res) {
                                                                     });
                                                                 }
                                                                 else {
-                                                                    minPicData = new Buffer(data);
-
-                                                                    Exhibit.findByIdAndUpdate(exhibit._id,
-                                                                        {
-                                                                            title: exhibit.title,
-                                                                            title_searchable: exhibit.title_searchable,
-                                                                            content: exhibit.content,
-                                                                            pic: {
-                                                                                name: image.name,
-                                                                                size: maxPicData.length,
-                                                                                msize: minPicData.length,
-                                                                                mime: image.type,
-                                                                                mdata: minPicData,
-                                                                                data: maxPicData //.toString('base64')
-                                                                            }
-                                                                        },
-                                                                        function (err, exhibit) {
-                                                                            if (err || !exhibit) {
-                                                                                return res.status(400).send({
-                                                                                    message: errorHandler.getErrorMessage(err)
-                                                                                });
-                                                                            }
-                                                                            else {
-                                                                                rimraf(picMaxPath, function (er) {
-                                                                                    if (er) {
-                                                                                        console.log(er);
-                                                                                    }
-                                                                                });
-                                                                                rimraf(picMinPath, function (er) {
-                                                                                    if (er) {
-                                                                                        console.log(er);
-                                                                                    }
-                                                                                });
-                                                                                res.json(exhibit);
-                                                                            }
+                                                                    fs.readFile(picMin, function (err, data) {
+                                                                        if (err) {
+                                                                            return res.status(400).send({
+                                                                                message: errorHandler.getErrorMessage(err)
+                                                                            });
                                                                         }
-                                                                    );
+                                                                        else {
+                                                                            minPicData = new Buffer(data);
+
+                                                                            Exhibit.findByIdAndUpdate(exhibit._id,
+                                                                                {
+                                                                                    title: exhibit.title,
+                                                                                    title_searchable: exhibit.title_searchable,
+                                                                                    content: exhibit.content,
+                                                                                    pic: {
+                                                                                        name: image.name,
+                                                                                        size: maxPicData.length,
+                                                                                        msize: minPicData.length,
+                                                                                        mime: image.type,
+                                                                                        mdata: minPicData,
+                                                                                        data: maxPicData //.toString('base64')
+                                                                                    }
+                                                                                },
+                                                                                function (err, exhibit) {
+                                                                                    if (err || !exhibit) {
+                                                                                        return res.status(400).send({
+                                                                                            message: errorHandler.getErrorMessage(err)
+                                                                                        });
+                                                                                    }
+                                                                                    else {
+                                                                                        rimraf(picMaxPath, function (er) {
+                                                                                            if (er) {
+                                                                                                console.log(er);
+                                                                                            }
+                                                                                        });
+                                                                                        rimraf(picMinPath, function (er) {
+                                                                                            if (er) {
+                                                                                                console.log(er);
+                                                                                            }
+                                                                                        });
+                                                                                        res.json(exhibit);
+                                                                                    }
+                                                                                }
+                                                                            );
+                                                                        }
+                                                                    });
                                                                 }
                                                             }
                                                         );

@@ -5,7 +5,7 @@
     <div class="container padded">
             <!--<div data-ng-repeat="exhibit in exhibition | filter : exhibitQuery" on-finish-render-filters style="font-weight:bold" >-->
             <div data-ng-repeat="exhibit in exhibition | picRequired | filter : exhibitQuery" style="font-weight:bold">
-                <div class="col-sm-6 col-md-3 col-lg-2 maxExhibitWidth img-top" >
+                <div class="col-sm-4 col-md-3 col-lg-2 maxExhibitWidth img-top" >
                     <div class="img-spin" style="text-align:center; margin-top: 20px;">
                         <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                     </div>
@@ -24,7 +24,8 @@
                     </div>
                     </div>
                 </div>
-                <div class="clearfix visible-sm-block" ng-if="$index%2==1"></div>
+
+                <div class="clearfix visible-sm-block" ng-if="$index%3==2"></div>
                 <div class="clearfix visible-md-block" ng-if="$index%4==3"></div>
                 <div class="clearfix visible-lg-block" ng-if="$index%6==5"></div>
             </div>

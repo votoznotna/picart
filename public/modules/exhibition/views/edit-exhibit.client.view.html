@@ -26,12 +26,17 @@
                     <label for="title" class="col-sm-3 control-label">Title</label>
                     <div class="col-sm-9 value-section-vshift">
                         <input type="text" id="title" name="title" class="form-control shadow3"
-                               ng-model="exhibit.title" unique-name mongo-collection="exhibition" ng-required="true"/>
+                               ng-model="exhibit.title" unique-name mongo-collection="exhibition"
+                               ng-maxlength="50"
+                               ng-required="true"/>
                             <span class="help-block"
                                   ng-if="exhibitForm.title.$error.required">Exhibit Title is required
                             </span>
                             <span class="help-block"
                                   ng-if="exhibitForm.title.$error.uniqueName">Duplicated Exhibit Title
+                            </span>
+                            <span ng-show="exhibitForm.title.$error.maxlength">
+                                Exhibit Title cannot exceed 50 characters in length.
                             </span>
                     </div>
                 </div>
@@ -80,7 +85,11 @@
                     <label for="content" class="col-sm-3 control-label">Notes</label>
                     <div class="col-sm-9">
                      <textarea name="content" id="content" class="form-control shadow3" rows="4" cols="20"
+                          ng-maxlength="100"
                           ng-model="exhibit.content"></textarea>
+                            <span ng-show="exhibitForm.content.$error.maxlength">
+                                Exhibit Content cannot exceed 100 characters in length.
+                            </span>
                     </div>
                 </div>
                 <div class="col-sm-offset-3 col-sm-9" style="padding-left:7px; padding-right:0">

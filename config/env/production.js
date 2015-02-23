@@ -7,7 +7,8 @@ module.exports = {
 		lib: {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.min.css',
-				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css'
+				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
+				'public/lib/jquery-ui/themes/smoothness/jquery-ui.min.css'
 			],
 			js: [
 				'public/lib/jquery/dist/jquery.min.js',
@@ -20,7 +21,7 @@ module.exports = {
 				'public/lib/angular-ui-router/release/angular-ui-router.min.js',
 				'public/lib/angular-ui-utils/ui-utils.min.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
-				//'public/lib/jquery-ui/jquery-ui.min.js'
+				'public/lib/jquery-ui/jquery-ui.min.js,
 				'public/lib/ng-device-detector/ng-device-detector.min.js',
 				'public/lib/angular-grecaptcha/grecaptcha-min.js'
 			]

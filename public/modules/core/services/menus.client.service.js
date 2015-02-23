@@ -31,6 +31,7 @@ angular.module('core').service('Menus', [
 			return false;
 		};
 
+
 		// Validate menu existance
 		this.validateMenuExistance = function(menuId) {
 			if (menuId && menuId.length) {

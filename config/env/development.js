@@ -6,7 +6,7 @@ module.exports = {
 	//db: 'mongodb://localhost/picart-dev',
 	//dbName: 'picart-dev',
 	app: {
-		title: 'picart - Development Environment'
+		title: 'albo - Development Environment'
 	},
 	facebook: {
 		clientID: process.env.FACEBOOK_ID || 'APP_ID',

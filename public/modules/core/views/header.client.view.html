@@ -25,10 +25,9 @@
 			</li>
 		</ul>
 
-
-		<form ng-show="searchBar" class="navbar-form navbar-left" style="margin-left: 20px" role="search">
-			<div class="form-group" style="position: relative">
-				<input ng-model="query" type="text" class="form-control" placeholder="Search">
+		<form id="searchBar" ng-show="searchBar" class="navbar-form navbar-left" style="margin-left: 20px" role="search">
+			<div id="searchForm"  class="form-group" style="position: relative;left: -2px">
+				<input id="searchBox" ng-model="query" style="padding-right: 25px" type="text" class="form-control" placeholder="Search">
 				<span ng-show="query" ng-click="clearSearch()" class="searchclear glyphicon glyphicon-remove-circle"></span>
 				</input>
 			</div>

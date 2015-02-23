@@ -36,13 +36,36 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.authentication = Authentication;
 
             $scope.find = function() {
-                $scope.exhibition = Exhibition.query();
+                $rootScope.exhibition = Exhibition.query();
 
                 $scope.exhibition.$promise.then(function(data) {
                     $rootScope.slidesLength = $filter('picRequired')(data).length;
                     if($rootScope.playerBar) {
                         $scope.startPlay();
                     }
+
+                    if($rootScope.searchBar && $rootScope.slidesLength){
+                        var tags = [], lowerTags = [];
+                        for(var index = 0; index < data.length; index++){
+                            var item = data[index];
+                            var sItems = [item.title.trim(), item.content.trim()];
+                            for(var ind = 0; ind < sItems.length; ind++){
+                                var txt = sItems[ind];
+                                if(!txt) continue;
+                                var txtLower = txt.toLowerCase();
+                                if(lowerTags.indexOf(txtLower) != -1) continue;
+                                tags.push(txt); lowerTags.push(txtLower);
+                            }
+                        }
+
+                        if(tags.length) tags.sort();
+
+                        jQuery( "#searchBox" ).autocomplete({
+                            minLength: 2,
+                            source: tags
+                        });
+                    }
+
                 });
             };
 
@@ -158,6 +181,10 @@ angular.module('exhibition').controller('ExhibitionController',
                 $timeout.cancel( timer );
                 $timeout.cancel( timerNext );
             }
+
+            $scope.$on('ngRepeatFinished', function(){
+
+            });
 
             $scope.$on(
                 '$destroy',

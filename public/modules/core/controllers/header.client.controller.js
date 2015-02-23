@@ -3,7 +3,11 @@
 angular.module('core').controller('HeaderController', ['$rootScope', '$scope', 'Authentication', 'Menus',
 	function($rootScope, $scope, Authentication, Menus) {
 
-		$rootScope.exhibitQuery = '';
+/*		$scope.master =  {title: '', content: ''};
+		$rootScope.extQuery = angular.copy($scope.master);
+		$scope.query = angular.copy($scope.master);*/
+
+		$rootScope.extQuery = '';
 
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
@@ -19,12 +23,13 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 		});
 
 		$scope.searchExhibits = function(){
-
-			$rootScope.exhibitQuery = $scope.query;
+			var value = angular.element(document.querySelector('#searchBox')).val();
+			$rootScope.extQuery = value;
 		}
 
 		$scope.clearSearch = function(){
-			$scope.query = '';
+			angular.element(document.querySelector('#searchBox')).val('');
+			$rootScope.extQuery = '';
 		}
 
 		$scope.playGo = function(value){

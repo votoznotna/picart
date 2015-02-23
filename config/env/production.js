@@ -21,7 +21,6 @@ module.exports = {
 				'public/lib/angular-ui-utils/ui-utils.min.js',
 				'public/lib/angular-bootstrap/ui-bootstrap-tpls.js',
 				//'public/lib/jquery-ui/jquery-ui.min.js'
-				//'public/lib/angularjs-imageupload-directive/public/javascripts/imageupload.js',
 				'public/lib/ng-device-detector/ng-device-detector.min.js',
 				'public/lib/angular-grecaptcha/grecaptcha-min.js'
 			]

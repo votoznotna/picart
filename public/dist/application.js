@@ -3,7 +3,7 @@
 // Init the application configuration module for AngularJS application
 var ApplicationConfiguration = (function() {
 	// Init module configuration options
-	var applicationModuleName = 'picart';
+	var applicationModuleName = 'albo';
 	var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',
 		'ui.router', 'ui.bootstrap', 'ui.utils', 'ng.deviceDetector', 'grecaptcha'];
 
@@ -856,7 +856,11 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 angular.module('core').controller('HeaderController', ['$rootScope', '$scope', 'Authentication', 'Menus',
 	function($rootScope, $scope, Authentication, Menus) {
 
-		$rootScope.exhibitQuery = '';
+/*		$scope.master =  {title: '', content: ''};
+		$rootScope.extQuery = angular.copy($scope.master);
+		$scope.query = angular.copy($scope.master);*/
+
+		$rootScope.extQuery = '';
 
 		$scope.authentication = Authentication;
 		$scope.isCollapsed = false;
@@ -872,12 +876,13 @@ angular.module('core').controller('HeaderController', ['$rootScope', '$scope', '
 		});
 
 		$scope.searchExhibits = function(){
-
-			$rootScope.exhibitQuery = $scope.query;
+			var value = angular.element(document.querySelector('#searchBox')).val();
+			$rootScope.extQuery = value;
 		}
 
 		$scope.clearSearch = function(){
-			$scope.query = '';
+			angular.element(document.querySelector('#searchBox')).val('');
+			$rootScope.extQuery = '';
 		}
 
 		$scope.playGo = function(value){
@@ -1420,13 +1425,36 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.authentication = Authentication;
 
             $scope.find = function() {
-                $scope.exhibition = Exhibition.query();
+                $rootScope.exhibition = Exhibition.query();
 
                 $scope.exhibition.$promise.then(function(data) {
                     $rootScope.slidesLength = $filter('picRequired')(data).length;
                     if($rootScope.playerBar) {
                         $scope.startPlay();
                     }
+
+                    if($rootScope.searchBar && $rootScope.slidesLength){
+                        var tags = [], lowerTags = [];
+                        for(var index = 0; index < data.length; index++){
+                            var item = data[index];
+                            var sItems = [item.title.trim(), item.content.trim()];
+                            for(var ind = 0; ind < sItems.length; ind++){
+                                var txt = sItems[ind];
+                                if(!txt) continue;
+                                var txtLower = txt.toLowerCase();
+                                if(lowerTags.indexOf(txtLower) != -1) continue;
+                                tags.push(txt); lowerTags.push(txtLower);
+                            }
+                        }
+
+                        if(tags.length) tags.sort();
+
+                        jQuery( "#searchBox" ).autocomplete({
+                            minLength: 2,
+                            source: tags
+                        });
+                    }
+
                 });
             };
 
@@ -1543,6 +1571,10 @@ angular.module('exhibition').controller('ExhibitionController',
                 $timeout.cancel( timerNext );
             }
 
+            $scope.$on('ngRepeatFinished', function(){
+
+            });
+
             $scope.$on(
                 '$destroy',
                 function( event ) {
@@ -1551,6 +1583,33 @@ angular.module('exhibition').controller('ExhibitionController',
             );
         }
     ]);
+
+/**
+ * Created by User on 2/22/2015.
+ */
+angular.module('exhibition').filter('exhibitQuery', function () {
+    // function to invoke by Angular each time
+    // Angular passes in the `items` which is our Array
+    return function (items, search) {
+        // Create a new Array
+        var filtered = [];
+        if(search)
+        {
+            // loop through existing Array
+            var sTitle = search.title.toLowerCase();
+            var sContent = search.content.toLowerCase();
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                if (item.title.toLowerCase().indexOf(sTitle) != -1 ||
+                    item.content.toLowerCase().indexOf(sContent) != -1) {
+                    filtered.push(item);
+                }
+            }
+        }
+        // boom, return the Array after iteration's complete
+        return filtered;
+    };
+});
 
 /**
  * Created by User on 2/11/2015.

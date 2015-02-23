@@ -201,3 +201,15 @@
 a.dropdown-toggle {
   cursor: pointer;
 }
+.form-control {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  margin-bottom: 0;
+}
+.ui-widget-content {
+  z-index: 10000;
+}
+.ui-menu-item {
+  font-size: 0.8em !important;
+}

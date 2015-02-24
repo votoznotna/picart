@@ -1,6 +1,8 @@
 /**
  * Created by User on 2/18/2015.
  */
+'use strict';
+
 angular.module('imageupload', ['common'])
     .directive('image', function($q, messaging, events) {
         'use strict'

@@ -507,6 +507,8 @@ angular.module('common').directive('imgLoaded', function () {
 /**
  * Created by User on 2/23/2015.
  */
+'use strict';
+
 angular.module('common').directive('imageonload', function() {
     return {
         restrict: 'A',
@@ -1601,6 +1603,8 @@ angular.module('exhibition').controller('ExhibitionController',
 /**
  * Created by User on 2/22/2015.
  */
+'use strict';
+
 angular.module('exhibition').filter('exhibitQuery', function () {
     // function to invoke by Angular each time
     // Angular passes in the `items` which is our Array
@@ -1628,6 +1632,8 @@ angular.module('exhibition').filter('exhibitQuery', function () {
 /**
  * Created by User on 2/11/2015.
  */
+'use strict';
+
 angular.module('common').filter('picRequired', function () {
     // function to invoke by Angular each time
     // Angular passes in the `items` which is our Array
@@ -1966,6 +1972,8 @@ angular.module('users').factory('Users', ['$resource',
 /**
  * Created by User on 2/18/2015.
  */
+'use strict';
+
 angular.module('imageupload', ['common'])
     .directive('image', ["$q", "messaging", "events", function($q, messaging, events) {
         'use strict'

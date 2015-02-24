@@ -1,6 +1,8 @@
 /**
  * Created by User on 2/22/2015.
  */
+'use strict';
+
 angular.module('exhibition').filter('exhibitQuery', function () {
     // function to invoke by Angular each time
     // Angular passes in the `items` which is our Array

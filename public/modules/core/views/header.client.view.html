@@ -7,7 +7,7 @@
 			<span class="icon-bar"></span>
 		</button>
 		<!--<a href="/#!/" class="navbar-brand">Home</a>-->
-		<a href="/#!/" style="padding-top:10px" class="navbar-brand"><img style="width:30px" src="/modules/core/img/brand/earth-blue.png"></a>
+		<a href="/#!/" style="padding-top:10px" class="navbar-brand"><img style="width:30px; visibility: hidden" src="/modules/core/img/brand/earth-blue.png" imageonload></a>
 	</div>
 	<nav class="collapse navbar-collapse" collapse="!isCollapsed" role="navigation">
 		<ul class="nav navbar-nav" data-ng-if="menu.shouldRender(authentication.user);">
@@ -80,3 +80,4 @@
 		</ul>
 	</nav>
 </div>
+

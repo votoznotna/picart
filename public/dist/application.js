@@ -2199,7 +2199,7 @@ jQuery.imageMagnify={
 		//newattrs.w= (setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
 		//newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
 
-		//$target.css('cursor', jQuery.imageMagnify.cursorcss)
+		$target.css('cursor', jQuery.imageMagnify.cursorcss)
 		if ($target.data('imgshell')){
 			$target.data('imgshell').$clone.remove();
 			$target.css({opacity:1}).unbind('click.magnify');

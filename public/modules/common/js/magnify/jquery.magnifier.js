@@ -23,7 +23,7 @@ jQuery.imageMagnify={
 		duration: 500, //default duration of animation, in millisec
 		imgopacity: 0.2 //opacify of original image when enlarged image overlays it
 	},
-	cursorcss: 'url(/modules/common/js/magnify/magnify.cur), -moz-zoom-in', //Value for CSS's 'cursor' attribute, added to original image
+	cursorcss: 'url(/modules/common/js/magnify/cursor_zoom.cur), -moz-zoom-in', //Value for CSS's 'cursor' attribute, added to original image
 	zIndexcounter: 100,
 
 		refreshoffsets:function($window, $target, warpshell){

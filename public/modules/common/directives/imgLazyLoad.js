@@ -296,7 +296,9 @@ angular.module('common').directive(
             else{
                 var src = $element.attr('src');
                 if(src.indexOf('mpic') >= 0) return;
-                $element.trigger('click');
+                if($element.is(':visible')){
+                    $element.trigger('click');
+                }
             }
 
 

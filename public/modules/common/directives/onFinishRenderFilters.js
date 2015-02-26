@@ -3,7 +3,7 @@
  */
 'use strict';
 
-angular.module('common').directive('onFinishRenderFilters', function ($timeout) {
+angular.module('common').directive('onFinishRenderFilters',  ['$timeout', function ($timeout) {
     return {
         restrict: 'A',
         link: function (scope, element, attr) {
@@ -15,4 +15,4 @@ angular.module('common').directive('onFinishRenderFilters', function ($timeout) 
             }
         }
     };
-});
+}]);

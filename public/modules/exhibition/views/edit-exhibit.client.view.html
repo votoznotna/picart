@@ -65,20 +65,14 @@
                                            style="width: 100%" />
                                 </div>
                             </div>
-<!--                            <div style="white-space: nowrap;  margin-bottom: 5px;">
-                                <button type="button" ng-click="clearPicture(true)" class="btn btn-default" style="margin-left: 10px">Clear</button>
-                            </div>-->
                         </div>
                         <div class="col-sm-12 img-top" style="padding-left: 0;">
                             <div class="img-spin" style="margin-left:70px; margin-top: 20px;">
                                 <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                             </div>
-                            <!--<img ng-hide="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px; max-height:300px; max-width:300px" ng-src="{{urlRoot + exhibit._id + '/' + exhibit.picture}}"/>-->
                             <img ng-hide="exhibit.newPicture"  ng-if="exhibit._id" class="img-responsive shadow3" player="true" style="margin-top: 10px; max-height:300px; max-width:300px" img-lazy-load="{{'/mpic/' + exhibit._id + '/' + exhibit.pic.name}}"/>
                             <img ng-show="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
                         </div>
-<!--                        <span class="help-block"
-                              ng-if="exhibitForm.newPicture.$error.required && exhibitForm.newPicture.$dirty">Picture is required</span>-->
                     </div>
                 </div>
                 <div class="form-group">

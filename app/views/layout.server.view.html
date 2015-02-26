@@ -32,7 +32,7 @@
 	<![endif]-->
 </head>
 
-<body class="ng-cloak" onload="bodyLoaded()" >
+<body class="ng-cloak" background-image="/modules/core/img/brand/bridge.jpg">
 	<base href="/">
 	<header data-ng-include="'/modules/core/views/header.client.view.html'" style="opacity:1.0" class="navbar navbar-fixed-top navbar-inverse"></header>
 	<div id="main" class="content" ng-cloak style="padding-bottom: 40px;">
@@ -57,30 +57,6 @@
 
 	<!--Application JavaScript Files-->
 	{% for jsFile in jsFiles %}<script type="text/javascript" src="{{jsFile}}"></script>{% endfor %} 
-
-<!--	{% if process.env.NODE_ENV === 'development' %}
-	&lt;!&ndash;Livereload script rendered &ndash;&gt;
-	<script type="text/javascript" src="http://{{request.hostname}}:35729/livereload.js"></script>
-	{% endif %}-->
-
-	<script type="text/javascript">
-			var bodyBgImage = new Image();
-			function CheckImageStatus() {
-
-				if (bodyBgImage.complete == false || bodyBgImage.naturalHeight == 0 || bodyBgImage.naturalWidth == 0) {
-					setTimeout(CheckImageStatus, 500);
-				}
-				else{
-					document.getElementsByTagName("html")[0].className = "bg-body";
-					document.getElementsByTagName("body")[0].className = "bg-body";
-				}
-			}
-
-			function bodyLoaded(){
-				bodyBgImage.src = "/modules/core/img/brand/bridge.jpg";
-				CheckImageStatus();
-			}
-	</script>
 
 </body>
 

@@ -103,7 +103,7 @@ angular.module('common').directive('backgroundImage', ['$timeout', function($tim
             var imgSrc = attrs['backgroundImage'];
 
             var bodyBgImage = new Image();
-            bodyBgImage.src = "/modules/core/img/brand/bridge.jpg";
+            bodyBgImage.src = imgSrc;
 
 /*            function bodyLoaded(){
                 bodyBgImage.src = "/modules/core/img/brand/bridge.jpg";

@@ -70,8 +70,8 @@
                             <div class="img-spin" style="margin-left:70px; margin-top: 20px;">
                                 <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                             </div>
-                            <img ng-hide="exhibit.newPicture"  ng-if="exhibit._id" class="img-responsive shadow3" player="true" style="margin-top: 10px; max-height:300px; max-width:300px" img-lazy-load="{{'/mpic/' + exhibit._id + '/' + exhibit.pic.name}}"/>
-                            <img ng-show="exhibit.newPicture" class="img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
+                            <img ng-hide="exhibit.newPicture"  ng-if="exhibit._id" class="img-responsive-radius img-responsive shadow3" player="true" style="margin-top: 10px;" img-lazy-load="{{'/mpic/' + exhibit._id + '/' + exhibit.pic.name}}"/>
+                            <img ng-show="exhibit.newPicture" class="img-responsive-radius img-responsive shadow3" style="margin-top: 10px" ng-src="{{exhibit.newPicture.resized.dataURL}}"/>
                         </div>
                     </div>
                 </div>

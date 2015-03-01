@@ -88,6 +88,7 @@ module.exports = function(db) {
 	//	extended: true
 	//}));
 	app.use(bodyParser.json());
+    //app.set('jsonp callback name', 'cb');
 	app.use(bodyParser.urlencoded({ extended: false }));
 	app.use(methodOverride());
 

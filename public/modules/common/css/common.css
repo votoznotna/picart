@@ -58,6 +58,8 @@ body {
   background: -o-linear-gradient(#fad2af, #e1a696);
   background: -moz-linear-gradient(#fad2af, #e1a696);
   background: linear-gradient(#fad2af, #e1a696);
+}
+.height100pcnt {
   height: 100%;
 }
 .shadow3 {

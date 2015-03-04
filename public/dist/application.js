@@ -52,6 +52,7 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 		$rootScope.$on( '$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
 			$rootScope.searchBar = false;
 			$rootScope.playerBar = false;
+            $rootScope.usersManager = false;
 		});
 	}]);
 
@@ -90,6 +91,20 @@ ApplicationConfiguration.registerModule('exhibition',['common', 'imageupload']);
 
 // Use Applicaion configuration module to register a new module
 ApplicationConfiguration.registerModule('users');
+/**
+ * Created by User on 3/4/2015.
+ */
+angular.module('common').controller('BaseCtrl',
+    [ '$scope', '$location', 'messaging', 'events', 'deviceDetector',
+    function ($scope, $location, messaging, events, deviceDetector) {
+        //#region login methods
+        $scope.oddBrowser = function () {
+            return deviceDetector.raw.browser.ie || deviceDetector.raw.browser.firefox;
+        }
+    }
+]);
+
+
 /**
  * Created by User on 2/26/2015.
  */
@@ -1449,11 +1464,13 @@ angular.module('exhibition').controller('ExhibitController',
 
 angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
-        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        '$controller', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
         'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 $controller, $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
                  deviceDetector) {
+
+            $controller('BaseCtrl', {$scope: $scope});
 
             var timer = null, timerNext = null;
 
@@ -1467,9 +1484,9 @@ angular.module('exhibition').controller('ExhibitionController',
 
             $scope.imageWasNotInCache = false;
 
-            $scope.oddBrowser = function(){
+/*            $scope.oddBrowser = function(){
                return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
-            }
+            }*/
 
             $rootScope.playerActive = false;
 
@@ -1828,10 +1845,11 @@ angular.module('users').config(['$stateProvider',
 ]);
 'use strict';
 
-angular.module('users').controller('AuthenticationController', ['$scope', '$http', '$location', 'Authentication',
-	function($scope, $http, $location, Authentication) {
+angular.module('users').controller('AuthenticationController', ['$rootScope', '$scope', '$http', '$location', 'Authentication',
+	function($rootScope, $scope, $http, $location, Authentication) {
 
 		$scope.authentication = Authentication;
+        $rootScope.usersManager = true;
 
 		// If user is signed in then redirect back home
 		if ($scope.authentication.user) $location.path('/');
@@ -1868,9 +1886,10 @@ angular.module('users').controller('AuthenticationController', ['$scope', '$http
 
 'use strict';
 
-angular.module('users').controller('PasswordController', ['$scope', '$stateParams', '$http', '$location', 'Authentication',
-	function($scope, $stateParams, $http, $location, Authentication) {
+angular.module('users').controller('PasswordController', ['$rootScope', '$scope', '$stateParams', '$http', '$location', 'Authentication',
+	function($rootScope, $scope, $stateParams, $http, $location, Authentication) {
 		$scope.authentication = Authentication;
+        $rootScope.usersManager = true;
 
 		//If user is signed in then redirect back home
 		if ($scope.authentication.user) $location.path('/');
@@ -1910,11 +1929,13 @@ angular.module('users').controller('PasswordController', ['$scope', '$stateParam
 		};
 	}
 ]);
+
 'use strict';
 
-angular.module('users').controller('SettingsController', ['$scope', '$http', '$location', 'Users', 'Authentication',
-	function($scope, $http, $location, Users, Authentication) {
+angular.module('users').controller('SettingsController', ['$rootScope', '$scope', '$http', '$location', 'Users', 'Authentication',
+	function($rootScope, $scope, $http, $location, Users, Authentication) {
 		$scope.user = Authentication.user;
+        $rootScope.usersManager = true;
 
 		// If user is not signed in then redirect back home
 		if (!$scope.user) $location.path('/');
@@ -1981,6 +2002,7 @@ angular.module('users').controller('SettingsController', ['$scope', '$http', '$l
 		};
 	}
 ]);
+
 'use strict';
 
 // Authentication service for user variables

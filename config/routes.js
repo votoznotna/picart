@@ -26,6 +26,7 @@ module.exports = function(app) {
     app.get('/player', getUrl);
     app.get('/signin', getUrl);
     app.get('/signup', getUrl);
+    app.get('/password/forgot', getUrl);
     app.get('/exhibition/create', getUrl);
     app.get('/settings/profile', getUrl);
     app.get('/settings/password', getUrl);

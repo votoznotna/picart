@@ -139,7 +139,7 @@ angular.module('common').directive('backgroundImage', ['$timeout', function($tim
 
 
             bodyBgImage.onload = function() {
-                document.getElementsByTagName("html")[0].className = "bg-body";
+                document.getElementsByTagName("html")[0].className = "height100pcnt bg-body";
                 document.getElementsByTagName("body")[0].className = "bg-body";
             };
         }

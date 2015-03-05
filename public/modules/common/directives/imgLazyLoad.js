@@ -231,7 +231,7 @@ angular.module('common').directive(
                 var $imgTop = jQuery(elem).closest(".img-top");
                 if($imgTop.length == 0) return;
                 if(!elem.complete || !elem.naturalWidth || !elem.naturalHeight ||
-                    fromMinToMax && elem.naturalWidth < 500 ) {
+                    fromMinToMax  ) {
                     $imgTop.find('.rotator').css('display', 'none');
                     if(fromMinToMax) {
                         $imgTop.find('.img-max-spin').css('display', 'block');

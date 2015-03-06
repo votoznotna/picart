@@ -99,6 +99,9 @@ module.exports = function(db) {
 	app.use(session({
 		saveUninitialized: true,
 		resave: true,
+        httpOnly: true,
+        secure: true,
+        ephemeral: true,
 		secret: config.sessionSecret,
 		store: new mongoStore({
 			db: db.connection.db,

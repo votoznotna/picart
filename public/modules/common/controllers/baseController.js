@@ -5,7 +5,7 @@ angular.module('common').controller('BaseCtrl',
     [ '$scope', '$location', 'messaging', 'events', 'deviceDetector',
     function ($scope, $location, messaging, events, deviceDetector) {
         //#region login methods
-        $scope.oddBrowser = function () {
+        $scope.oddPlayerBrowser = function () {
             return deviceDetector.raw.browser.ie || deviceDetector.raw.browser.firefox;
         }
     }

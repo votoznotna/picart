@@ -1,9 +1,9 @@
 <section data-ng-controller="ExhibitionController" data-ng-init="find()">
-<div ng-class="{welcome: !oddBrowser(), oddBrowserMarginTop: oddBrowser()}"  class="text-center">
+<div ng-class="{welcome: !oddPlayerBrowser(), oddBrowserMarginTop: oddPlayerBrowser()}"  class="text-center">
     <div class="outer">
         <div class="middle">
             <div class="inner img-top">
-                <div class="img-spin img-spin-player" ng-class="{absolute: oddBrowser()}">
+                <div class="img-spin img-spin-player" ng-class="{absolute: oddPlayerBrowser()}">
                     <img  src="/modules/core/img/loaders/spin_squares_pink128.gif">
                 </div>
                 <div  class="rotator" ng-class="{inactiveSlides: playerActive}" data-ng-repeat="exhibit in exhibition | picRequired" style="font-weight:bold;" >

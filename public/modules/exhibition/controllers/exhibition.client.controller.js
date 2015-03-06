@@ -5,10 +5,10 @@
 
 angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
-        '$controller', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        '$controller', '$window', 'Authentication', 'Exhibition','messaging', 'events','shotDelay',
         'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $controller, $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 $controller, $window, Authentication, Exhibition, messaging, events, shotDelay,
                  deviceDetector) {
 
             $controller('BaseCtrl', {$scope: $scope});
@@ -24,10 +24,6 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.timeoutDelay = false;
 
             $scope.imageWasNotInCache = false;
-
-/*            $scope.oddBrowser = function(){
-               return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
-            }*/
 
             $rootScope.playerActive = false;
 

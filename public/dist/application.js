@@ -98,7 +98,7 @@ angular.module('common').controller('BaseCtrl',
     [ '$scope', '$location', 'messaging', 'events', 'deviceDetector',
     function ($scope, $location, messaging, events, deviceDetector) {
         //#region login methods
-        $scope.oddBrowser = function () {
+        $scope.oddPlayerBrowser = function () {
             return deviceDetector.raw.browser.ie || deviceDetector.raw.browser.firefox;
         }
     }
@@ -470,18 +470,6 @@ angular.module('common').directive(
                     $element.trigger('click');
                 }
             }
-
-
-            //$imgTop.addClass('maxImgLoaded');
-
-/*            jQuery(element).tooltip(
-                {
-                    position: {
-                        my: "left top",
-                        at: "right+5 top-5"
-                    }
-                });*/
-            //$rootScope.loadedSlides.push($element.attr('src').toLowerCase())
         };
 
         function link( $scope, element, attrs ) {
@@ -1241,18 +1229,14 @@ angular.module('exhibition').controller('RemoveExhibitionConfirmationController'
 
 angular.module('exhibition').controller('ExhibitController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
-        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        '$window', 'Authentication', 'Exhibition', 'messaging', 'events','shotDelay',
         'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 $window, Authentication, Exhibition, messaging, events, shotDelay,
                  deviceDetector) {
 
 
             $rootScope.urlRoot = $window.urlRoot;
-
-            $scope.oddBrowser = function(){
-                return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
-            }
 
             $scope.master = {};
 
@@ -1464,10 +1448,10 @@ angular.module('exhibition').controller('ExhibitController',
 
 angular.module('exhibition').controller('ExhibitionController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
-        '$controller', '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        '$controller', '$window', 'Authentication', 'Exhibition','messaging', 'events','shotDelay',
         'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $controller, $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 $controller, $window, Authentication, Exhibition, messaging, events, shotDelay,
                  deviceDetector) {
 
             $controller('BaseCtrl', {$scope: $scope});
@@ -1483,10 +1467,6 @@ angular.module('exhibition').controller('ExhibitionController',
             $scope.timeoutDelay = false;
 
             $scope.imageWasNotInCache = false;
-
-/*            $scope.oddBrowser = function(){
-               return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
-            }*/
 
             $rootScope.playerActive = false;
 
@@ -1716,7 +1696,7 @@ angular.module('common').filter('picRequired', function () {
 //Exhibition service used for communicating with the exhibition REST endpoints
 angular.module('exhibition').factory('Exhibition', ['$resource',
     function($resource) {
-        return $resource('exhibition/:exhibitId', {
+        return $resource('/exhibition/:exhibitId', {
             exhibitId: '@_id'
         }, {
             update: {
@@ -1726,47 +1706,6 @@ angular.module('exhibition').factory('Exhibition', ['$resource',
     }
 ]);
 
-angular.module('exhibition').factory('ExhibitMagnify', ['$timeout', function($timeout) {
-
-        function runMagnify(elements, pollingInterval, magnifyby) {
-
-            var loadingCount = 0;
-
-            elements.each(function () {
-
-                var domImg = jQuery(this).get(0);
-                if (domImg.complete === false || domImg.naturalHeight === 0 || domImg.naturalWidth === 0) {
-                    loadingCount++;
-                } else {
-                    var natHeight = domImg.naturalHeight;
-                    var natWidth = domImg.naturalWidth;
-                    var thumbHeight = natHeight / magnifyby;
-                    var thumbWidth = natWidth / magnifyby;
-                    var thumbdimensions = [thumbWidth, thumbHeight];
-
-                    jQuery(this).imageMagnify(
-                        {
-                            vIndent: 50,
-                            hIndent: 0,
-                            magnifyby: magnifyby,
-                            thumbdimensions: thumbdimensions
-                        }
-                    );
-                }
-            });
-
-            if (loadingCount) {
-                $timeout(function () {
-                    runMagnify(elements, pollingInterval, magnifyby);
-                }, pollingInterval);
-            }
-        }
-
-        return {
-            runMagnify: runMagnify
-        }
-    }
-]);
 
 'use strict';
 

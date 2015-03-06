@@ -300,18 +300,6 @@ angular.module('common').directive(
                     $element.trigger('click');
                 }
             }
-
-
-            //$imgTop.addClass('maxImgLoaded');
-
-/*            jQuery(element).tooltip(
-                {
-                    position: {
-                        my: "left top",
-                        at: "right+5 top-5"
-                    }
-                });*/
-            //$rootScope.loadedSlides.push($element.attr('src').toLowerCase())
         };
 
         function link( $scope, element, attrs ) {

@@ -8,18 +8,14 @@
 
 angular.module('exhibition').controller('ExhibitController',
     ['$rootScope','$scope', '$filter', '$modal', '$document', '$timeout', '$stateParams', '$state','$http',
-        '$window', 'Authentication', 'Exhibition', 'ExhibitMagnify','messaging', 'events','shotDelay',
+        '$window', 'Authentication', 'Exhibition', 'messaging', 'events','shotDelay',
         'deviceDetector',
         function($rootScope, $scope, $filter, $modal, $document, $timeout, $stateParams, $state, $http,
-                 $window, Authentication, Exhibition, ExhibitMagnify, messaging, events, shotDelay,
+                 $window, Authentication, Exhibition, messaging, events, shotDelay,
                  deviceDetector) {
 
 
             $rootScope.urlRoot = $window.urlRoot;
-
-            $scope.oddBrowser = function(){
-                return deviceDetector.raw.browser.ie ||  deviceDetector.raw.browser.firefox;
-            }
 
             $scope.master = {};
 

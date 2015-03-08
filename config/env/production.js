@@ -8,6 +8,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.min.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
+                'public/lib/font-awesome-css/css/font-awesome.min.css',
 				'public/lib/jquery-ui/themes/smoothness/jquery-ui.min.css'
 			],
 			js: [

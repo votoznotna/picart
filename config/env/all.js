@@ -25,6 +25,7 @@ module.exports = {
 			css: [
 				'public/lib/bootstrap/dist/css/bootstrap.css',
 				'public/lib/bootstrap/dist/css/bootstrap-theme.css',
+                'public/lib/font-awesome-css/css/font-awesome.min.css',
 				'public/lib/jquery-ui/themes/smoothness/jquery-ui.css'
 			],
 			js: [

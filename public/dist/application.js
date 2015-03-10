@@ -2195,6 +2195,7 @@ jQuery.imageMagnify={
 		var setting=jQuery.extend(setting, this.dsettings, options);
 		var attrs=(options.thumbdimensions)? {w:options.thumbdimensions[0], h:options.thumbdimensions[1]} : {w:$target.outerWidth(), h:$target.outerHeight()};
 		var newattrs={};
+        var bEnforceZoomOut=false;
 
 		//newattrs.w= (setting.magnifyto)? setting.magnifyto : Math.round(attrs.w*setting.magnifyby)
 		//newattrs.h=(setting.magnifyto)? Math.round(attrs.h*newattrs.w/attrs.w) : Math.round(attrs.h*setting.magnifyby)
@@ -2216,34 +2217,47 @@ jQuery.imageMagnify={
 			jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 			jQuery.imageMagnify.refreshoffsets($(window), $this, imageinfo); //refresh offset positions of original and warped images
 			var $clone=imageinfo.$clone;
-			$clone.data('$zoomStatus', '0');
-			$('body').on('click',  function(e){
-				var  var1 = $clone.css('opacity');
-				if(	e.target !== $clone.get(0)
-					//&& $clone.css('opacity') == 1
-					&& $clone.data('$zoomStatus') == '1'
-					&& $clone.data('$zoomOutProgress') == '0') {
+            $clone.data('$zoomStatus', '0');
+            $clone.data('$zoomInProgress', '1');
 
-					$clone.trigger('click');
-				}
+
+            function cloneHandler(event, aClone, aThis){
+
+                if(	event.target !== aThis.get(0)
+                    && (aClone.data('$zoomStatus') == '1' && aClone.data('$zoomOutProgress') == '0'
+                    || aClone.data('$zoomInProgress') == '1'
+                    )
+                ) {
+                    if(aClone.data('$zoomInProgress') == '1'){
+                        aClone.clearQueue();
+                        aClone.stop(true, true);
+                        bEnforceZoomOut=true;
+                    }
+                    else{
+                        $clone.click();
+                    }
+
+                }
+            };
+
+			$('body').on('click',  function(e){
+                cloneHandler(e, $clone, $this);
 			});
 
-			$(window).on('click scroll resize',  function(e){
-				var  var1 = $clone.css('opacity');
-				if(	e.target !== $clone.get(0)
-						//&& $clone.css('opacity') == 1
-					&& $clone.data('$zoomStatus') == '1'
-					&& $clone.data('$zoomOutProgress') == '0') {
-
-					$clone.trigger('click');
-				}
+			$(window).on('scroll resize',  function(e){
+                cloneHandler(e, $clone, $this);
 			});
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
 				.animate({opacity:1, left: ($(window).width() === imageinfo.newattrs.w ? 0 : imageinfo.newattrs.x + setting.hIndent), top: imageinfo.newattrs.y + setting.vIndent, width:imageinfo.newattrs.w + setting.widthPad, height:imageinfo.newattrs.h + setting.heightPad}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
-					$clone.data('$zoomStatus', '1');
+                    $clone.data('$zoomStatus', '1');
+                    $clone.data('$zoomInProgress', '0');
+                    if(bEnforceZoomOut){
+                        bEnforceZoomOut=false;
+                        $clone.click();
+                    }
 					//none added
 				}); //end animate
 			}); //end click
@@ -2251,7 +2265,12 @@ jQuery.imageMagnify={
 				var $=jQuery;
 				var $this=$(this);
 				var imageinfo=$this.data('$relatedtarget').data('imgshell');
-				if(!imageinfo) return;
+				if(!imageinfo)
+                {
+                    console.log('Zooming out is not working');
+                    return;
+                }
+
 				$this.data('$zoomOutProgress', '1');
 				jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 				jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
@@ -2261,7 +2280,8 @@ jQuery.imageMagnify={
 						$this.hide();
 						$this.data('$relatedtarget').css({opacity:1}); //reveal original image
 						$this.data('$zoomOutProgress', '0');
-						$clone.data('$zoomStatus', '0');
+                        $this.data('$zoomInProgress', '0');
+                        $this.data('$zoomStatus', '0');
 					}); //end animate
 			}
 		);

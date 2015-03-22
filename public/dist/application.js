@@ -32,7 +32,10 @@ angular.module(ApplicationConfiguration.applicationModuleName, ApplicationConfig
 angular.module(ApplicationConfiguration.applicationModuleName)
 	.config(['$locationProvider',
 		function($locationProvider) {
-			$locationProvider.html5Mode(true);
+            $locationProvider.html5Mode({
+                enabled: true,
+                requireBase: false
+            });
 			$locationProvider.hashPrefix('!');
 		}
 	])
@@ -913,6 +916,7 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 		});
 	}
 ]);
+
 'use strict';
 
 angular.module('core').controller('HeaderController', ['$rootScope', '$scope', 'Authentication', 'Menus',
@@ -1286,23 +1290,6 @@ angular.module('exhibition').controller('ExhibitController',
 
             };
 
-
-            $scope.remove = function(exhibit) {
-                if (exhibit)    {
-                    exhibit.$remove();
-
-                    for (var i in $scope.exhibition) {
-                        if ($scope.exhibition[i] === exhibit) {
-                            $scope.exhibition.splice(i, 1);
-                        }
-                    }
-                } else {
-                    $scope.exhibit.$remove(function() {
-                        $state.go('exhibition');
-                    });
-                }
-            };
-
             $scope.delete = function() {
 
                 var formData = new FormData();
@@ -1317,8 +1304,8 @@ angular.module('exhibition').controller('ExhibitController',
                     transformRequest: angular.identity
                 }).then(
                     function(result) {
-                        for (var ind in $scope.exhibition) {
-                            if ($scope.exhibition[ind] === $scope.exhibit) {
+                        for (var ind = 0; ind < $scope.exhibition.length; ind++) {
+                            if ($scope.exhibition[ind]._id === $scope.exhibit._id) {
                                 $scope.exhibition.splice(ind, 1);
                             }
                         }
@@ -1670,7 +1657,7 @@ angular.module('exhibition').filter('exhibitQuery', function () {
  */
 'use strict';
 
-angular.module('common').filter('picRequired', function () {
+angular.module('exhibition').filter('picRequired', function () {
     // function to invoke by Angular each time
     // Angular passes in the `items` which is our Array
     return function (items) {
@@ -1679,7 +1666,7 @@ angular.module('common').filter('picRequired', function () {
         // loop through existing Array
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            if (item.pic.size) {
+            if (item.pic && item.pic.size) {
                 filtered.push(item);
             }
         }
@@ -1696,7 +1683,7 @@ angular.module('common').filter('picRequired', function () {
 //Exhibition service used for communicating with the exhibition REST endpoints
 angular.module('exhibition').factory('Exhibition', ['$resource',
     function($resource) {
-        return $resource('/exhibition/:exhibitId', {
+        return $resource('api/exhibition/:exhibitId', {
             exhibitId: '@_id'
         }, {
             update: {

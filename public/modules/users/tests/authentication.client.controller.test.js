@@ -48,13 +48,13 @@
 
 		it('$scope.signin() should login with a correct user and password', function() {
 			// Test expected GET request
-			$httpBackend.when('POST', '/auth/signin').respond(200, 'Fred');
+			$httpBackend.when('POST', '/auth/signin').respond(200, 'test');
 
 			scope.signin();
 			$httpBackend.flush();
 
 			// Test scope value
-			expect(scope.authentication.user).toEqual('Fred');
+			expect(scope.authentication.user).toEqual('test');
 			expect($location.url()).toEqual('/');
 		});
 
@@ -91,13 +91,13 @@
 		it('$scope.signup() should register with correct data', function() {
 			// Test expected GET request
 			scope.authentication.user = 'Fred';
-			$httpBackend.when('POST', '/auth/signup').respond(200, 'Fred');
+			$httpBackend.when('POST', '/auth/signup').respond(200, 'test');
 
 			scope.signup();
 			$httpBackend.flush();
 
 			// test scope value
-			expect(scope.authentication.user).toBe('Fred');
+			expect(scope.authentication.user).toBe('test');
 			expect(scope.error).toEqual(undefined);
 			expect($location.url()).toBe('/');
 		});

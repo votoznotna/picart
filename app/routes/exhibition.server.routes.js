@@ -15,7 +15,7 @@ var multipartMiddleware = multipart();
 
 module.exports = function(app) {
     // Article Routes
-    app.route('/exhibition')
+    app.route('/api/exhibition')
         .get(exhibition.list);
 
     //app.route('/exhibition/express')
@@ -34,7 +34,7 @@ module.exports = function(app) {
     app.route('/delete')
         .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
 
-    app.route('/exhibition/:exhibitId')
+    app.route('/api/exhibition/:exhibitId')
         .get(exhibition.read)
         .put(users.requiresLogin, exhibition.hasAuthorization, exhibition.update)
         .delete(users.requiresLogin, exhibition.hasAuthorization, exhibition.remove);

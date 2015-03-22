@@ -6,7 +6,7 @@
 //Exhibition service used for communicating with the exhibition REST endpoints
 angular.module('exhibition').factory('Exhibition', ['$resource',
     function($resource) {
-        return $resource('/exhibition/:exhibitId', {
+        return $resource('api/exhibition/:exhibitId', {
             exhibitId: '@_id'
         }, {
             update: {

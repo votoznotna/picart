@@ -65,23 +65,6 @@ angular.module('exhibition').controller('ExhibitController',
 
             };
 
-
-            $scope.remove = function(exhibit) {
-                if (exhibit)    {
-                    exhibit.$remove();
-
-                    for (var i in $scope.exhibition) {
-                        if ($scope.exhibition[i] === exhibit) {
-                            $scope.exhibition.splice(i, 1);
-                        }
-                    }
-                } else {
-                    $scope.exhibit.$remove(function() {
-                        $state.go('exhibition');
-                    });
-                }
-            };
-
             $scope.delete = function() {
 
                 var formData = new FormData();
@@ -96,8 +79,8 @@ angular.module('exhibition').controller('ExhibitController',
                     transformRequest: angular.identity
                 }).then(
                     function(result) {
-                        for (var ind in $scope.exhibition) {
-                            if ($scope.exhibition[ind] === $scope.exhibit) {
+                        for (var ind = 0; ind < $scope.exhibition.length; ind++) {
+                            if ($scope.exhibition[ind]._id === $scope.exhibit._id) {
                                 $scope.exhibition.splice(ind, 1);
                             }
                         }

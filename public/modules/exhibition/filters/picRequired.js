@@ -3,7 +3,7 @@
  */
 'use strict';
 
-angular.module('common').filter('picRequired', function () {
+angular.module('exhibition').filter('picRequired', function () {
     // function to invoke by Angular each time
     // Angular passes in the `items` which is our Array
     return function (items) {
@@ -12,7 +12,7 @@ angular.module('common').filter('picRequired', function () {
         // loop through existing Array
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            if (item.pic.size) {
+            if (item.pic && item.pic.size) {
                 filtered.push(item);
             }
         }

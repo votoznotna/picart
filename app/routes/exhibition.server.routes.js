@@ -35,7 +35,7 @@ module.exports = function(app) {
         .post(users.requiresLogin, multipartMiddleware, core.hasValidCaptcha, exhibition.delete);
 
     app.route('/api/exhibition/:exhibitId')
-        .get(exhibition.read)
+        .get(users.requiresLogin, exhibition.hasAuthorization, exhibition.read)
         .put(users.requiresLogin, exhibition.hasAuthorization, exhibition.update)
         .delete(users.requiresLogin, exhibition.hasAuthorization, exhibition.remove);
 

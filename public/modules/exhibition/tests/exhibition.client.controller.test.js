@@ -66,7 +66,7 @@
 
             // Set GET response
             $httpBackend.expectGET('api/exhibition').respond(sampleExhibition);
-            $httpBackend.expectGET('modules/core/views/home.client.view.html').respond({});
+            //$httpBackend.expectGET('modules/core/views/home.client.view.html').respond({});
 
             // Run controller functionality
             scope.find();

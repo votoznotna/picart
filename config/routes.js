@@ -4,6 +4,8 @@
  */
 
 var  _ = require('lodash');
+var users = require('../app/controllers/users.server.controller');
+var exhibition =  require('../app/controllers/exhibition.server.controller');
 
 var getUrl = function(req, res, next) {
 
@@ -25,10 +27,10 @@ module.exports = function(app) {
     app.get('/player', getUrl);
     app.get('/signin', getUrl);
     app.get('/signup', getUrl);
-    app.get('/password/forgot', getUrl);
-    app.get('/exhibition/create', getUrl);
-    app.get('/settings/profile', getUrl);
-    app.get('/settings/password', getUrl);
-    app.get('/exhibition/:exhibitId/edit', getUrl);
-    app.get('/exhibition/:exhibitId', getUrl);
+    app.get('/password/forgot', users.requiresLogin, exhibition.hasAuthorization, getUrl);
+    app.get('/exhibition/create', users.requiresLogin, exhibition.hasAuthorization, getUrl);
+    app.get('/settings/profile', users.requiresLogin, exhibition.hasAuthorization, getUrl);
+    app.get('/settings/password', users.requiresLogin, exhibition.hasAuthorization, getUrl);
+    app.get('/exhibition/:exhibitId/edit', users.requiresLogin, exhibition.hasAuthorization, getUrl);
+    app.get('/exhibition/:exhibitId', users.requiresLogin, exhibition.hasAuthorization, getUrl);
 }

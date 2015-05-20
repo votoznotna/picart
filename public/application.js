@@ -24,13 +24,15 @@ angular.module(ApplicationConfiguration.applicationModuleName)
 	.run(function (mongolab) {
 		mongolab.setApiKey(window.mongolabApiKey);
 	})
-	.run(['$state', '$rootScope', '$location', function($state, $rootScope, $location) {
+	.run(['$state', '$rootScope', '$location', 'messaging', 'events',
+		function($state, $rootScope, $location, messaging, events) {
 		//Check when routing starts
 		//event, next, current
 		$rootScope.$on( '$stateChangeStart', function(e, toState, toParams, fromState, fromParams) {
 			$rootScope.searchBar = false;
 			$rootScope.playerBar = false;
             $rootScope.usersManager = false;
+			messaging.publish(events.message._SERVER_REQUEST_ENDED_);
 		});
 	}]);
 

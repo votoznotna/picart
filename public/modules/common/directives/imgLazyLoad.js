@@ -271,8 +271,8 @@ angular.module('common').directive(
             if(!isExpress){
                 $element.imageMagnify(
                     {
-                        vIndent: 34,
-                        heightPad: -17,
+                        vIndent: 20,
+                        heightPad: 38,
                         magnifyby: magnifyby,
                         thumbdimensions: thumbdimensions
                     }

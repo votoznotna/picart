@@ -130,7 +130,7 @@ jQuery.imageMagnify={
 			});
 
 			$clone.stop().css({zIndex:++jQuery.imageMagnify.zIndexcounter, left:imageinfo.attrs.x, top:imageinfo.attrs.y, width:imageinfo.attrs.w, height:imageinfo.attrs.h, opacity:0, display:'block'})
-				.animate({opacity:1, left: ($(window).width() === imageinfo.newattrs.w ? 0 : imageinfo.newattrs.x + setting.hIndent), top: imageinfo.newattrs.y + setting.vIndent, width:imageinfo.newattrs.w + setting.widthPad, height:imageinfo.newattrs.h + setting.heightPad}, setting.duration,
+				.animate({opacity:1, left: ($(window).width() === imageinfo.newattrs.w ? 0 : imageinfo.newattrs.x + setting.hIndent), top: imageinfo.newattrs.y - setting.vIndent , width:imageinfo.newattrs.w + setting.widthPad, height:imageinfo.newattrs.h + setting.heightPad}, setting.duration,
 				//.animate({opacity:1, left: 0, top: '0', height: '100%', width: '100%'}, setting.duration,
 				function(){ //callback function after warping is complete
                     $clone.data('$zoomStatus', '1');
@@ -156,7 +156,7 @@ jQuery.imageMagnify={
 				jQuery.imageMagnify.refreshSize($(window), $this, imageinfo, setting);
 				jQuery.imageMagnify.refreshoffsets($(window), $this.data('$relatedtarget'), imageinfo); //refresh offset positions of original and warped images
 
-				$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h},  setting.duration,
+				$this.stop().animate({opacity:0, left:imageinfo.attrs.x, top:imageinfo.attrs.y + setting.vIndent, width:imageinfo.attrs.w, height:imageinfo.attrs.h },  setting.duration,
 					function(){
 						$this.hide();
 						$this.data('$relatedtarget').css({opacity:1}); //reveal original image

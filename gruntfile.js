@@ -124,6 +124,9 @@ module.exports = function(grunt) {
 			test: {
 				NODE_ENV: 'test'
 			},
+            production: {
+                NODE_ENV: 'production'
+            },
 			secure: {
 				NODE_ENV: 'secure'
 			}
@@ -151,7 +154,7 @@ module.exports = function(grunt) {
 	// A Task for loading the configuration object
 	grunt.task.registerTask('loadConfig', 'Task that loads the config into a grunt option.', function() {
 		var init = require('./config/init')();
-		var config = require('./config/configy');
+		var config = require('./config/config');
 
 		grunt.config.set('applicationJavaScriptFiles', config.assets.js);
 		grunt.config.set('applicationCSSFiles', config.assets.css);
@@ -170,7 +173,7 @@ module.exports = function(grunt) {
 	grunt.registerTask('lint', ['jshint', 'csslint']);
 
 	// Build task(s).
-	grunt.registerTask('build', ['lint', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
+	grunt.registerTask('build', ['env:production', 'loadConfig', 'ngAnnotate', 'uglify', 'cssmin']);
 
 	// Test task.
 	grunt.registerTask('test', ['env:test', 'mochaTest', 'karma:unit']);

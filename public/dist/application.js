@@ -433,6 +433,12 @@ angular.module('common').directive(
         function imgOnLoad(event) {
 
             var element = event.target;
+
+            if(element.complete == false) {
+                setTimeout(function(){imgOnLoad(event)}, 500);
+                return;
+            }
+
             var $element = jQuery(element);
             var isExpress = $element.attr('src').toLowerCase().indexOf('mpic') >= 0 ? true : false;
 
@@ -487,7 +493,9 @@ angular.module('common').directive(
                 lazyLoader.addImage( lazyImage );
             }
 
-            element.get(0).addEventListener("load", imgOnLoad);
+            //element.get(0).addEventListener("load", imgOnLoad);
+
+            element.get(0).onload = imgOnLoad;
 
             attrs.$observe(
                 "imgLazyLoad",

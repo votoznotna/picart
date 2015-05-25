@@ -20,8 +20,6 @@ To build and run on local environment, follow the next steps:
 9. Run >npm install
 10. Run >grunt build
 11. Run >grunt
-12. Go any browser and navigate to http://localhost:3000.
-13. Create an account by Sing Up and login by Sign in.
-14. Go Menu > Messages > Post Message to Post a new Message.
-
+12. Go any browser and navigate to http://localhost:3000
+13. Create own account by Sing Up and login by Sign in
 

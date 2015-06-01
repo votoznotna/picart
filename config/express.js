@@ -21,6 +21,7 @@ var fs = require('fs'),
 	}),
 	flash = require('connect-flash'),
 	config = require('./config'),
+	cors = require('cors'),
 	consolidate = require('consolidate'),
 	path = require('path');
 
@@ -114,10 +115,21 @@ module.exports = function(db) {
 	app.use(passport.session());
 
 	app.use(csrf());
+
+
 	app.use(function(req, res, next) {
 		res.cookie('XSRF-TOKEN', req.csrfToken());
 		next();
 	});
+
+	app.use(cors());
+
+	/*	app.all('*', function(req, res, next) {
+	 res.header("Access-Control-Allow-Origin", "*");
+	 res.header("Access-Control-Allow-Headers", "X-Requested-With");
+	 res.header('Access-Control-Allow-Headers', 'Content-Type');
+	 next();
+	 });*/
 
 	// connect flash for flash messages
 	app.use(flash());

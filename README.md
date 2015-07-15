@@ -1,4 +1,4 @@
-# Picart sample web project
+# Picart MEAN web project
 
 ## Demo: https://albo.herokuapp.com.
 To publish own Exhibits in Text + Photo bunch, just sign up/in and go managing own inputs.
